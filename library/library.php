@@ -10,7 +10,7 @@ function get_page_id($param = "id") {
 	return ((string)$id === trim($_GET[$param]) ? $id : 0);
 }
 function get_url_param($param) {
-	return (!isset($_GET[$param]) ? $_GET[$param] : false);
+	return (isset($_GET[$param]) ? $_GET[$param] : false);
 }
 function get_url() {
     if (!empty($_SERVER["REQUEST_URI"])) { return $_SERVER["REQUEST_URI"]; }

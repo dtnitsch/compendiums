@@ -1,4 +1,4 @@
-<?
+<?php
 function speed_diff($core, $against) {
 	$against = array_flip($against);
 	foreach ($core as $key => $value) {

@@ -4,18 +4,18 @@
 ##################################################
 _error_debug("MODULE: ". basename(__FILE__)); 	# Debugger
 
-if(!logged_in()) { safe_redirect("/login/"); }
-if(!has_access("list_edit")) { back_redirect(); }
+// if(!logged_in()) { safe_redirect("/login/"); }
+// if(!has_access("list_edit")) { back_redirect(); }
 
-post_queue($module_name,'modules/acu/lists/post_files/');
+post_queue($module_name,'modules/lists/post_files/');
 
 ##################################################
 #	Validation
 ##################################################
-$id = get_page_id();
+$id = get_url_param("key");
 if(empty($id)) {
 	warning_message("An error occured while trying to edit this record:  Missing Requred ID");
-	safe_redirect('/acu/lists/');
+	safe_redirect('/lists/');
 }
 
 ##################################################
@@ -25,81 +25,93 @@ if(empty($id)) {
 ##################################################
 #	Pre-Content
 ##################################################
-library("functions.php",$GLOBALS["root_path"] ."modules/acu/lists/");
+library("functions.php",$GLOBALS["root_path"] ."modules/lists/");
 
-library("validation.php");
-add_js("validation.js");
+// library("validation.php");
+// add_js("validation.js");
 
 $info = array();
 if(!empty($_POST)) {
 	$info = $_POST;
 } else {
-	$info = db_fetch("select * from public.lists where id='". $id ."'",'Getting List');
+	$info = db_fetch("select * from public.list where key='". $id ."'",'Getting List');
+	$q = "
+		select public.asset.*
+		from public.asset
+		join public.list_asset_map on 
+			list_asset_map.asset_id = asset.id
+			and list_asset_map.list_id = '". $info['id'] ."'
+		order by
+			asset.title
+	";
+	$assets = db_query($q,"Getting assets");
 }
 
 ##################################################
 #	Content
 ##################################################
 ?>
-	<h2 class='lists'>Edit List: <?php echo $info["title"]; ?></h2>
+	<h2 class='lists'>Edit List: <?php echo $info['title']; ?></h2>
   
-  <div class='content_container'>
+  	<?php echo dump_messages(); ?>
+	<form id="addform" method="post" action="">
 
-	<?= list_navigation($id,"edit") ?>
+		<label class="form_label" for="title">List Name <span>*</span></label>
+		<div class="form_data">
+			<input type="text" name="title" id="title" value="<?php echo $info['title']; ?>">
+		</div>
 
-	<div id="messages">
-		<?php echo dump_messages(); ?>
-	</div>
+		<label class="form_label">Visibility</label>
+		<div class="form_data">
+			<label for="public"><input type="radio" name="visibility" id="public" value="public"> Public</label>
+			<label for="private"><input type="radio" name="visibility" id="private" value="private"> Private</label>
+		</div>
 
-	<form method="post" action="" onsubmit="return v.validate();">
+		<label class="form_label" for="title">Inputs</label>
+		<div class="form_data">
+<?php
+$list = "";
+while($row = db_fetch_row($assets)) {
+	$list .= $row['title'] ."\n";
+}
+$list = substr($list,0,-1);
 
-	<label class="form_label">Title <span>*</span></label>
-	<div class="form_data">
-		<input required type="text" name="title" id="title" value="<?php if(!empty($info["title"])) { echo $info["title"]; } ?>">
-	</div>
+?>		
+			<textarea name="inputs" id="inputs" style="width: 400px; height: 150px;"><?php echo $list; ?></textarea>
+			<div style="font-size: 80%;">*Notes: Tab Deliminated List - Name &nbsp; Percentage &nbsp; Tags</div>
+		</div>
 
-	<label class="form_label">Alias <span>*</span></label>
-	<div class="form_data">
-		<input required type="text" name="alias" id="alias" value="<?php if(!empty($info["alias"])) { echo $info["alias"]; } ?>">
-	</div>
+		<label class="form_label" for="title">Input Options</label>
+		<div class="form_data">
+			<label for="percentages">
+				<input type="checkbox" name="options" id="percentages" value="percentages"> Percentages
+			</label>
+			&nbsp;
+			<label for="tags">
+				<input type="checkbox" name="options" id="tags" value="tags"> Tags
+			</label>
+		</div>
+		
 
-	<div class="form_data">
-		<label for="description" class="form_label">Description</label><br>
-		<textarea name="description" id="description"><?php if(!empty($info["description"])) { echo $info["description"]; } ?></textarea>
-	</div>
+			<!--input checked type="radio" name="multipart" value="yes"> Individual
+			<input type="radio" name="multipart" value="no"> Multi-Part -->
 
-	<p>
-		<input type="submit" value="Update Information">		
-		<input type='hidden' name='id' value='<?php echo $id; ?>'>
-	</p>
-
+		<!--input type="button" value="Add List" onclick="addform()"-->
+		<input type="submit" value="Edit List">
 	</form>
-</div>
+
 <?php
+
 	site_wide_notes('ajax',$GLOBALS['project_info']['path_data']['id'],$id);
-?>
 
 
-<?php
 ##################################################
 #	Javascript Functions
 ##################################################
-ob_start();
-?>
-
-<script type="text/javascript">
-	var j = <?php echo validation_create_json_string(validation_load_file(__DIR__."/validation.json"),"js"); ?>;
-	// name of variable should be sent in the validation function
-	var v = new validation("v"); 
-	v.load_json(j);
-	// v.optional('password1',false);
-	// v.optional('password2',false);
-
-</script>
-
-<?php
-$js = trim(ob_get_clean());
-if(!empty($js)) { add_js_code($js); }
+// ob_start();
+// ?><?php
+// $js = trim(ob_get_clean());
+// if(!empty($js)) { add_js_code($js); }
 
 ##################################################
 #	Additional PHP Functions
