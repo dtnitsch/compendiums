@@ -66,4 +66,5 @@ $GLOBALS["db_options"]["main_connections"] = array(
 		'password' 	=> 'daniel',
 		'database' 	=> 'gm_tools',
 		'type'		=> 'postgresql'
+	)
 );

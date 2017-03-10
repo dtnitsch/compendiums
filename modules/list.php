@@ -25,9 +25,9 @@ $info = db_fetch($q,"Getting list information");
 $q = "
 	select public.asset.*
 	from public.asset
---	join public.list_asset_map on 
---		list_asset_map.asset_id = asset.id
---		and list_asset_map.list_id = '". $info['id'] ."'
+	join public.list_asset_map on 
+		list_asset_map.asset_id = asset.id
+		and list_asset_map.list_id = '". $info['id'] ."'
 	order by
 		asset.title
 ";

@@ -23,35 +23,31 @@ _error_debug("MODULE: ". basename(__FILE__)); 	# Debugger
 add_css('pagination.css');
 add_js('sortlist.new.js');
 
+$add_button = "<button onclick='window.location.href=\"/lists/add/\"' class='add'>Add New List</button>";
+
+$edit_onclick = "";
+if(!empty($security_list['lists_edit'])) {
+    $edit_onclick = " onclick='window.location=\"/lists/edit/?id={{id}}\"'";
+}
+
+$delete_link = "";
+if(!empty($security_list['lists_delete'])) {
+    $delete_link = '<a href="/lists/delete/?id={{id}}" title="Delete: {{path}}" class="delete"></a>';
+}
+
 ##################################################
 #   Content
 ##################################################
 ?>
 <div class='clearfix'>
+	<div class='right float_right buttons clear'>
+		<?= $add_button ?>
+	</div>
+
 	<h2 class='lists'>Lists</h2>
   
-  <?php
-    $add_button = "";
-    if(!empty($security_list["lists_add"])) {
-        $add_button = "<button onclick='window.location.href=\"/lists/add/\"' class='add'>Add New List</button>";
-    }
-
-    $edit_onclick = "";
-    if(!empty($security_list['lists_edit'])) {
-        $edit_onclick = " onclick='window.location=\"/lists/edit/?id={{id}}\"'";
-    }
-
-    $delete_link = "";
-    if(!empty($security_list['lists_delete'])) {
-        $delete_link = '<a href="/lists/delete/?id={{id}}" title="Delete: {{path}}" class="delete"></a>';
-    }
-?>
-  
-  <div class='right float_right buttons'>
-		<?= $add_button ?>
-  </div>
 </div>
-<div class='content_container'>
+<div class='content_container clear'>
 <?php echo dump_messages(); ?>
 	<fieldset class='filters' id='filters'>
 	<form id="form_filters" method="" action="" onsubmit="return false;">
