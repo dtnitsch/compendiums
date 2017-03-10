@@ -1,0 +1,17 @@
+[
+	{
+		"id": "firstname"
+		,"label": "First Name"
+		,"validators": [
+			"required"
+			,"string_length_between:3,255"
+		]
+	}
+	,{
+		"id": "grade_id"
+		,"label": "Grade"
+		,"validators": [
+			"required"
+		]
+	}
+]

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>QUnit Trim</title>
+  <link rel="stylesheet" href="qunit/qunit.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <!--script src="../trim.min.js"></script>
+    <script>
+        // need to test minified version as well
+        var danmin = dan;
+    </script-->
+
+  <table id='sortlist_ajax' cellpadding="0" cellspacing="0" class='asl_sort' >
+    <thead id="asl_sort_head">
+    <tr>
+        <th id="th_firstname" data-col="firstname">Firstname</th>
+        <th id="th_lastname" data-col="lastname">Lastname</th>
+        <th id="th_email" data-col="email">Email</th>
+        <th id="th_modified" data-col="modified">Date Modified</th>
+        <th id="th_created" data-col="created" class='hide'>Date Created</th>
+        <th id="th_is_superadmin" data-col="is_superadmin" class='hide'>Is Superadmin</th>
+        <th id="th_registration_type" data-col="registration_type" class='hide'>Registration Type</th>
+        <th class='options' style='width: 1%;'><img src='/library/sortlist/options.gif' /></th>
+    </tr>
+    </thead>
+    <tbody style='display: none;'>
+    <tr onclick='window.location="/acu/users/edit/?id={{id}}"'>
+        <td>{{firstname}}</td>
+        <td>{{lastname}}</td>
+        <td>{{email}}</td>
+        <td>{{modified}}</td>
+        <td class='hide'>{{created}}</td>
+        <td class='hide'>{{is_superadmin}}</td>
+        <td class='hide'>{{registration_type}}</td>
+        <td rel='nolink'>
+            [<a href='/acu/users/delete/?id={{id}}' title="Delete: {{user}}" class='delete'>X</a>]
+        </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <script src="../global.js"></script>
+  <script src="../ajax.js"></script>
+  <script src="../sortlist.new.js"></script>
+  <script src="qunit/qunit.js"></script>
+  <script src="sortlist.js"></script>
+</body>
+</html>

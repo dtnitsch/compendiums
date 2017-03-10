@@ -1,0 +1,70 @@
+[
+    {
+        "id": "id",
+        "type": "post",
+        "label": "ID",
+        "language": "php",
+        "validators": [
+            "required"
+            ,"int"
+        ]
+    },
+    {
+        "id": "firstname",
+        "label": "First Name",
+        "validators": [
+            "required",
+            "string_length_between:3,128"
+        ]
+    },
+    {
+        "id": "lastname",
+        "label": "Last Name",
+        "validators": [
+            "required",
+            "string_length_between:1,128"
+        ]
+    },
+    {
+        "id": "email",
+        "label": "Email Address",
+        "validators": [
+            "required",
+            "email"
+        ]
+    },
+    {
+        "id": "password1",
+        "language": "php",
+        "label": "PassOne",
+        "optional": true,
+        "validators": [
+            "string_length_between:5,30"
+        ]
+    },
+    {
+        "id": "password2",
+        "language": "php",
+        "label": "PassTwo",
+        "optional": true,
+        "validators": [
+            "equal:post,password1"
+        ]
+    },
+    {
+        "id": "password1",
+        "language": "js",
+        "label": "PassOne",
+        "optional": true,
+        "validators": [
+            "string_length_between:5,30"
+        ]
+    },
+    {
+        "id": "password2",
+        "language": "js",
+        "validators": [
+            "equal:password1"
+        ]
+    }
+]

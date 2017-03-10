@@ -1,0 +1,36 @@
+[
+    {
+        "id": "id"
+        ,"type": "post"
+        ,"label": "ID"
+        ,"language": "php"
+        ,"validators": [
+            "required"
+            ,"int"
+        ]
+    },
+    {
+        "id": "title"
+        ,"label": "Title"
+        ,"validators": [
+            "required"
+            ,"string_length_between:3,128"
+        ]
+    },
+    {
+        "id": "institution_type_id"
+        ,"label": "Institution Type"
+        ,"validators": [
+            "required"
+            ,"int"
+        ]
+    },
+    {
+        "id": "postal_code"
+        ,"label": "Postal Code"
+        ,"validators": [
+            "required"
+            ,"string_length_between:3,128"
+        ]
+    }
+]

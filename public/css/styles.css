@@ -1,0 +1,53 @@
+button,hr,input{overflow:visible}audio,canvas,progress,video{display:inline-block}progress,sub,sup{vertical-align:baseline}html{font-family:sans-serif;line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0} menu,article,aside,details,footer,header,nav,section{display:block}h1{font-size:2em;margin:.67em 0}figcaption,figure,main{display:block}figure{margin:1em 40px}hr{box-sizing:content-box;height:0}code,kbd,pre,samp{font-family:monospace,monospace;font-size:1em}a{background-color:transparent;-webkit-text-decoration-skip:objects}a:active,a:hover{outline-width:0}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:bolder}dfn{font-style:italic}mark{background-color:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative}sub{bottom:-.25em}sup{top:-.5em}audio:not([controls]){display:none;height:0}img{border-style:none}svg:not(:root){overflow:hidden}button,input,optgroup,select,textarea{font-family:sans-serif;font-size:100%;line-height:1.15;margin:0}button,input{}button,select{text-transform:none}[type=submit], [type=reset],button,html [type=button]{-webkit-appearance:button}[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner,button::-moz-focus-inner{border-style:none;padding:0}[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[type=submit]:-moz-focusring,button:-moz-focusring{outline:ButtonText dotted 1px}fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{}textarea{overflow:auto}[type=checkbox],[type=radio]{box-sizing:border-box;padding:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-cancel-button,[type=search]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}[hidden],template{display:none}/*# sourceMappingURL=normalize.min.css.map */
+/* Global CSS Specifically for this project */
+body { font-family: Verdana, Helvetica, sans-serif; background-color: #f6f6f6; color: #222222; }
+html, body { font-size: 100%; }
+html, body { font-size: 0.9em; }
+
+/*** General Purpose Styles ***/
+/* These css code bits are ment to replace the basic, and often used, tags from HTML to be better complient with modern standards */
+.center { text-align: center; }
+.right { text-align: right;}
+.left { text-align: left; }
+		/* Floats */
+.float_right { float: right; }
+.float_left { float: left; }
+.clear { clear: both; }
+		/* Commonly used margins */
+.mtb { margin: 1em 0em; }
+.mt { margin-top: 1em; }
+.mb { margin-bottom: 1em; }
+.center_page { margin: 1em auto; }
+		/* Show and Hide functions for JS */
+.show { display: inherit; }
+.hide { display: none; }
+
+/*** Display Settings for the overall Template ***/
+/* 2, 3, and multi column tables */
+.two_col, .three_col, .multi_col { width: 100%; }
+.two_col td { width: 50%; }
+.three_col td { width: 33.33%; }
+.two_col td, .three_col td, .multi_col td { vertical-align: top; }
+.two_col .gutter, .three_col .gutter, .multi_col .gutter { white-space: nowrap; width: 10px; }
+
+
+/* Labels, Headers and Other visible Goodness */
+
+/* Form Specifics */
+.form_label { font-weight: bold; color:#444444; margin: 0; }
+.form_label span { color: #9F0909; font-weight: normal; } /* This is used for the "*" if something is required */
+.form_label label { cursor: pointer; }
+.form_data, .form_text { margin-bottom: 1em; }
+.form_text { padding-left: 0.5em; }
+
+
+.required { color: #9F0909; font-weight: normal; }
+.tips { color: #3a6ea5; font-size: 11px; }
+
+/* Error Messages */
+.errors { margin-top: 10px; }
+.info_message, .debug_message, .warning_message, .error_message { font-weight: normal; margin-bottom: 0.3em; padding: .1em .3em; }
+.info_message { border: 1px solid #144F16; background-color:#B3EFB5; color: #000000;/* color:#144F16;*/ }
+.debug_message { border: 1px solid #144F16; background-color:#b3d8ef; color: #000000;/* color:#141f4f;*/ }
+.warning_message { border: 1px solid #cccc66; background-color:#ffffcc; color: #000000; /* color:#141f4f;*/ }
+.error_message { border: 1px solid #C56363; color: #000000; background-color: #FFE6E7; }

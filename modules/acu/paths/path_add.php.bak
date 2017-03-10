@@ -1,0 +1,114 @@
+<?php 
+##################################################
+#   Document Setup and Security
+##################################################
+_error_debug("MODULE: ". basename(__FILE__)); 	# Debugger 
+if(!HAS_ACCESS('path_add')) { BACK_REDIRECT(); }
+POST_QUEUE($module_name,'modules/acu/paths/post_files/');
+
+##################################################
+#	Validation
+##################################################
+
+##################################################
+#	DB Queries
+##################################################
+
+##################################################
+#	Pre-Content
+##################################################
+$info = (!empty($_POST) ? $_POST : array());
+
+##################################################
+#	Content
+##################################################
+?>
+	<h2>Create Path</h2>
+	<?php echo DUMP_MESSAGES(); ?>
+
+	<form method="post" action="">
+ 
+		<label class="form_label">Path <span>*</span></label>
+	<div class="form_data">
+		<input required type="text" name="path" id="path" value="<?php if(!empty($info["path"])) { echo $info["path"]; } ?>">
+	</div>
+
+	<div class="inputs">
+		<label for="module_name">Module Name <span>*</span></label><br>
+		<select required id="module_name" name="module_name">
+			<option value="">-Select Module Name-</option>
+<?php
+$output = '';
+foreach($array as $row) {
+	$output .= '<option value="'. $row['id'] .'">'. $row['title'] .'</option>';
+}
+if(!empty($info['module_name'])) {
+	$output = str_replace('value="'. $info['module_name'] .'"', 'value="'. $info['module_name'] .'" selected',$output);
+}
+echo $output;
+?>
+		</select>
+	</div>
+
+	<div class="inputs">
+		<label for="template">Template <span>*</span></label><br>
+		<select required id="template" name="template">
+			<option value="">-Select Template-</option>
+<?php
+$output = '';
+foreach($array as $row) {
+	$output .= '<option value="'. $row['id'] .'">'. $row['title'] .'</option>';
+}
+if(!empty($info['template'])) {
+	$output = str_replace('value="'. $info['template'] .'"', 'value="'. $info['template'] .'" selected',$output);
+}
+echo $output;
+?>
+		</select>
+	</div>
+
+	<label class="form_label">Title <span>*</span></label>
+	<div class="form_data">
+		<input required type="text" name="title" id="title" value="<?php if(!empty($info["title"])) { echo $info["title"]; } ?>">
+	</div>
+
+	<label class="form_label">Alias <span>*</span></label>
+	<div class="form_data">
+		<input required type="text" name="alias" id="alias" value="<?php if(!empty($info["alias"])) { echo $info["alias"]; } ?>">
+	</div>
+
+	<div class="inputs">
+		<input type="checkbox" name="is_dynamic" id="is_dynamic" value="t"<?php echo (!empty($info["is_dynamic"]) && $info["is_dynamic"] == "t" ? " checked" : ""); ?>>
+		<label for="is_dynamic">Is Dynamic?</label>
+	</div>
+
+
+
+	<p>
+		<input type="submit" value="Create Path">		
+	</p>
+
+	</form>
+
+<?php
+##################################################
+#	Javascript Functions
+##################################################
+$closure = function() {
+	ob_start();
+?>
+
+<?php
+	return trim(ob_get_clean());
+};
+$js = $closure();
+if(!empty($js)) { ADD_JS_CODE($js); }
+
+##################################################
+#	Additional PHP Functions
+##################################################
+
+##################################################
+#	EOF
+##################################################
+?>

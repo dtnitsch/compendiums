@@ -1,0 +1,230 @@
+body
+{
+	margin: 0px;
+	padding: 0px;
+	font-family: arial;
+	font-size: 1em;
+	line-height: 150%;
+	background-color: #29ABE2;
+	background-image: url(../images/pagebg.png);
+	background-repeat: repeat-x;
+	background-position: 0 0;
+  text-align: center;
+}
+#topnav
+{
+	position: relative;
+	background-color: #FFC423;
+	text-align: center;
+	height: 20px;
+	overflow: hidden;
+	background-image: url(../images/topnavbg.jpg);
+	background-repeat: repeat-x;
+	background-position: 0 -1px;
+	top: 0px;
+	left: 0px;
+}
+#container
+{
+	margin: 0 auto 0 auto;
+	position: relative;
+	width: 700px;
+}
+#leftcol
+{
+	position: relative;
+	text-align: center;
+	float: left;
+	width: 200px;
+	z-index: 100;
+}
+#centercol
+{
+	position: relative;
+	text-align: center;
+	float: left;
+	width: 300px;
+	z-index: 200;
+	height: 860px;
+}
+#rightcol
+{
+	position: relative;
+	text-align: center;
+	float: left;
+	width: 200px;
+	z-index: 100;
+}
+ h1
+{
+	padding: 0px;
+	margin: 10px;
+	font-size: 30px;
+	font-weight: normal;
+	position: relative;
+	font-family: impact;
+	line-height: normal;
+}
+.yellowbutton a
+{
+	font-size: 1em;
+	color: #1C75BC;
+	background-color: #FBB040;
+	padding: 5px;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	position: relative;
+	display: inline-block;
+	border-width: 0;
+	margin: 20px;
+	text-decoration: none;
+}
+.blackbox
+{
+	background-color: #000;
+	position: relative;
+	margin: 20px 0 20px 0;
+	text-align: center;
+	height: 77px;
+	overflow: hidden;
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+		background-image: url(../images/black-buttonbg.jpg);
+	background-repeat: repeat-x;
+	background-color: #000;
+	background-position: 0 0;
+
+}
+.blackbox a
+{
+	font-size: 2em;
+	font-family: impact;
+	color: #FFF;
+	position: absolute;
+	display: block;
+	text-decoration: none;
+	top: 40px;
+	width: 200px;
+	left: 0;
+}
+.blackbox a:hover{color: #ED1C24}
+
+.targetgroup
+{
+	font-size: 1.25em;
+	font-family: impact;
+	color: #FFF;
+	position: absolute;
+	text-decoration: none;
+	top: 10px;
+	width: 200px;
+	left: 0;
+}
+#parentsbutton .targetgroup
+{
+	top: 3px;
+	font-size: 18px;
+	line-height: 16px;
+}
+
+.red {background:#ED1C24}
+.red a:hover{color:#000}
+
+.purple {background:#5900B2}
+.darkblue {background:#00008C}
+.green {background:#004010}
+
+#flashwrapper
+{
+	position: absolute;
+	top: 390px;
+	width: 700px;
+	height: 500px;
+	left: 0;
+	z-index: 50;
+}
+#henrywrapper
+{
+	position: absolute;
+	left: -250px;
+	z-index: 70;
+	width: 500px;
+	top: 0;
+}
+#tiawrapper
+{
+	position: absolute;
+	left: 240px;
+	z-index: 50;
+	width: 500px;
+	top: 0;
+}
+
+.clear
+{
+	position: relative;
+	clear: both;
+}
+#alsc
+{
+	position: relative;
+	text-align: center;
+	margin: 5px 10px 5px 10px;
+	display: none;
+}
+#truste
+{
+	position: relative;
+	text-align: center;
+	margin: 5px 10px 5px 10px;
+}
+#footerwrapper
+{
+	background-color: #AFDFE5;
+	position: relative;
+	font-size: 12px;
+	padding: 10px;
+	z-index: 200;
+}
+
+#footernav
+{
+	position: relative;
+	text-align: center;
+}
+
+#footernav .menu ul
+{
+	list-style: none;
+	position: relative;
+	padding: 0px;
+	margin: 0px;
+}
+
+#footernav .menu li
+{
+	position: relative;
+	display: inline;
+	margin: 10px;
+}
+#footernav a { color: #000; }
+
+.footer
+{
+	position: relative;
+	text-align: center;
+}
+
+.footer div
+{
+	display: inline;
+	position: relative;
+	margin: 0 2px 0 0;
+}
+
+#footcustom,#footcompany
+{
+	display: block;
+}

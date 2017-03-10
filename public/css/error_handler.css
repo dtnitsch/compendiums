@@ -1,0 +1,20 @@
+@charset "UTF-8";
+/* All of the css needed for the error debugger */
+
+.error_debug_box { margin: 30px 10px 10px; background: #ECEFD1; border: 1px solid gray; padding: 5px; font-size: 90%; }
+.error_debug_title { cursor: pointer; font-size: 85%; padding: 1px 10px; border: 1px solid gray; background: #D1DCEF; color: #333333; }
+.error_debug_table { width: 100%; border-left: 1px solid gray; border-right: 1px solid gray; display: none; color: #333333; }
+.error_debug_table td.error_type { border-right: 1px solid gray; border-bottom: 1px solid gray; text-align: center; font-weight: bold; padding: 2px 5px; }
+.error_debug_table td.show_more { background: white; border-bottom: 1px solid gray; white-space: nowrap; padding: 0 5px; }
+.error_debug_table td.hide_context, .error_debug_table td.hide_backtrace { display: none; border-bottom: 1px solid gray; border-right: none; }
+.error_debug_table td.context { background: #FEFFBF; border-right: 1px solid gray; border-bottom: 1px solid gray; padding: 5px 10px; font-size: 85%; }
+.error_debug_table td.backtrace { background: #D5FECD; border-right: 1px solid gray; border-bottom: 1px solid gray; padding: 5px 10px; font-size: 85%; }
+.error_debug_table td.error_details { width: 100%; padding-left: 5px; border-bottom: 1px solid gray; background: white; font-size: 85%; }
+.error_debug_table td.error_details .undln { text-decoration: underline; }
+.error_debug_table td {  font-family: Verdana, Arial; font-size: 85%; }
+.error_debug_table td.error_details .page_line { padding-left: 15px; font-size: 85%; color: #666666; }
+.error_debug_red { background: #FF6F6F; }
+.error_debug_orange { background: #FFBF4F; }
+.error_debug_yellow { background: #F5FF9F; }
+.error_debug_gray { background: #CFCFCF; }
+.error_debug_redtext { color: #FF0000; }

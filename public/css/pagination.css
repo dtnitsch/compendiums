@@ -1,0 +1,30 @@
+.pagi { padding-top: 20px; text-align: center; display: table-cell; }
+.pagi a { margin: 0 1px; padding: 0 9px; text-decoration: none; color: #000; line-height: 25px; display: inline-block; }
+.pagi a:hover {  }
+.pagi_direction { display: inline-block; }
+.pagi_direction_disabled { display: inline-block; }
+.pagi_direction a { font-weight: 700; }
+.pagi_direction a:hover { color: rgba(0,0,0,0.50); }
+.pagi_direction a:before, .pagi_direction a:after { display: inline-block; font-family: 'Glyphicons Regular'; font-size: 8px; font-style: normal; font-weight: 400; text-align: left; vertical-align: top; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.pagi_direction a.prev:before { padding: 0 5px 0 0; content: '\e225'; }
+.pagi_direction a.next:after { padding: 0 0 0 5px; content: '\e224'; }
+.pagi_filler { padding: 0 5px; display: inline-block; }
+
+.pagi_page { display: inline-block; }
+.pagi_page a:hover { background: #e9f6fc; }
+.pagi_page a.digit {  }
+.pagi_page a.two_digit {  }
+.pagi_page a.three_digit {  }
+.pagi_page a.four_digit {  }
+
+.pagi_bold { margin: 0 1px; padding: 0 9px; display: inline-block; color: #fff; line-height: 25px; background: #29abe2; }
+.pagi_bold_two {  }
+.pagi_bold_three {  }
+.pagi_bold_four {  }
+
+.pagi_gotopage { padding-top: 20px; font-size: 0.95em; text-align: right; display: table-cell; }
+.pagi_details { padding-top: 20px; font-size: 0.95em; line-height: 25px; color: #000; text-align: left; display: table-cell; }
+.pagi_nums { font-weight: 700; }
+.show_pagination { border-bottom: none; display: table !important; }
+.show_pagination input, .show_pagination select { height: 25px; font-size: 0.9em; line-height: 25px; display: inline-block; vertical-align: middle; }
+.show_pagination input { margin: 0 5px; width: 40px; line-height: 1em; }

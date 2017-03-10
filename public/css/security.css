@@ -1,0 +1,10 @@
+.section_header { height: 30px; background: #2e3192; padding: 0 10px; color: #fff; font-size: 1.1em; line-height: 30px; font-weight: 500; }
+.section_body { padding: 10px 0; }
+
+.section_header label, .section_body label { cursor: pointer; }
+
+.group_box { float: left; margin: 0 10px 10px 0; width: 250px; }
+.group_header { height: 30px; background: #e3ecf0; border: 1px solid #d9e3e7; line-height: 30px; padding: 0 10px; font-weight: 500; }
+.group_body { border: 1px solid #d9e3e7; border-top: 0; padding: 10px; }
+
+.section_header input[type=checkbox], .group_box input[type=checkbox] { position: relative; top: -1px; }

@@ -1,0 +1,89 @@
+#NameVirtualHost *:80
+NameVirtualHost *:443
+
+#############
+## NEW CMS ##
+#############
+<VirtualHost *:80>
+    DocumentRoot "/var/www/clevercrazes/public/"
+    ServerName clevercrazes.local
+    
+    Options +FollowSymLinks
+    Options -Indexes
+    RewriteEngine On
+
+    RewriteCond %{HTTPS} (on)?
+    RewriteCond %{HTTP:Host} ^(?!www\.)([^.]+\.[^.]+)$ [NC]
+    RewriteCond %{REQUEST_URI} (.+)
+    RewriteRule .? http(?%1s)://www.%2%3 [R=301,L]
+
+    RewriteMap lc int:tolower
+    RewriteCond %{REQUEST_URI} [A-Z]
+    RewriteRule (.*) ${lc:$1} [R=301,L]
+
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} -f
+    RewriteRule . - [L]
+    RewriteRule ^(.*)$ /index.php
+
+    ErrorLog "/var/log/httpd/clevercrazes.com-error.log"
+    CustomLog "/var/log/httpd/clevercrazes.com-access.log" common
+</VirtualHost>
+
+# <VirtualHost *:80>
+#   DocumentRoot "/var/www/staging.clevercrazes.com/trunk/public/"
+#   ServerName staging.clevercrazes.com
+
+#   Options +FollowSymLinks
+#   Options -Indexes
+#   RewriteEngine On
+
+#   RewriteMap lc int:tolower
+#   RewriteCond %{REQUEST_URI} [A-Z]
+#   RewriteRule (.*) ${lc:$1} [R=301,L]
+
+#   RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} -f
+#   RewriteRule . - [L]
+#   RewriteRule ^(.*)$ /index.php
+
+#   ErrorLog "/var/log/httpd/staging.clevercrazes.com-error.log"
+#   CustomLog "/var/log/httpd/staging.clevercrazes.com-access.log" common
+# </VirtualHost>
+
+#############
+## OLD CMS ##
+#############
+<VirtualHost *:80>
+    ServerAdmin info@clevercrazes.com
+    ServerName oldsite.clevercrazes.com
+    DocumentRoot /var/www/oldsite/html/
+
+    Options +FollowSymLinks
+    Options -Indexes
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !(.*)/$
+
+    RewriteCond %{http_host} ^clevercrazes.123yourweb.com [nc]
+    RewriteRule ^(.*)$ http://www.clevercrazes.com/$1 [r=301,nc]
+
+    RewriteCond %{HTTP_HOST} clevercrazes\.com$ [NC]
+    RewriteCond %{HTTP_HOST} !^www\.clevercrazes\.com$ [NC]
+    RewriteRule ^(.*)$ http://www.clevercrazes.com/$1 [L,R=301]
+
+    RewriteMap lc int:tolower
+    RewriteRule ^(.*)$ ${lc:$1}
+
+    RewriteRule ^sec=10 /section/About_Clever_Crazes/55/ [r=301,QSA,L]
+
+    RewriteRule ^elmo/(.*)/1.gif /images/elmo.php?o=$1 [QSA,L]
+    RewriteRule ^images/a/(.*) /images/ads/$1 [QSA,L]
+
+    DirectoryIndex default.php index.php default.htm index.html index.htm
+
+    RewriteRule ^page/(.*)/([0-9]+)/([0-9]+)/ /default.php?sec=$3&id=$2 [QSA,L]
+    RewriteRule ^section/(.*)/([0-9]+)/ /default.php?sec=$2 [QSA,L]
+
+    ErrorLog "/var/log/httpd/oldsite.clevercrazes.com-error.log"
+    CustomLog "/var/log/httpd/oldsite.clevercrazes.com-access.log" common
+</VirtualHost>

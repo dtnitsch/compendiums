@@ -1,0 +1,36 @@
+[
+
+    {
+        "id": "question"
+        ,"label": "Question"
+        ,"validators": [
+            "required"
+            ,"string_length_between:3,255"
+        ]
+    }
+    ,{
+        "id": "id"
+        ,"type": "post"
+        ,"label": "ID"
+        ,"language": "php"
+        ,"validators": [
+            "required"
+        ]
+    }
+    ,{
+        "id": "description"
+        ,"label": "Description"
+        ,"optional": true
+        ,"validators": [
+            "string_length_min:5"
+        ]
+    }
+    ,{
+        "id": "fact"
+        ,"label": "Fact"
+        ,"optional": true
+        ,"validators": [
+            "string_length_min:5"
+        ]
+    }
+]

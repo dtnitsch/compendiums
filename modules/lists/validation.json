@@ -1,0 +1,36 @@
+[
+
+    {
+        "id": "title"
+        ,"label": "Title"
+        ,"validators": [
+            "required"
+            ,"string_length_between:3,128"
+        ]
+    }
+    ,{
+        "id": "id"
+        ,"type": "post"
+        ,"label": "ID"
+        ,"language": "php"
+        ,"validators": [
+            "required"
+        ]
+    }
+    ,{
+        "id": "alias"
+        ,"label": "Alias"
+        ,"validators": [
+            "required"
+            ,"string_length_between:1,128"
+        ]
+    }
+    ,{
+        "id": "description"
+        ,"label": "Description"
+        ,"optional": true
+        ,"validators": [
+            "string_length_between:5,128"
+        ]
+    }
+]

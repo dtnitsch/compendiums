@@ -1,0 +1,96 @@
+<?php
+##################################################
+#   Document Setup and Security
+##################################################
+_error_debug("MODULE: ". basename(__FILE__)); 	# Debugger 
+if(!HAS_ACCESS('user_edit')) { BACK_REDIRECT(); }
+POST_QUEUE($module_name,'modules/acu/users/post_files/');
+
+##################################################
+#	Validation
+##################################################
+$id = GET_PAGE_ID();
+if(empty($id)) {
+	WARNING_MESSAGE("An error occured while trying to edit this record:  Missing Requred ID");
+	SAFE_REDIRECT('/acu/users/');
+}
+
+##################################################
+#	DB Queries
+##################################################
+
+##################################################
+#	Pre-Content
+##################################################
+$info = array();
+if(!empty($_POST)) {
+	$info = $_POST;
+} else {
+	$info = db_query("select * from system.user where id='". $id ."'",'Getting User','fetch');
+}
+
+##################################################
+#	Content
+##################################################
+?>
+	<h2>Edit User: <?php echo $info["first"]." ".$info["last"]; ?></h2>
+
+	<div id="navcontainer">
+		<ul id="navlist">
+			<li class="active">Edit</li>
+			<li><a href="/acu/users/audit/?id=<?php echo $id; ?>">Audit</a></li>
+			<li><a href="/acu/users/delete/?id=<?php echo $id; ?>">Delete</a></li>
+		</ul>
+	</div>
+
+	<?php echo DUMP_MESSAGES(); ?>
+
+	<form method="post" action="">
+ 
+		<label class="form_label">First Name <span>*</span></label>
+	<div class="form_data">
+		<input required type="text" name="first" id="first" value="<?php if(!empty($info["first"])) { echo $info["first"]; } ?>">
+	</div>
+
+	<label class="form_label">Last Name <span>*</span></label>
+	<div class="form_data">
+		<input required type="text" name="last" id="last" value="<?php if(!empty($info["last"])) { echo $info["last"]; } ?>">
+	</div>
+
+	<label class="form_label">Email Address <span>*</span></label>
+	<div class="form_data">
+		<input required type="email" name="email" id="email" value="<?php if(!empty($info["email"])) { echo $info["email"]; } ?>">
+	</div>
+
+	<div class="inputs">
+		<input type="checkbox" name="is_superadmin" id="is_superadmin" value="t"<?php echo (!empty($info["is_superadmin"]) && $info["is_superadmin"] == "t" ? " checked" : ""); ?>>
+		<label for="is_superadmin">Is Superadmin?</label>
+	</div>
+
+
+
+	<p>
+		<input type="submit" value="Update Information">		
+		<input type='hidden' name='id' value='<?php echo $id; ?>'>
+	</p>
+
+	</form>
+
+<?php
+##################################################
+#	Javascript Functions
+##################################################
+ob_start();
+?>
+
+<?php
+$js = trim(ob_get_clean());
+if(!empty($js)) { ADD_JS_CODE($js); }
+
+##################################################
+#	Additional PHP Functions
+##################################################
+
+##################################################
+#	EOF
+##################################################
