@@ -11,7 +11,6 @@ date_default_timezone_set("America/New_York");
 # This project requires setting up an ssh key to the backup destination
 
 $dump_folder = "/tmp/databases/";
-//$dump_folder = "/home/turnstyle/maintenance_scripts/backups/clevercrazes/";
 
 $sunday_backups = true;
 $first_day_of_month_backups = true;

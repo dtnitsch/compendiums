@@ -82,12 +82,5 @@ $GLOBALS["multi_language_support"]["enabled"] = 0;
 #########################################################
 // include($GLOBALS["app_path"] ."library/databases/all_in_one.php");
 $GLOBALS["db_options"]["main_connections"] = array(
-	"default" => array(
-		"hostname" => "localhost"
-		,"username" => "turnstyle"
-		,"password" => 'yWRQbu5c6^pz2h#R'
-		,"database" => "clevercrazes"
-		,"type" => "postgresql"
-	)
 );
 

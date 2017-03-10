@@ -4,12 +4,11 @@
 #########################################################
 $GLOBALS = array();
 
-$GLOBALS["project_info"]["name"] = "Turnstyle Framework";
-$GLOBALS["project_info"]["alias"] = "clevercrazes";
-$GLOBALS["project_info"]["dns"] = "api.clevercrazes.local";
-$GLOBALS["project_info"]["company_name"] = "Turnstyle";
-$GLOBALS["project_info"]["default_email"] = "daniel@weareturnstyle.com";
-
+$GLOBALS["project_info"]["name"] = "GM Tools";
+$GLOBALS["project_info"]["alias"] = "gm_tools";
+$GLOBALS["project_info"]["dns"] = "api.gm_tools.local";
+$GLOBALS["project_info"]["company_name"] = "DTN";
+$GLOBALS["project_info"]["default_email"] = "fdlkfalds@falflds.com";
 #########################################################
 #	Software Paths
 #########################################################
@@ -21,7 +20,7 @@ $GLOBALS["root_path"] = str_replace("/config","",__DIR__) ."/";
 $GLOBALS["debug_options"]["enabled"] = 0;				# Turn Debugging On - Use only in dev
 $GLOBALS["debug_options"]["enabled_backtrace"] = 1;		# Enable full details on errors
 $GLOBALS["debug_options"]["send_debug_mail"] = 1;		# Send an email with error messages - useful in production
-$GLOBALS["debug_options"]["debug_email"] = 'daniel@weareturnstyle.com';
+$GLOBALS["debug_options"]["debug_email"] = 'daniel@lkaf;lds.com';
 
 #########################################################
 #	Logging Options
@@ -41,16 +40,11 @@ $GLOBALS["audit_options"]["enabled"] = 0;
 // include($GLOBALS["app_path"] ."library/databases/all_in_one.php");
 $GLOBALS["db_options"]["main_connections"] = array(
 	"default" => array(
-                'hostname'      => 'localhost',
-                'username'      => 'turnstyle',
-                'password'      => 'turnstyle',
-                'database'      => 'clevercrazes',
-                'type'          => 'postgresql'
-#		'hostname'	=> 'kingkong.weareturnstyle.com',
-#		'username' 	=> 'turnstyle',
-#		'password' 	=> 'turnstyle',
-#		'database' 	=> 'clevercrazes',
-#		'type'		=> 'postgresql'
+		'hostname'	=> 'localhost',
+		'username' 	=> 'daniel',
+		'password' 	=> 'daniel',
+		'database' 	=> 'gm_tools',
+		'type'		=> 'postgresql'
 	)
 
 );

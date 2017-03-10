@@ -66,18 +66,4 @@ $GLOBALS["db_options"]["main_connections"] = array(
 		'password' 	=> 'daniel',
 		'database' 	=> 'gm_tools',
 		'type'		=> 'postgresql'
-#		'hostname'	=> 'kingkong.weareturnstyle.com',
-#		'username' 	=> 'turnstyle',
-#		'password' 	=> 'turnstyle',
-#		'database' 	=> 'clevercrazes',
-#		'type'		=> 'postgresql'
-	)
-	// "default" => array(
-	// 	'hostname'	=> 'localhost',
-	// 	'username' 	=> 'root',
-	// 	'password' 	=> '',
-	// 	'database' 	=> 'clevercrazes',
-	// 	'type'		=> 'postgresql'
-	// )
 );
-

@@ -82,13 +82,6 @@ $GLOBALS["multi_language_support"]["enabled"] = 0;
 #########################################################
 // include($GLOBALS["app_path"] ."library/databases/all_in_one.php");
 $GLOBALS["db_options"]["main_connections"] = array(
-	// "default" => array(
-	// 	'hostname'	=> 'kingkong.weareturnstyle.com',
-	// 	'username' 	=> 'turnstyle',
-	// 	'password' 	=> 'turnstyle',
-	// 	'database' 	=> 'clevercrazes',
-	// 	'type'		=> 'postgresql'
-	// )
 	"default" => array(
 		'hostname'	=> 'localhost',
 		'username' 	=> 'daniel',
