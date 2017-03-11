@@ -79,3 +79,6 @@ create table public.collection_list_map (
 	,created timestamp default '0001-01-01 00:00:00'
 	,modified timestamp default '0001-01-01 00:00:00'
 );
+
+insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
+	('bca4b7dad46a1d984ec7975274671955', 'modules/ajax_files/', 'modal_list.ajax.php', '{}')

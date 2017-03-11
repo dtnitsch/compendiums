@@ -54,7 +54,7 @@ function ajax(url,info) {
 	if(url == '') { return $error('A URL must be supplied!'); }
 
 	info = info || {};
-	info.debug = info.debug || false;
+	info.debug = info.debug || ajax_debugger;
 	info.async = info.async || true;
 	info.callback = info.callback || '';
     info.callbackData = info.callbackData || '';
