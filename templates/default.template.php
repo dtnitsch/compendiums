@@ -10,6 +10,7 @@
 	add_css("styles.css",2);
 	add_css("gm_tools.css",3);
 	echo template_css();
+	echo show_css_code();
 
 	add_js("scripts.js", 1);
 	add_js("gm_tools.js", 2);
