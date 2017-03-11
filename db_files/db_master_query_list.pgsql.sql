@@ -520,6 +520,13 @@ INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder,
 	,('/lists/edit/', 'list_edit', 'default', 'Edit List', 'list_edit', 'modules/lists/', '', '[]')
 	,('/lists/audit/', 'list_audit', 'default', 'Audit List', 'list_audit', 'modules/lists/', '', '[]')
 	,('/lists/delete/', 'list_delete', 'default', 'Delete List', 'list_delete', 'modules/lists/', '', '[]')
+	
+	,('/collections/', 'collection', 'default', 'Collections', 'collections', 'modules/collections/', '', '[]')
+	,('/collections/add/', 'collection_add', 'default', 'Add Collection', 'collection_add', 'modules/collections/', '', '[]')
+	,('/collections/edit/', 'collection_edit', 'default', 'Edit Collection', 'collection_edit', 'modules/collections/', '', '[]')
+	,('/collections/audit/', 'collection_audit', 'default', 'Audit Collection', 'collection_audit', 'modules/collections/', '', '[]')
+	,('/collections/delete/', 'collection_delete', 'default', 'Delete Collection', 'collection_delete', 'modules/collections/', '', '[]')
+
 
 	,('/acu/', 'dashboard', 'admin', 'Administration Dashboard', 'dashboard', '', '', '[]')
 	,('/acu/forgot_password/', 'forgot_password', 'admin', 'Forgot Password', 'forgot_password', '', '', '[]')
@@ -643,6 +650,7 @@ insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
 	,('1a3873edb1f3643c2c60ff495780bb9a', 'modules/ajax_files/', 'export_to_csv.ajax.php', '{}')
 
 	,('06a0fc087756944595785e90f79ecad4', 'modules/lists/ajax_files/', 'list.ajax.php', '{"db_schema":"public","db_table":"lists"}')
+	,('db6d9b451b818ccc9a449383f2f0c450', 'modules/collections/ajax_files/', 'collection.ajax.php', '{"db_schema":"public","db_table":"collections"}')
 ;
 
 

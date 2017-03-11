@@ -25,10 +25,10 @@ add_js('sortlist.new.js');
 
 $add_button = "<button onclick='window.location.href=\"/lists/add/\"' class='add'>Add New List</button>";
 
-$edit_onclick = "";
-if(!empty($security_list['lists_edit'])) {
-    $edit_onclick = " onclick='window.location=\"/lists/edit/?id={{id}}\"'";
-}
+// $edit_onclick = "";
+// if(!empty($security_list['lists_edit'])) {
+    $edit_onclick = " onclick='window.location=\"/lists/edit/?key={{key}}\"'";
+// }
 
 $delete_link = "";
 if(!empty($security_list['lists_delete'])) {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title><?php echo (!empty($GLOBALS["project_info"]["title"]) ? $GLOBALS["project_info"]["title"] ." - " : ""); ?><?php echo ($GLOBALS["project_info"]["name"]); ?> - SPLASH</title>
+	<title><?php echo (!empty($GLOBALS["project_info"]["title"]) ? $GLOBALS["project_info"]["title"] ." - " : ""); ?><?php echo ($GLOBALS["project_info"]["name"]); ?></title>
 
 	<link rel="shortcut icon" href="/favicon.ico">
 
@@ -37,8 +37,8 @@
 	</div>
 	<ul class="nav">
 		<li><a class="active" href="/lists/">Lists</a></li>
-		<li><a href="/compendiums/">Compendiums</a></li>
 		<li><a href="/collections/">Collections</a></li>
+		<li><a href="/compendiums/">Compendiums</a></li>
 	</ul>
 
 	<div class="body_content">

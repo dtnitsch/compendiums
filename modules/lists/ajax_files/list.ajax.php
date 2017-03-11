@@ -24,6 +24,7 @@ $q = "
 		id
 		,title
 		,alias
+		,key
 		,to_char(modified, 'MM/DD/YYYY') as modified
 	from public.list
 	where
@@ -53,6 +54,6 @@ echo json_encode(array(
 	"output" => $output
 	,"pagination" => pagination_return_results()
 	#,"query" => urlencode(base64_encode(gzcompress($query,9)))
-	,"query" => rtrim(strtr(base64_encode(gzdeflate($query, 9)), '+/', '-_'), '=')
+	// ,"query" => rtrim(strtr(base64_encode(gzdeflate($query, 9)), '+/', '-_'), '=')
 	,"debug" => ajax_debug()
 ));

@@ -1,8 +1,0 @@
-<div class="headline">
-	<h1>What Is STEM?</h1>
-</div>
-<div class="body">
-<p class="bold">STEM (Science, Technology, Engineering and Math) education is a way of combining four individual fields of study to create an interdisciplinary way of thinking that can be applied to both teaching and learning.</p>
-<h2>How is &ldquo;Clever Crazes for Kids&rdquo; STEM related?</h2>
-<p><img style="margin: 20px;" src="/images/image/stem-kids-left.gif" alt="" width="150" height="273" align="left" />&ldquo;Clever Crazes for Kids&rdquo; makes it easier for students to study the STEM disciplines of science and math through a technology format. Students can work alone or with others in developing critical thinking skills while seeking the answers to the questions that are found in each of the ten Clever Crazes worlds. The thinking skills and brain pathways they develop can then be applied to different aspects of their lives for discovery, exploration, and problem-solving. <img src="/images/image/stem-kids-right.gif" alt="" width="175" height="217" align="right" />With Clever Crazes, students use technology--computer animation and competitive games&mdash;to enhance their learning in ways that deepen their understanding and learning of science and math while also having an amazing amount of fun! In essence, Clever Crazes enables young people to venture into an exploration of STEM subjects in an enjoyable and stimulating manner, with the added benefit of preparing them for learning situations they will encounter throughout their lives.</p>
-</div>
