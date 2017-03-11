@@ -55,9 +55,17 @@ start_session();
 #	Check for path / location
 ##################################################
 $path = get_requested_path();
+$custom = 1;
 if(substr($path,0,6) == '/list/') {
+	$path_type = "list";
+} else if(substr($path,0,12) == '/collection/') {
+	$path_type = "collection";
+} else {
+	$custom = 0;
+}
+if($custom) {
 	$path_data = array(
-		"module_name" => "list"
+		"module_name" => $path_type
 		,"folder" => ""
 		,"template" => "default"
 		,"path" => $path
