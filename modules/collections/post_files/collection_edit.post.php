@@ -10,7 +10,6 @@ if(!empty($_POST) && !error_message()) {
 	if(!error_message()) {
 
 
-
 		library("slug.php");
 		$title = trim($_POST['title']);
 		$alias = convert_to_alias($title);
@@ -31,84 +30,110 @@ if(!empty($_POST) && !error_message()) {
 		if(!error_message()) {
 			$collection_id = $pub['id'];
 
-			$pieces = explode("\n",$_POST['inputs']);
-			$assets = array();
-			$percentages = "";
-			$map_ids = [];
-			foreach($pieces as $v) {
-				$v = trim($v);
-				$inner_pieces = explode(",",$v);
-				# Percentages
-				if($percentages == "") {
-					$len = count($inner_pieces);
-					if($len > 1 && is_numeric($inner_pieces[$len - 1])) {
-						$percentages = 1;
-					}
-				}
-				$perc = ($percentages ? array_pop($inner_pieces) : 0);
-				$v = implode(',',$inner_pieces);
-
-				$alias = convert_to_alias($v);
-				$q = "
-					insert into public.asset (
-						title
-						,alias
-						,created
-						,modified
-					) values (
-						'". db_prep_sql($v) ."'
-						,'". db_prep_sql($alias) ."'
-						,now()
-						,now()
-					)
-					on conflict (alias)
-					do nothing;
-					select * from public.asset where alias='". db_prep_sql($alias) ."';
-				";
-				$res = db_fetch($q,"Inserting/Selecting Asset: ". $title);
-
-				$assets[$alias]['title'] = $v;
-				$assets[$alias]['id'] = $res['id'];
-				$assets[$alias]['perc'] = $perc;
-				$map_ids[] = $res['id'];
+			
+			$keys = "'". implode("','",$_POST['list_keys']) ."'";
+			$q = "select id,key from public.list where key in (". $keys .")";
+			$res = db_query($q, "Getting new list of ID's");
+			$new_list_ids = [];
+			while($row = db_fetch_row($res)) {
+				$new_list_ids[$row['key']] = $row['id'];
 			}
 
+
 			$q = "
-				select public.collection_asset_map.asset_id as id
-				from public.collection_asset_map
-				where collection_asset_map.collection_id = '". $collection_id ."'
-				order by asset_id
+				select
+					collection_list_map.*
+					,list.key
+				from public.collection_list_map
+				join public.list on
+					list.id = collection_list_map.list_id
+				where collection_list_map.collection_id = '". $collection_id ."'
+				order by
+					list_id
 			";
-			$res = db_query($q,"Getting collection assets");
-			$asset_ids = [];
+			$res = db_query($q,"Getting collection list map list ids");
+			$existing_list_ids = [];
+			$existing_list = [];
 			while($row = db_fetch_row($res)) {
-				$asset_ids[] = $row['id'];
+				$existing_list_ids[$row['key']] = $row['list_id'];
+				$existing_list[$row['key']] = $row;
+				$existing_list[$row['key']]['randomize'] = ($row['randomize'] == 't' ? 1 : 0);
 			}
 
 			library('add_remove_diff.php');
-			collection($remove,$add) = add_remove_diff($map_ids,$asset_ids);
+			list($remove,$add) = add_remove_diff($new_list_ids,$existing_list_ids);
 
+
+			# Check for updates
+			$keys_ids_map = array_flip($_POST['list_keys']);
+			foreach($existing_list_ids as $k => $v) {
+				# not new and not in the list of removes
+				if(empty($remove[$k])) {
+					// existing_list
+					$index = $keys_ids_map[$k];
+					$updates = [];
+					if($_POST['list_labels'][$index] != $existing_list[$k]['label']) {
+						$updates[] = " label = '". db_prep_sql($_POST['list_labels'][$index]) ."' ";
+					}
+					if($_POST['randomize'][$index] != $existing_list[$k]['randomize']) {
+						$tmp = ($_POST['randomize'][$index] == 1 ? "t" : "f");
+						$updates[] = " randomize = '". db_prep_sql($tmp) ."' ";
+					}
+					if($_POST['display_limit'][$index] != $existing_list[$k]['display_limit']) {
+						$updates[] = " display_limit = '". db_prep_sql($_POST['display_limit'][$index]) ."' ";
+					}
+
+					if(count($updates)) {
+						# Changes need to be made
+						$q = "
+							update public.collection_list_map set
+								". implode(', ',$updates) ."
+								,modified = now()
+							where
+								id = '". $existing_list[$k]['id'] ."'
+						";
+						db_query($q,"Updating collection list");
+					}
+				}
+			}
 
 			if(!empty($remove)) {
 				$q = "
-					delete from public.collection_asset_map
+					delete from public.collection_list_map
 					where
-						collection_asset_map.collection_id = '". $collection_id ."'
-						and asset_id in (". implode(',',$remove) .")
+						collection_list_map.collection_id = '". $collection_id ."'
+						and list_id in (". implode(',',$remove) .")
 				";
 				db_query($q,"Removing Assets from collection");				
 			}
 
 			if(!empty($add)) {
 				$map_ids = [];
-				foreach($add as $v) {
-					$map_ids[] = "(". $collection_id .",". $v .",now(),now())";
+				foreach($add as $k => $v) {
+					$index = $keys_ids_map[$k];
+					$tmp = ($_POST['randomize'][$index] == 1 ? "t" : "f");
+					$map_ids[] = "(
+						'". $collection_id ."'
+						,'". $v ."'
+						,'". db_prep_sql(trim($_POST['list_labels'][$index])) ."'
+						,'". db_prep_sql($tmp) ."'
+						,'". db_prep_sql(trim($_POST['display_limit'][$index])) ."'
+						,now()
+						,now())";
 				}
-				$q = "insert into collection_asset_map (collection_id,asset_id,created,modified) values ". implode(',',$map_ids);
+				$q = "insert into collection_list_map (
+						collection_id
+						,list_id
+						,label
+						,randomize
+						,display_limit
+						,created
+						,modified
+					) values ". implode(',',$map_ids);
 				db_query($q,"Inserting Assets for collection");
 			}
 
-			// $q = "insert into collection_asset_map (collection_id,asset_id,created,modified) values ". implode(',',$map_ids);
+			// $q = "insert into collection_list_map (collection_id,asset_id,created,modified) values ". implode(',',$map_ids);
 			// db_query($q,"Inserting collection asset map");
 		
 

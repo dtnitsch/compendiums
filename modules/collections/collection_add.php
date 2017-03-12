@@ -22,7 +22,7 @@ post_queue($module_name,'modules/collections/post_files/');
 ##################################################
 $info = (!empty($_POST) ? $_POST : array());
 
-add_js('sortlist.new.js');
+// add_js('sortlist.new.js');
 
 ##################################################
 #	Content
