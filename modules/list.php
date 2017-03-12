@@ -100,7 +100,7 @@ ob_start();
 	function display_list(list,num) {
 		var output = "<div class='boxof20'>";
 		var cnt = 0;
-		var num = num || list.length; 
+		var num = num || list.length;
 		for(var i=0,len=num; i<len; i++) {
 			if(i && (i % 20 == 0)) {
 				output += "</div><div class='boxof20'>";
@@ -114,6 +114,10 @@ ob_start();
 	function build_list() {
 		var randomized = $id("randomize").checked;
 		var limit = parseInt($id("limit").value);
+		if(limit > list.length) {
+			limit = list.length;
+		}
+
 		if(randomized) {
 			if(limit) {
 				display_list(shuffle(list.slice(),limit));	

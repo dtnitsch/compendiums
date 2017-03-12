@@ -77,15 +77,11 @@ while($row = db_fetch_row($assets_res)) {
 <div class='clearfix'>
 	<h2 class='lists'>Lists: <?php echo $info['title']; ?></h2>
   
-	<!--div class="mb">
+	<div class="mb">
 		<label for="limit">
-			Limit Display: <input type="input" name="limit" id="limit" value="5"> 
+			Expand at: <input type="input" name="split_on_count" id="split_on_count" value="3"> 
 		</label>
-
-		<label for="randomize">
-			<input checked type="checkbox" name="options" id="randomize" value="randomize"> Randomize
-		</label>
-	</div-->
+	</div>
 
 	<div class="mb">
 		<button onclick="build_list()">Update</button>
@@ -112,7 +108,7 @@ ob_start();
 
 
 	function display_list(list,num) {
-		var split_on_count = 3;
+		var split_on_count = $id('split_on_count').value;
 		var cnt = 0;
 		var num = num || list.length;
 		output = "";
@@ -137,7 +133,9 @@ ob_start();
 			list = lists[list_id];
 			randomize = parseInt(list.randomize);
 			limit = parseInt(list.display_limit);
-
+			if(limit > list.length) {
+				limit = list.length;
+			}
 			var boxof20 = document.createElement("div");
 			// boxof20.className = 'boxof20';
 			output = "<strong>"+ list.list_label +"</strong>: ";
