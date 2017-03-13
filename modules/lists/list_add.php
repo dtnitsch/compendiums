@@ -22,8 +22,8 @@ post_queue($module_name,'modules/lists/post_files/');
 ##################################################
 $info = (!empty($_POST) ? $_POST : array());
 
-// library("validation.php");
-// add_js("validation.js");
+library("validation.php");
+add_js("validation.js");
 
 ##################################################
 #	Content
@@ -31,8 +31,10 @@ $info = (!empty($_POST) ? $_POST : array());
 ?>
 	<h2 class='lists'>Add List</h2>
   
-  	<?php echo dump_messages(); ?>
-	<form id="addform" method="post" action="">
+  	<div id="messages">
+		<?php echo dump_messages(); ?>
+	</div>
+	<form id="addform" method="post" action="" onsubmit="return v.validate();">
 
 		<div class="float_left" style="width: 450px;">
 			<label class="form_label" for="title">List Name <span>*</span></label>
@@ -48,9 +50,9 @@ $info = (!empty($_POST) ? $_POST : array());
 
 			<label class="form_label" for="title">Inputs</label>
 			<div class="form_data">
-				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">one
-two
-three</textarea>
+				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">Chicken; 50; poor,middle class,rich
+Beef; 20; middle class,rich
+Oysters; 10; poor,rich</textarea>
 				<div style="font-size: 80%;">*Notes: Tab Deliminated List - Name &nbsp; Percentage &nbsp; Tags</div>
 			</div>
 
@@ -87,21 +89,62 @@ ob_start();
 	// // name of variable should be sent in the validation function
 	// var v = new validation("v"); 
 	// v.load_json(j);
+	// v.custom("percentage",calc_percentages,"Percentages don't add up to 100")
 
 	function show_example() {
 		var pieces = $id('inputs').value.trim().split("\n");
 		var len = pieces.length;
 		var output = "<strong>Example Output</strong>";
 		output += '<ol class="mt">';
+		percentages = 0;
 		if(len > 10) {
 			len = 10;
 		}
 		for(var i=0; i<len; i++) {
-			output += '<li>'+ pieces[i] +'</li>';
+			inner_pieces = pieces[i].split(';');
+			output += '<li>'+ inner_pieces[0].trim() +'</li>';
+			if(parseInt(inner_pieces[1])) {
+				percentages += parseInt(inner_pieces[1]);
+			}
 		}
 		output += "</ol></div>"
 		$id('example').innerHTML = output;
 	}
+
+	function calc_percentages() {
+		var pieces = $id('inputs').value.trim().split("\n");
+		var inner_pieces, perc;
+		var percentages = 0;
+		for(var i=0,len=pieces.length; i<len; i++) {
+			inner_pieces = pieces[i].split(';');
+			if(typeof inner_pieces[1] != "undefined") {
+				perc = parseInt(inner_pieces[1].trim())
+				if(perc) {
+					percentages += perc;
+				}				
+			} else {
+				return true;
+			}
+		}
+		return (percentages != 100 ? false : true);
+		// return percentages;
+	}
+
+	function unique_tags() {
+		var pieces = $id('inputs').value.trim().split("\n");
+		var inner_pieces, tags;
+		var output = {};
+		for(var i=0,len=pieces.length; i<len; i++) {
+			inner_pieces = pieces[i].split(';');
+			if(typeof inner_pieces[2] != "undefined") {
+				tags = inner_pieces[2].trim().split(",");
+  			} else {
+				return true;
+			}
+		}
+		return output;
+		// return percentages;
+	}  
 
 	// function validate_list() {
 	// 	var pieces = $id('inputs').value.trim().split("\n");

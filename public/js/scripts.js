@@ -32,9 +32,11 @@ function addclass(elem,classname) {
 function removeclass(elem,classname) {
     if(typeof elem == 'string') { elem = $id(elem); }
     var list = elem.className;
-    var re = new RegExp('(^| )'+ classname +'( |$)','g');
-    list = list.replace(re,' ').trim();
-    elem.className = list;
+    if(list) {
+        var re = new RegExp('(^| )'+ classname +'( |$)','g');
+        list = list.replace(re,' ').trim();
+        elem.className = list;
+    }
     return true;
 }
 

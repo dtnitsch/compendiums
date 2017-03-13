@@ -47,8 +47,9 @@ function validate_check($value,$validator,$label,$id,$msgs) {
 				}
 				
 			}
-			// ERROR_MESSAGE($msg);
-			// echo $msg;
+			if(empty($GLOBALS["validation_messages"])) {
+				$GLOBALS["validation_messages"] = [];
+			}
 			$GLOBALS["validation_message"] = $msg;
 			$GLOBALS["validation_messages"][$validator] = $msg;
 			return false;			

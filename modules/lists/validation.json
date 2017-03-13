@@ -1,36 +1,18 @@
 [
-
     {
         "id": "title"
-        ,"label": "Title"
+        ,"label": "List Name"
         ,"validators": [
             "required"
-            ,"string_length_between:3,128"
+            ,"string_length_between:2,200"
         ]
     }
     ,{
-        "id": "id"
-        ,"type": "post"
-        ,"label": "ID"
-        ,"language": "php"
+        "id": "inputs"
+        ,"label": "Inputs"
         ,"validators": [
             "required"
-        ]
-    }
-    ,{
-        "id": "alias"
-        ,"label": "Alias"
-        ,"validators": [
-            "required"
-            ,"string_length_between:1,128"
-        ]
-    }
-    ,{
-        "id": "description"
-        ,"label": "Description"
-        ,"optional": true
-        ,"validators": [
-            "string_length_between:5,128"
+            ,"string_length_min:5"
         ]
     }
 ]

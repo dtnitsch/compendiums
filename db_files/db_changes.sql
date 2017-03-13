@@ -3,11 +3,13 @@ create table public.list (
 	id serial primary key
 	,active boolean default true
 	,public boolean default true
+	,percentages boolean default true
 	,uses_other_lists boolean default false
 	,user_id int default 0
 	,key varchar(10) not null default ''
 	,title varchar(200) not null default ''
 	,alias varchar(200) not null default ''
+	,tags json default '{}'::json
 	,description text default ''
 	,created timestamp default '0001-01-01 00:00:00'
 	,modified timestamp default '0001-01-01 00:00:00'
@@ -31,6 +33,8 @@ create table public.list_asset_map (
 	,active boolean default true
 	,list_id int not null default 0
 	,asset_id int not null default 0
+	,percentage int not null default 0
+	,tags json default '{}'::json
 	,created timestamp default '0001-01-01 00:00:00'
 	,modified timestamp default '0001-01-01 00:00:00'
 );

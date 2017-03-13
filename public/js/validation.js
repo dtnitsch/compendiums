@@ -287,6 +287,9 @@ var validation = (function() {
 	validation.prototype.string_length_between = function(value,params) {
 		return (typeof value[parseInt(params[0])-1] == "undefined" || typeof value[parseInt(params[1])] == "string" ? false : true);
 	}
+	validation.prototype.string_length_min = function(value,params) {
+		return (value.trim().length >= params[0] ? true : false);
+	}
 	validation.prototype.match = function(value,params) {
 		return (value == params[0] ? true : false);
 	}
