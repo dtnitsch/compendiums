@@ -59,10 +59,11 @@ Bread; 20; poor,middle class,rich, breakfast, lunch, dinner
 Apples; 10; poor,middle class,rich, snack</textarea-->
 				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">
 				Name|Color|Thiny
-				Orange|Orange|yucky
-				Sky|Blue|Clouds
-				Water|Transparent|Wet
-				Computer|Silver|Apple
+				Orange|Orange|yucky;;orange
+				Sky|Blue|Clouds;;blue,orange
+				Water|Transparent|Wet;;clear
+				Computer|Silver|Apple;;Silver
+				Ore|Silver,Black|Nasty;;black,silver
 				</textarea>
 				<div style="font-size: 80%;">*Notes: Tab Deliminated List - Name &nbsp; Percentage &nbsp; Tags</div>
 			</div>
@@ -105,28 +106,45 @@ ob_start();
 	function show_example() {
 		var pieces = $id('inputs').value.trim().split("\n");
 		var len = pieces.length;
-		var filters, tags, tag, slugs;
+		var filters, tags, tag, slugs, inner;
+		var is_table = false;
 
 		var re = new RegExp("\\|");
 		if(re.test(pieces[0])) {
-			console.log("?")
-			build_table_example();
-			return;
+			is_table = true;
 		}
-			console.log("?!!!")
 
 		var output = "<strong>Example Output</strong>";
+		output += '<div id="filter_examples">';
 		output += "<br>"+ build_filters();
-		output += '<ol class="mt">';
+
+		output += (is_table ? "<table border='1'><thead>" : '<ol class="mt">');
 		percentages = 0;
-		if(len > 10) {
-			len = 10;
-		}
+		// // Limit the demo exmaple?
+		// if(len > 10) {
+		// 	len = 10;
+		// }
 		for(var i=0; i<len; i++) {
 			inner_pieces = pieces[i].split(';');
 
 			if(parseInt(inner_pieces[1])) {
 				percentages += parseInt(inner_pieces[1]);
+			}
+
+			if(is_table) {
+				table_pieces = inner_pieces[0].split('|');
+				inner = "";
+
+				if(i == 0) {
+					for(var j=0,jlen=table_pieces.length; j<jlen; j++) {
+						inner += "<th>"+ table_pieces[j].trim() +"</th>";
+					}
+					inner += "</thead><tbody>";
+				} else {
+					for(var j=0,jlen=table_pieces.length; j<jlen; j++) {
+						inner += "<td>"+ table_pieces[j].trim() +"</td>";
+					}
+				}
 			}
 
 			filters = "";
@@ -142,37 +160,15 @@ ob_start();
 				}
   			}
 
-			output += '<li'+ filters +'>'+ inner_pieces[0].trim() +'</li>';
+  			output += (is_table ? '<tr'+ filters +'>'+ inner.trim() +'</tr>' : '<li'+ filters +'>'+ inner_pieces[0].trim() +'</li>');
 		}
-		output += "</ol></div>"
+
+
+		output += (is_table ? "</tbody></table>" : "</ol>");
+		output += '</div>';
 		$id('example').innerHTML = output;
 	}
 	show_example();
-
-	function build_table_example() {
-		var output = '';
-		var pieces = $id('inputs').value.trim().split("\n");
-		console.log(pieces)
-		output += "<table border='1'><thead>";
-		for(var i=0,len=pieces.length; i<len; i++) {
-			inner_pieces = pieces[i].split('|');
-			output += "<tr>";
-			if(i == 0) {
-				for(var j=0,jlen=inner_pieces.length; j<jlen; j++) {
-					output += "<th>"+ inner_pieces[j].trim() +"</th>";
-				}
-				output += "</thead><tbody>";
-			} else {
-				for(var j=0,jlen=inner_pieces.length; j<jlen; j++) {
-					output += "<td>"+ inner_pieces[j].trim() +"</td>";
-				}
-			}
-			output += "</tr>";
-		}
-		output += "</tbody></table>";
-
-		$id('example').innerHTML = output;
-	}
 
 	function calc_percentages() {
 		var pieces = $id('inputs').value.trim().split("\n");
@@ -202,7 +198,7 @@ ob_start();
 			if(typeof inner_pieces[2] != "undefined") {
 				tags = inner_pieces[2].trim().split(",");
 				for(var j=0,jlen=tags.length; j<jlen; j++) {
-					tag = tags[j].trim();
+					tag = tags[j].trim().toLowerCase();
 					output[tag] = 1;
 				}
   			} else {
@@ -237,24 +233,26 @@ ob_start();
 				checked[checked.length] = filters[i].value;
 			}
 		}
-		console.log(checked)
-		var lis = $query('ol > li');
-		console.log(lis);
+		// console.log(checked)
+		elems = $query('#filter_examples [data-filters]')
+		// var elems = $query('#filter_examples ol > li');
+
+		// console.log(elems);
 		var test;
 		var checked_length = checked.length;
-		for(var i=0,len=lis.length; i<len; i++) {
+		for(var i=0,len=elems.length; i<len; i++) {
 			test = (checked_length == 0 ? true : false);
 			for(j in checked) {
 				r = new RegExp('(^|\\s)'+ checked[j] + '(\\s|$)');
-				if(r.test(lis[i].dataset.filters)) {
+				if(r.test(elems[i].dataset.filters)) {
 					test = true;
 					break;
 				}
 			}
 			if(test) {
-				lis[i].style.display = "";
+				elems[i].style.display = "";
 			} else {
-				lis[i].style.display = "none";
+				elems[i].style.display = "none";
 			}
 		}
 		
