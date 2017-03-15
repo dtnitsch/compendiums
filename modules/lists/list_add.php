@@ -50,13 +50,20 @@ add_js("validation.js");
 
 			<label class="form_label" for="title">Inputs</label>
 			<div class="form_data">
-				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">Chicken; 30; poor,middle class,rich,lunch,dinner
+				<!--textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">Chicken; 30; poor,middle class,rich,lunch,dinner
 Beef; 5; middle class,rich, lunch, dinner
 Oysters; 5; poor,rich, dinner
 Eggs; 10; poor,middle class,rich,breakfast
 Soup; 20; poor,middle class, lunch, dinner
 Bread; 20; poor,middle class,rich, breakfast, lunch, dinner
-Apples; 10; poor,middle class,rich, snack</textarea>
+Apples; 10; poor,middle class,rich, snack</textarea-->
+				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">
+				Name|Color|Thiny
+				Orange|Orange|yucky
+				Sky|Blue|Clouds
+				Water|Transparent|Wet
+				Computer|Silver|Apple
+				</textarea>
 				<div style="font-size: 80%;">*Notes: Tab Deliminated List - Name &nbsp; Percentage &nbsp; Tags</div>
 			</div>
 
@@ -98,8 +105,17 @@ ob_start();
 	function show_example() {
 		var pieces = $id('inputs').value.trim().split("\n");
 		var len = pieces.length;
-		var output = "<strong>Example Output</strong>";
 		var filters, tags, tag, slugs;
+
+		var re = new RegExp("\\|");
+		if(re.test(pieces[0])) {
+			console.log("?")
+			build_table_example();
+			return;
+		}
+			console.log("?!!!")
+
+		var output = "<strong>Example Output</strong>";
 		output += "<br>"+ build_filters();
 		output += '<ol class="mt">';
 		percentages = 0;
@@ -132,6 +148,31 @@ ob_start();
 		$id('example').innerHTML = output;
 	}
 	show_example();
+
+	function build_table_example() {
+		var output = '';
+		var pieces = $id('inputs').value.trim().split("\n");
+		console.log(pieces)
+		output += "<table border='1'><thead>";
+		for(var i=0,len=pieces.length; i<len; i++) {
+			inner_pieces = pieces[i].split('|');
+			output += "<tr>";
+			if(i == 0) {
+				for(var j=0,jlen=inner_pieces.length; j<jlen; j++) {
+					output += "<th>"+ inner_pieces[j].trim() +"</th>";
+				}
+				output += "</thead><tbody>";
+			} else {
+				for(var j=0,jlen=inner_pieces.length; j<jlen; j++) {
+					output += "<td>"+ inner_pieces[j].trim() +"</td>";
+				}
+			}
+			output += "</tr>";
+		}
+		output += "</tbody></table>";
+
+		$id('example').innerHTML = output;
+	}
 
 	function calc_percentages() {
 		var pieces = $id('inputs').value.trim().split("\n");
