@@ -50,9 +50,13 @@ add_js("validation.js");
 
 			<label class="form_label" for="title">Inputs</label>
 			<div class="form_data">
-				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">Chicken; 50; poor,middle class,rich
-Beef; 20; middle class,rich
-Oysters; 10; poor,rich</textarea>
+				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">Chicken; 30; poor,middle class,rich,lunch,dinner
+Beef; 5; middle class,rich, lunch, dinner
+Oysters; 5; poor,rich, dinner
+Eggs; 10; poor,middle class,rich,breakfast
+Soup; 20; poor,middle class, lunch, dinner
+Bread; 20; poor,middle class,rich, breakfast, lunch, dinner
+Apples; 10; poor,middle class,rich, snack</textarea>
 				<div style="font-size: 80%;">*Notes: Tab Deliminated List - Name &nbsp; Percentage &nbsp; Tags</div>
 			</div>
 
@@ -85,16 +89,18 @@ Oysters; 10; poor,rich</textarea>
 ob_start();
 ?>
 <script type="text/javascript">
-	// var j = <?php #echo validation_create_json_string(validation_load_file(__DIR__."/validation.json"),"js"); ?>;
-	// // name of variable should be sent in the validation function
-	// var v = new validation("v"); 
-	// v.load_json(j);
-	// v.custom("percentage",calc_percentages,"Percentages don't add up to 100")
+	var j = <?php echo validation_create_json_string(validation_load_file(__DIR__."/validation.json"),"js"); ?>;
+	// name of variable should be sent in the validation function
+	var v = new validation("v"); 
+	v.load_json(j);
+	v.custom("percentage",calc_percentages,"Percentages don't add up to 100")
 
 	function show_example() {
 		var pieces = $id('inputs').value.trim().split("\n");
 		var len = pieces.length;
 		var output = "<strong>Example Output</strong>";
+		var filters, tags, tag, slugs;
+		output += "<br>"+ build_filters();
 		output += '<ol class="mt">';
 		percentages = 0;
 		if(len > 10) {
@@ -102,14 +108,30 @@ ob_start();
 		}
 		for(var i=0; i<len; i++) {
 			inner_pieces = pieces[i].split(';');
-			output += '<li>'+ inner_pieces[0].trim() +'</li>';
+
 			if(parseInt(inner_pieces[1])) {
 				percentages += parseInt(inner_pieces[1]);
 			}
+
+			filters = "";
+			if(typeof inner_pieces[2] != "undefined") {
+				tags = inner_pieces[2].trim().split(",");
+				slugs = [];
+				for(var j=0,jlen=tags.length; j<jlen; j++) {
+					tag = tags[j].trim();
+					filters += slug(tag,'_') +" ";
+				}
+				if(filters != "") {
+					filters = " data-filters='"+ filters +"'";
+				}
+  			}
+
+			output += '<li'+ filters +'>'+ inner_pieces[0].trim() +'</li>';
 		}
 		output += "</ol></div>"
 		$id('example').innerHTML = output;
 	}
+	show_example();
 
 	function calc_percentages() {
 		var pieces = $id('inputs').value.trim().split("\n");
@@ -132,48 +154,70 @@ ob_start();
 
 	function unique_tags() {
 		var pieces = $id('inputs').value.trim().split("\n");
-		var inner_pieces, tags;
+		var inner_pieces, tags, tag;
 		var output = {};
 		for(var i=0,len=pieces.length; i<len; i++) {
 			inner_pieces = pieces[i].split(';');
 			if(typeof inner_pieces[2] != "undefined") {
 				tags = inner_pieces[2].trim().split(",");
+				for(var j=0,jlen=tags.length; j<jlen; j++) {
+					tag = tags[j].trim();
+					output[tag] = 1;
+				}
   			} else {
-				return true;
+				continue;
 			}
 		}
 		return output;
-		// return percentages;
 	}  
 
-	// function validate_list() {
-	// 	var pieces = $id('inputs').value.trim().split("\n");
-	// 	var line_pieces, num, end_with_nums;
-	// 	var output = {};
-	// 	for(var i=0, len=pieces.length; i<len; i++) {
-	// 		line_pieces = pieces[i].split(',');
-	// 		num = 0;
-	// 		if(line_pieces.length > 1 && is_numeric(line_pieces[line_pieces.length - 1])) {
-	// 			end_with_nums += 1;
-	// 			hund_perc += parseFloat(line_pieces[line_pieces.length - 1]);
-	// 			num = parseFloat(line_pieces[line_pieces.length - 1])
-	// 		}
-	// 		// line_pieces.pop();
-	// 		output[line_pieces.join(',')] = num;
-	// 	}
-	// 	console.log(output)
-	// 	if(end_with_nums > (len/2)) {
-	// 		if(hund_perc < 99.0 || hund_perc > 101.0) {
-	// 			return false;
-	// 		} else {
-	// 			messages({info: ["Making Container"]});
-	// 			// return Container(output,{type:"percentage"})
-	// 			return true;
-	// 		}
-	// 	}
-	// 	return true;
-	// }
+	function build_filters() {
+		var tags = unique_tags();
+		var output = "";
+		var cnt = 0;
+		for(key in tags) {
+			alias = slug(key,'_');
+			output += `
+				<label for="filter_`+ cnt +`">
+					<input type="checkbox" id="filter_`+ cnt +`" name="filters[`+ alias +`]" onclick="filter_list('`+ alias +`')" value="`+ alias +`"> `+ key +`
+				</label> &nbsp; 
+			`;
+			cnt += 1;
+		}
+		return output;
+	}
 
+	function filter_list(key) {
+		// console.log("Filter List: "+ key)
+		var filters = $query('input[name^=filter]');
+		var checked = []
+		for(var i=0,len=filters.length; i<len; i++) {
+			if(filters[i].checked) {
+				checked[checked.length] = filters[i].value;
+			}
+		}
+		console.log(checked)
+		var lis = $query('ol > li');
+		console.log(lis);
+		var test;
+		var checked_length = checked.length;
+		for(var i=0,len=lis.length; i<len; i++) {
+			test = (checked_length == 0 ? true : false);
+			for(j in checked) {
+				r = new RegExp('(^|\\s)'+ checked[j] + '(\\s|$)');
+				if(r.test(lis[i].dataset.filters)) {
+					test = true;
+					break;
+				}
+			}
+			if(test) {
+				lis[i].style.display = "";
+			} else {
+				lis[i].style.display = "none";
+			}
+		}
+		
+	}
 
 </script>
 

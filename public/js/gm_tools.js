@@ -367,3 +367,16 @@ function addform_return(res) {
 	console.log("addform_return")
 	console.log(JSON.parse(res))
 }
+
+function slug(str,type) {
+	type = type || '-';
+	return str
+		.toString()
+		.trim()
+		.toLowerCase()
+		.replace(/\s+/g, type)
+		.replace(/[^\w\-]+/g, '')
+		.replace(/\-\-+/g, type)
+		.replace(/^-+/, '')
+		.replace(/-+$/, '');
+}
