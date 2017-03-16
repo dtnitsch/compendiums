@@ -118,7 +118,7 @@ ob_start();
 		output += '<div id="filter_examples">';
 		output += "<br>"+ build_filters();
 
-		output += (is_table ? "<table border='1'><thead>" : '<ol class="mt">');
+		output += (is_table ? '<table cellspacing="0" cellpadding="0" class="list_table"><thead>' : '<ol class="mt">');
 		percentages = 0;
 		// // Limit the demo exmaple?
 		// if(len > 10) {

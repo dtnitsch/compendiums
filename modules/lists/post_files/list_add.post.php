@@ -73,6 +73,9 @@ if(!empty($_POST) && !error_message()) {
 				if(!empty($inner_pieces[2])) {
 					$tmp = explode(",",$inner_pieces[2]);
 					foreach($tmp as $k => $v) {
+						if(trim($k) == "" || trim($v) == "") {
+							continue;
+						}
 						$tags[$k] = strtolower(trim($v));
 					}
 				}

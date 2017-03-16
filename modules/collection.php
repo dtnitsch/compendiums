@@ -31,7 +31,9 @@ $q = "
 		,collection_list_map.label
 		,collection_list_map.randomize
 		,collection_list_map.display_limit
+		,list_asset_map.tags
 		,list.title as list_title
+		,list.tables as tables
 	from public.asset
 	join public.list_asset_map on 
 		list_asset_map.asset_id = asset.id
@@ -42,7 +44,7 @@ $q = "
 		list.id = collection_list_map.list_id
 	order by
 		collection_list_map.list_id
-		,asset.title
+		,asset.id
 ";
 $assets_res = db_query($q,"Getting collection assets");
 
@@ -56,13 +58,18 @@ while($row = db_fetch_row($assets_res)) {
 			,"randomize" => ($row['randomize'] == "t" ? 1 : 0)
 			,"display_limit" => $row['display_limit']
 			,"list_id" => $row['list_id']
+			,"tables" => $row['tables']
 			,"assets" => []
+			,"tags" => []
 		];
 		$list_id = $row['list_id'];
 	}
-	$assets[$row['list_id']]['assets'][$row['id']] = $row['asset'];
+	$assets[$row['list_id']]['assets'][] = $row['asset'];
+	$assets[$row['list_id']]['tags'][] = $row['tags'];
 }
-
+// echo "<pre>";
+// print_r($assets);
+// die();
 
 ##################################################
 #   Pre-Content
@@ -84,12 +91,60 @@ while($row = db_fetch_row($assets_res)) {
 	</div>
 
 	<div class="mb">
-		<button onclick="build_list()">Update</button>
+		<button onclick="build_all_lists()">Update</button>
 	</div>
 
-	<div class='listcounter' id="listcounter">
+		<div class='listcounter' id="listcounter" style='display:;'>
 <?php
+foreach($assets as $k => $list) {
+	$l = $list['display_limit'];
+	$r = $list['randomize'];
+	$title = (!empty($list['list_label']) ? $list['list_label'] : $list['list_title']);
+	$output = '
+		<strong>'. $title .'</strong><br>
+		<ol class="list_ordered" id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'">
+	';
+	$i = 0;
+	if($list['tables'] == "t") {
+		$i = 1;
+		$output = '
+		<strong>'. $title .'</strong><br>
+		<table cellspacing="0" cellpadding="0" class="list_table">
+			<thead>
+				<tr>
+					<th>'. implode('</th><th>',explode("|",$list['assets'][0])) .'</th>
+				</tr>
+			</thead>
+			<tbody id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'">
+		';
+	}
+	$cnt = 0;
+	for($len=count($list['assets']); $i<$len; $i++) {
+		$a = $list['assets'][$i];
+		$t = json_decode($list['tags'][$i]);
 
+
+		$display = ($cnt < $list['display_limit'] ? '' : " style='display:none;'");
+		if($list['tables'] == "t") {
+			$output .= '<tr data-filters="'. implode(' ',$t) .'"'. $display .'>
+				<td>'. implode("</td><td>",explode('|',$a)) .'</td>
+			</tr>';
+		} else {
+			$output .= '<li data-filters="'. implode(' ',$t) .'"'. $display .'>
+				'. $a .'
+			</li>';
+		}
+		$cnt += 1;
+	}
+
+	if($list['tables'] == "t") {
+		$output .= "</tbody></table>";
+	} else {
+		$output .= "</ol>";
+	}
+	echo $output;
+	unset($output);
+}
 ?>
 	</div>
 
@@ -102,70 +157,133 @@ while($row = db_fetch_row($assets_res)) {
 ob_start();
 ?>
 <script type="text/javascript">
-	var lists = <?php echo json_encode($assets); ?>;
-	console.log(lists)
+	var original_rows = {};
+	var list_keys = [<?php echo implode(',',array_keys($assets)); ?>];
+	console.log(list_keys);
 
-
-
-	function display_list(list,num) {
-		var split_on_count = $id('split_on_count').value;
-		var cnt = 0;
-		var num = num || list.length;
-		output = "";
-		if(num >= split_on_count) {
-			output += "<ol>";
-			for(var i=0,len=num; i<len; i++) {
-				output += "<li>"+ list[i] +"</li>";
-			}
-			output += "</ol>";
-		} else {	
-			for(var i=0,len=num; i<len; i++) {
-				output += list[i] +",";
-			}
-		}
-		return output.substring(0,output.length - 1);
+	function double_shuffle(id) {
+		id = id || 'list_body';
+		shuffle_all_rows();
+		shuffle_all_rows();
 	}
-
-	function build_list() {
-		var randomize,limit,sliced,output;
-		$id("listcounter").innerHTML = "";
-		for(list_id in lists) {
-			list = lists[list_id];
-			randomize = parseInt(list.randomize);
-			limit = parseInt(list.display_limit);
-			if(limit > list.length) {
-				limit = list.length;
-			}
-			var boxof20 = document.createElement("div");
-			// boxof20.className = 'boxof20';
-			output = "<strong>"+ list.list_label +"</strong>: ";
-
-			sliced = [];
-			for(var k in list.assets) {
-				sliced[sliced.length] = list.assets[k];
-			}
-
-			if(randomize) {
-				if(limit) {
-					output += display_list(shuffle(sliced,limit));	
-				} else {
-					output += display_list(shuffle(sliced));	
-				}
-			} else {
-				if(limit) {
-					output += display_list(sliced,limit);	
-				} else {
-					output += display_list(sliced);
-				}
-			}		
-			boxof20.innerHTML = output;
-			$id("listcounter").appendChild(boxof20);
-
+	function shuffle_all_rows() {
+		var id,list_rows,row,i;
+		for(key in list_keys) {
+			id = 'list_body_'+ list_keys[key];
+			shuffle_rows(id);
 		}
 	}
-	build_list();
-	
+	function shuffle_rows(id) {
+		var id = id || 'list_body';
+	    var list_rows = ($id(id).rows ? $id(id).rows : $query('#'+ id +' li'));
+	    var rows = new Array();
+		var row;
+		for (var i=list_rows.length-1; i>=0; i--) {
+		    row = list_rows[i];
+		    rows.push(row);
+		    row.parentNode.removeChild(row);
+	    }
+	    shuffle(rows);
+	    for (i=0; i<rows.length; i++) {
+	    	$id(id).appendChild(rows[i]);
+		}
+	}
+	function reset_all_tables() {
+		var id,list_rows,row,i;
+		for(key in list_keys) {
+			id = 'list_body_'+ list_keys[key];
+			reset_table(id,key);
+		}
+	}
+	function reset_table(id,key) {
+		var id = id || 'list_body';
+	    var list_rows = ($id(id).rows ? $id(id).rows : $query('#'+ id +' li'));
+		var row;
+		for (i=list_rows.length-1; i>=0; i--) {
+		    row = list_rows[i];
+		    row.parentNode.removeChild(row);
+	    }
+	    for (i=original_rows[key].length - 1; i >= 0; i--) {
+	    	$id(id).appendChild(original_rows[i]);
+		}
+	}
+	function set_original_rows() {
+		var id,list_rows,row,i;
+		for(key in list_keys) {
+			id = 'list_body_'+ list_keys[key];
+			original_rows[key] = [];
+		    list_rows = ($id(id).rows ? $id(id).rows : $query('#'+ id +' li'));
+			for (i=list_rows.length-1; i>=0; i--) {
+			    row = list_rows[i];
+			    original_rows[key].push(row);
+		    }
+		}
+	}
 
+	function get_filters() {
+		var filters = $query('#custom_filters input[name^=filter]');
+		var checked = [];
+		for(var i=0,len=filters.length; i<len; i++) {
+			if(filters[i].checked) {
+				checked[checked.length] = filters[i].value;
+			}
+		}
+		return checked;
+	}
+
+	function build_all_lists() {
+		var id,list_rows,row,i;
+		for(key in list_keys) {
+			id = 'list_body_'+ list_keys[key];
+			build_list(id,key);
+		}
+	}
+	function build_list(id,limit,randomize) {
+		var id = id || 'list_body';
+	    var list_rows = ($id(id).rows ? $id(id).rows : $query('#'+ id +' li'));
+
+		var limit = parseInt($id(id).dataset.limit);
+		var randomize = $id(id).dataset.randomize;
+
+		var checked;
+
+		if(limit < 0 || limit > list_rows.length) {
+			limit = list_rows.length;
+		}
+
+		if(randomize) {
+			shuffle_rows(id);
+		} else {
+			reset_table(id);
+		}
+
+		// checked = get_filters();
+		// r = new RegExp('(^|\\s)('+ checked.join("|") +')(\\s|$)');
+
+		// console.log(checked)
+		// console.log(limit)
+		// console.log(randomize)
+		// console.log(list_rows)
+
+		cnt = 0;
+		for(var i=0; i<list_rows.length; i++) {
+			// if(checked.length == 0) {
+				list_rows[i].style.display = (cnt < limit ? "" : "none");
+				cnt += 1;
+			// } else {
+			// 	if(r.test(list_rows[i].dataset.filters)) {
+			// 		list_rows[i].style.display = (cnt < limit ? "" : "none");
+			// 		cnt += 1;
+			// 	} else {
+			// 		list_rows[i].style.display = "none";
+			// 	}
+			// }
+		}
+
+		
+	}
+
+	set_original_rows();
 </script>
 <?php
 $js = trim(ob_get_clean());

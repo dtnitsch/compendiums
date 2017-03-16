@@ -149,3 +149,10 @@ input[type=submit]:hover, input[type=button]:hover {
   content: '\e052';
 }
 
+
+.list_table { margin: 0 0 1em 0; padding: 0; border-top: 1px solid #ccc; border-right: 1px solid #ccc; }
+.list_table td, .list_table th { padding: 0.2em 0.5em; border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; }
+.list_table th { text-align: left; }
+
+.list_ordered { margin: 0 0 1em 2.2em; padding: 0; }
+.list_ordered li { margin: 0; padding: 0; }

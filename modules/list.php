@@ -74,7 +74,7 @@ while($row = db_fetch_row($assets)) {
 		foreach($info['tags'] as $v) {
 			$output .= '
 			<label for="filter_'. $cnt .'">
-				<input type="checkbox" id="filter_'. $cnt .'" name="filters['. $v .']" onclick="filter_list(\''. $v .'\')" value="'. $v .'"> '. $v .'
+				<input type="checkbox" id="filter_'. $cnt .'" name="filters['. $v .']" onclick="build_list()" value="'. $v .'"> '. $v .'
 			</label> &nbsp; 
 			';
 			$cnt += 1;
@@ -92,18 +92,22 @@ while($row = db_fetch_row($assets)) {
 
 	<div class='listcounter' id="listcounter">
 <?php
-	$output .= '<ol>';
+	$output = '
+		<strong>'. $info['title'] .'</strong><br>
+		<ol class="list_ordered" id="list_body">
+	';
 	$i = 0;
 	if($info['tables'] == "t") {
 		$i = 1;
 		$output = '
-		<table border="1">
+		<strong>'. $info['title'] .'</strong><br>
+		<table cellspacing="0" cellpadding="0" class="list_table">
 			<thead>
 				<tr>
 					<th>'. implode('</th><th>',explode("|",$list[0]['title'])) .'</th>
 				</tr>
 			</thead>
-			<tbody id="list_tbody">
+			<tbody id="list_body">
 		';
 	}
 	for($len=count($list); $i<$len; $i++) {
@@ -138,89 +142,50 @@ while($row = db_fetch_row($assets)) {
 ob_start();
 ?>
 <script type="text/javascript">
-	var is_table = <?php echo ($info['tables'] == 't' ? true : false); ?>;
+	var is_table = <?php echo ($info['tables'] == 't' ? 'true' : 'false'); ?>;
 	var original_rows = [];
 
 	function double_shuffle(id) {
-		id = id || 'list_tbody';
+		id = id || 'list_body';
 		shuffle_rows(id);
 		shuffle_rows(id);
 	}
 	function shuffle_rows(id) {
-		var id = id || 'list_tbody';
-	    var tbody = $id(id);
+		var id = id || 'list_body';
+	    var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
 	    var rows = new Array();
 		var row;
-		for (var i=tbody.rows.length-1; i>=0; i--) {
-		    row = tbody.rows[i];
+		for (var i=list_rows.length-1; i>=0; i--) {
+		    row = list_rows[i];
 		    rows.push(row);
 		    row.parentNode.removeChild(row);
 	    }
 	    shuffle(rows);
 	    for (i=0; i<rows.length; i++) {
-	    	tbody.appendChild(rows[i]);
+	    	$id(id).appendChild(rows[i]);
 		}
 	}
 	function reset_table(id) {
-		var id = id || 'list_tbody';
-	    var tbody = $id(id);
+		var id = id || 'list_body';
+	    var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
 		var row;
-		for (i=tbody.rows.length-1; i>=0; i--) {
-		    row = tbody.rows[i];
+		for (i=list_rows.length-1; i>=0; i--) {
+		    row = list_rows[i];
 		    row.parentNode.removeChild(row);
 	    }
 	    for (i=original_rows.length - 1; i >= 0; i--) {
-	    	tbody.appendChild(original_rows[i]);
+	    	$id(id).appendChild(original_rows[i]);
 		}
 	}
 	function set_original_rows(id) {
-		var id = id || 'list_tbody';
-	    var tbody = $id(id);
+		var id = id || 'list_body';
+	    var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
 		var row;
-		for (var i=tbody.rows.length-1; i>=0; i--) {
-		    row = tbody.rows[i];
+		for (var i=list_rows.length-1; i>=0; i--) {
+		    row = list_rows[i];
 		    original_rows.push(row);
 	    }
 	}
-
-	function filter_list(key) {
-		build_list();
-	}
-	// 	// console.log("Filter List: "+ key)
-	// 	var filters = $query('input[name^=filter]');
-	// 	var checked = []
-	// 	for(var i=0,len=filters.length; i<len; i++) {
-	// 		if(filters[i].checked) {
-	// 			checked[checked.length] = filters[i].value;
-	// 		}
-	// 	}
-	// 	console.log(checked)
-	// 	return;
-	// 	elems = $query('#listcounter [data-filters]')
-	// 	// var elems = $query('#filter_examples ol > li');
-
-	// 	console.log(elems);
-	// 	var test;
-	// 	var checked_length = checked.length;
-	// 	var len = elems.length;
-	// 	var i = (is_table ? 0 : 0);
-	// 	for(; i<len; i++) {
-	// 		test = (checked_length == 0 ? true : false);
-	// 		// console.log(elems[i].dataset.filters)
-	// 		for(j in checked) {
-	// 			r = new RegExp('(^|\\s)'+ checked[j] + '(\\s|$)');
-	// 			if(r.test(elems[i].dataset.filters)) {
-	// 				test = true;
-	// 				break;
-	// 			}
-	// 		}
-	// 		if(test) {
-	// 			elems[i].style.display = "";
-	// 		} else {
-	// 			elems[i].style.display = "none";
-	// 		}
-	// 	}
-	// }
 
 	function get_filters() {
 		var filters = $query('#custom_filters input[name^=filter]');
@@ -234,16 +199,16 @@ ob_start();
 	}
 
 	function build_list(id) {
-		var id = id || 'list_tbody';
-	    var tbody = $id(id);
+		var id = id || 'list_body';
+	    var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
 
 		var limit = parseInt($id('limit').value);
 		var randomize = $id('randomize').checked;
 
 		var checked;
 
-		if(limit < 0 || limit > tbody.rows.length) {
-			limit = tbody.rows.length;
+		if(limit < 0 || limit > list_rows.length) {
+			limit = list_rows.length;
 		}
 
 		if(randomize) {
@@ -255,17 +220,22 @@ ob_start();
 		checked = get_filters();
 		r = new RegExp('(^|\\s)('+ checked.join("|") +')(\\s|$)');
 
+		console.log(checked)
+		console.log(limit)
+		console.log(randomize)
+		console.log(list_rows)
+
 		cnt = 0;
-		for(var i=0; i<tbody.rows.length; i++) {
+		for(var i=0; i<list_rows.length; i++) {
 			if(checked.length == 0) {
-				tbody.rows[i].style.display = (cnt < limit ? "" : "none");
+				list_rows[i].style.display = (cnt < limit ? "" : "none");
 				cnt += 1;
 			} else {
-				if(r.test(tbody.rows[i].dataset.filters)) {
-					tbody.rows[i].style.display = (cnt < limit ? "" : "none");
+				if(r.test(list_rows[i].dataset.filters)) {
+					list_rows[i].style.display = (cnt < limit ? "" : "none");
 					cnt += 1;
 				} else {
-					tbody.rows[i].style.display = "none";
+					list_rows[i].style.display = "none";
 				}
 			}
 		}
