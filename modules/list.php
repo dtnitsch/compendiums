@@ -220,10 +220,10 @@ ob_start();
 		checked = get_filters();
 		r = new RegExp('(^|\\s)('+ checked.join("|") +')(\\s|$)');
 
-		console.log(checked)
-		console.log(limit)
-		console.log(randomize)
-		console.log(list_rows)
+		// console.log(checked)
+		// console.log(limit)
+		// console.log(randomize)
+		// console.log(list_rows)
 
 		cnt = 0;
 		for(var i=0; i<list_rows.length; i++) {
@@ -247,6 +247,9 @@ ob_start();
 </script>
 <?php
 $js = trim(ob_get_clean());
+if(!empty($GLOBALS['show_js_now'])) {
+	echo $js;
+}
 if(!empty($js)) { add_js_code($js); }
 
 ##################################################

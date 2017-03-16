@@ -89,3 +89,6 @@ create table public.collection_list_map (
 -- insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
 -- 	('bca4b7dad46a1d984ec7975274671955', 'modules/ajax_files/', 'modal_list.ajax.php', '{}')
 -- ;
+insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
+	('ff15890b1815ec8d9eaf91ad22a5286e', 'modules/ajax_files/', 'list.ajax.php', '{}')
+;

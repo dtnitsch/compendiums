@@ -50,7 +50,7 @@ $top_5_lists = db_query($q,"Getting Top 5 Lists");
 <?php
 	$output = "";
 	while($row = db_fetch_row($top_5_lists)) {
-		$output .= '<li><a href="javascript:void(0);" onclick="set_key(\''. $row['key'] .'\');">'. $row['title'] .'</a></li>';
+		$output .= '<li><a href="javascript:void(0);" onclick="modal_list_page(\''. $row['key'] .'\');">'. $row['title'] .'</a></li>';
 	}
 	echo $output;
 ?>					</ul>
@@ -58,24 +58,26 @@ $top_5_lists = db_query($q,"Getting Top 5 Lists");
 				<div class="float_left" style="width: 30%;">
 					<h3>My Favorite Lists</h3>
 					<ul>
-						<li><a href="javascript:void(0);" onclick="set_key('One');">One</a></li>
-						<li><a href="javascript:void(0);" onclick="set_key('Two');">Two</a></li>
-						<li><a href="javascript:void(0);" onclick="set_key('Three');">Three</a></li>
+						<li><a href="javascript:void(0);" onclick="modal_list_page('One');">One</a></li>
+						<li><a href="javascript:void(0);" onclick="modal_list_page('Two');">Two</a></li>
+						<li><a href="javascript:void(0);" onclick="modal_list_page('Three');">Three</a></li>
 					</ul>
 				</div>
 				<div class="float_left" style="width: 30%;">
 					<h3>Popular Lists</h3>
 					<ul>
-						<li><a href="javascript:void(0);" onclick="set_key('One');">One</a></li>
-						<li><a href="javascript:void(0);" onclick="set_key('Two');">Two</a></li>
-						<li><a href="javascript:void(0);" onclick="set_key('Three');">Three</a></li>
+						<li><a href="javascript:void(0);" onclick="modal_list_page('One');">One</a></li>
+						<li><a href="javascript:void(0);" onclick="modal_list_page('Two');">Two</a></li>
+						<li><a href="javascript:void(0);" onclick="modal_list_page('Three');">Three</a></li>
 					</ul>
 				</div>
 
 				<div class="clear"></div>
 
 			</div>
-		</div>
+
+			<div id="modal_list_page"></div>
+		</div> <!-- end modal inner -->
 	</div>
 </div>
 
@@ -193,15 +195,30 @@ function parse_modal_search(data,cached) {
 	output = "<ul style='border-top: 1px solid #ccc; margin: 0; padding: 0; list-style-type: none;'>";
 	for(var i=0,len=data.output.length; i<len; i++) {
 		info = data.output[i]
-		output += `<li style='border: 1px solid #ccc; border-top: none; padding: 2px 4px; background: #fff;'><a href="javascript:void(0);" onclick="set_key('`+ info.key +`');">`+ info.title +`</a></li>`;
+		output += `<li style='border: 1px solid #ccc; border-top: none; padding: 2px 4px; background: #fff;'><a href="javascript:void(0);" onclick="modal_list_page('`+ info.key +`');">`+ info.title +`</a></li>`;
 	}
 	output += "</ul>";
 	$id('modal_search_results').innerHTML = output;
 	if(!cached)	{
 		search_cache[search_data] = data;
 	}
-	
+}
 
+
+function modal_list_page(val) {
+	if(val.trim() == "") {
+		return;
+	}
+	search_data = "apid=ff15890b1815ec8d9eaf91ad22a5286e&val="+ val;
+	ajax('/ajax.php',{
+		type: 'json'
+		,data: search_data
+		,success: display_modal_list_page
+	});
+}
+function display_modal_list_page(res) {
+	console.log(res)
+	$id('modal_list_page').innerHTML = res.output;
 }
 </script>
 
