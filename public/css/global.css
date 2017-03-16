@@ -46,7 +46,6 @@ html, body { font-size: 0.9em; }
 .inputs label { font-weight: bold; color:#444444; cursor: pointer; }
 .inputs label span { color: #9F0909; font-weight: normal; }
 
-
 .required { color: #9F0909; font-weight: normal; }
 .tips { color: #3a6ea5; font-size: 11px; }
 

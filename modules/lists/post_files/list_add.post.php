@@ -18,12 +18,14 @@ if(!empty($_POST) && !error_message()) {
 		$title = trim($_POST['title']);
 		$alias = convert_to_alias($title);
 		$key = create_key();
+		$is_table = (strstr($_POST['inputs'],"|") !== false ? 't' : 'f');
 
 		$q = "
 			'2'
 			,'". $key ."'
 			,'". db_prep_sql($title) ."'
 			,'". db_prep_sql($alias) ."'
+			,'". $is_table ."'
 			,'". ($percentages == 100 ? "t" : "f") ."'
 			,'". db_prep_sql(json_encode(array_keys(unique_tags()))) ."'
 			,now()
@@ -36,6 +38,7 @@ if(!empty($_POST) && !error_message()) {
 				,key
 				,title
 				,alias
+				,tables
 				,percentages
 				,tags
 				,created
@@ -58,6 +61,10 @@ if(!empty($_POST) && !error_message()) {
 			$map_ids = [];
 			foreach($pieces as $v) {
 				$v = trim($v);
+				if($v == "") {
+					continue;
+				}
+				
 				$inner_pieces = explode(";",$v);
 				$asset = trim($inner_pieces[0]);
 				# Percentages
@@ -69,7 +76,7 @@ if(!empty($_POST) && !error_message()) {
 						$tags[$k] = strtolower(trim($v));
 					}
 				}
-				$tags = json_encode($tmp);
+				$tags = json_encode($tags);
 
 				$alias = convert_to_alias($asset);
 				$q = "
@@ -115,9 +122,9 @@ if(!empty($_POST) && !error_message()) {
 			db_query($q,"Inserting list asset map");
 		
 
-			$redirection_path = '/lists/add/?id='. $new_id;
-			set_post_message("You have successfully created a new record");
-			set_safe_redirect($redirection_path);
+			// $redirection_path = '/lists/';
+			// set_post_message("You have successfully created a new record");
+			// set_safe_redirect($redirection_path);
 
 			// error_message("An error has occurred while trying to create a new record");
 		}
@@ -128,7 +135,7 @@ function calc_percentages() {
 	$percentages = 0;
 	for($i=0,$len=count($pieces); $i<$len; $i++) {
 		$inner_pieces = explode(";",$pieces[$i]);
-		if(!empty((int)$inner_pieces[1])) {
+		if(!empty($inner_pieces[1])) {
 			$perc = (int)$inner_pieces[1];
 			if($perc) {
 				$percentages += $perc;
@@ -154,10 +161,10 @@ function unique_tags() {
 		if(!empty($inner_pieces[2])) {
 			$tags = explode(',',trim($inner_pieces[2]));
 			for($j=0,$lenj=count($tags); $j<$lenj; $j++) {
-				$output[trim($tags[$j])] = 1;
+				$output[strtolower(trim($tags[$j]))] = 1;
 			}
 		} else {
-			return true;
+			continue;
 		}
 	}
 	return $output;

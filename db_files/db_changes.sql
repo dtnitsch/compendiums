@@ -3,6 +3,7 @@ create table public.list (
 	id serial primary key
 	,active boolean default true
 	,public boolean default true
+	,tables boolean default false
 	,percentages boolean default true
 	,uses_other_lists boolean default false
 	,user_id int default 0
@@ -39,16 +40,16 @@ create table public.list_asset_map (
 	,modified timestamp default '0001-01-01 00:00:00'
 );
 
-drop table if exists public.list_combination_map;
-create table public.list_combination_map (
-	id serial primary key
-	,active boolean default true
-	,static boolean default true
-	,list_id int not null default 0
-	,secondary_list_id int not null default 0
-	,created timestamp default '0001-01-01 00:00:00'
-	,modified timestamp default '0001-01-01 00:00:00'
-);
+-- drop table if exists public.list_combination_map;
+-- create table public.list_combination_map (
+-- 	id serial primary key
+-- 	,active boolean default true
+-- 	,static boolean default true
+-- 	,list_id int not null default 0
+-- 	,secondary_list_id int not null default 0
+-- 	,created timestamp default '0001-01-01 00:00:00'
+-- 	,modified timestamp default '0001-01-01 00:00:00'
+-- );
 
 
 -- insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
@@ -85,6 +86,6 @@ create table public.collection_list_map (
 	,modified timestamp default '0001-01-01 00:00:00'
 );
 
-insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
-	('bca4b7dad46a1d984ec7975274671955', 'modules/ajax_files/', 'modal_list.ajax.php', '{}')
-;
+-- insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
+-- 	('bca4b7dad46a1d984ec7975274671955', 'modules/ajax_files/', 'modal_list.ajax.php', '{}')
+-- ;

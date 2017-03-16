@@ -22,6 +22,12 @@ html, body { font-size: 0.9em; }
 .show { display: inherit; }
 .hide { display: none; }
 
+.xs { width: 2em; }
+.s { width: 4em; }
+.m { width: 6em; }
+.l { width: 8em; }
+.xl { width: 10em; }
+
 /*** Display Settings for the overall Template ***/
 /* 2, 3, and multi column tables */
 .two_col, .three_col, .multi_col { width: 100%; }

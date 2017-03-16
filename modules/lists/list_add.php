@@ -36,7 +36,7 @@ add_js("validation.js");
 	</div>
 	<form id="addform" method="post" action="" onsubmit="return v.validate();">
 
-		<div class="float_left" style="width: 450px;">
+		<div class="float_left" style="width: 49%;">
 			<label class="form_label" for="title">List Name <span>*</span></label>
 			<div class="form_data">
 				<input type="text" name="title" id="title" value="">
@@ -57,7 +57,7 @@ Eggs; 10; poor,middle class,rich,breakfast
 Soup; 20; poor,middle class, lunch, dinner
 Bread; 20; poor,middle class,rich, breakfast, lunch, dinner
 Apples; 10; poor,middle class,rich, snack</textarea-->
-				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">
+				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 90%; height: 150px;">
 				Name|Color|Thiny
 				Orange|Orange|yucky;;orange
 				Sky|Blue|Clouds;;blue,orange
@@ -85,7 +85,7 @@ Apples; 10; poor,middle class,rich, snack</textarea-->
 
 			<!--input type="button" value="Add List" onclick="addform()"-->
 			</div>
-		<div id="example" class="float_left" style="width: 300px; padding: 1em;"></div>
+		<div id="example" class="float_left" style="width: 49% padding: 1em;"></div>
 		<div class="clear"></div>
 		<input type="submit" value="Add List">
 	</form>

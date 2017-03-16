@@ -20,17 +20,21 @@ function rand(i,j) {
 	return Math.floor((Math.random() * ((max + 1) - min)) + min);
 }
 
-function shuffle(arr,num) {
+function shuffle(arr,num,skip_first) {
 	var len = arr.length, idx = len, tmp, random;
 	var num = num || 0;
 	if(num) {
 		idx = num;
 	}
-
+	low = (skip_first ? 1 : 0);
 	// While there remain elements to shuffle...
-	while (0 !== idx) {
+	while (low < idx) {
 		// Pick a remaining element...
-		random = Math.floor(Math.random() * len);
+		if(skip_first) {
+			random = Math.floor(Math.random() * (len - 1)) + 1;
+		} else {
+			random = Math.floor(Math.random() * len);
+		}
 		idx -= 1;
 
 		// And swap it with the current element.
