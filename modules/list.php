@@ -33,20 +33,31 @@ $q = "
 	order by
 		asset.id
 ";
-$assets = db_query($q,"Getting list assets");
-
+$res = db_query($q,"Getting list assets");
 
 ##################################################
 #   Pre-Content
 ##################################################
 // add_css('pagination.css');
 // add_js('sortlist.new.js');
-$list = [];
-while($row = db_fetch_row($assets)) {
-	$list[] = [
-		"title" => $row['title']
-		,"tags" => json_decode($row['tags'])
-	];
+add_js("list_functions.js",10);
+
+$assets[$info['id']] = [];
+while($row = db_fetch_row($res)) {
+	if(empty($assets[$info['id']]['list_title'])) {
+		$assets[$info['id']] = [
+            'list_title' => $info['title']
+            // ,'list_label' => $info['label']
+            ,'randomize' => 1
+            ,'display_limit' => 20
+            ,'list_id' => $info['id']
+            ,'tables' => $info['tables']
+            ,'assets' => []
+            ,'tags' => []
+		];
+	}
+	$assets[$info['id']]['assets'][] = $row['title'];
+	$assets[$info['id']]['tags'][] = $row['tags'];
 }
 
 ##################################################
@@ -85,51 +96,62 @@ while($row = db_fetch_row($assets)) {
 ?>
 
 	<div class="mb">
-		<button onclick="build_list()">Update</button>
+		<button onclick="build_all_lists()">Update</button>
 	</div>
 
 
 
-	<div class='listcounter' id="listcounter">
+		<div class='listcounter' id="listcounter" style='display:;'>
 <?php
+foreach($assets as $k => $list) {
+	$l = $list['display_limit'];
+	$r = $list['randomize'];
+	$title = (!empty($list['list_label']) ? $list['list_label'] : $list['list_title']);
 	$output = '
-		<strong>'. $info['title'] .'</strong><br>
-		<ol class="list_ordered" id="list_body">
+		<strong>'. $title .'</strong><br>
+		<ol class="list_ordered" id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'">
 	';
 	$i = 0;
-	if($info['tables'] == "t") {
+	if($list['tables'] == "t") {
 		$i = 1;
 		$output = '
-		<strong>'. $info['title'] .'</strong><br>
+		<strong>'. $title .'</strong><br>
 		<table cellspacing="0" cellpadding="0" class="list_table">
 			<thead>
 				<tr>
-					<th>'. implode('</th><th>',explode("|",$list[0]['title'])) .'</th>
+					<th>'. implode('</th><th>',explode("|",$list['assets'][0])) .'</th>
 				</tr>
 			</thead>
-			<tbody id="list_body">
+			<tbody id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'">
 		';
 	}
-	for($len=count($list); $i<$len; $i++) {
-		$row = $list[$i];
-		if($info['tables'] == "t") {
-			$output .= '<tr data-filters="'. implode(' ',$row['tags']) .'">
-				<td>'. implode("</td><td>",explode('|',$row['title'])) .'</td>
+	$cnt = 0;
+	for($len=count($list['assets']); $i<$len; $i++) {
+		$a = $list['assets'][$i];
+		$t = json_decode($list['tags'][$i]);
+
+
+		$display = ($cnt < $list['display_limit'] ? '' : " style='display:none;'");
+		if($list['tables'] == "t") {
+			$output .= '<tr data-filters="'. implode(' ',$t) .'"'. $display .'>
+				<td>'. implode("</td><td>",explode('|',$a)) .'</td>
 			</tr>';
 		} else {
-			$output .= '<li data-filters="'. implode(' ',$row['tags']) .'">
-				'. $row['title'] .'
+			$output .= '<li data-filters="'. implode(' ',$t) .'"'. $display .'>
+				'. $a .'
 			</li>';
 		}
+		$cnt += 1;
 	}
 
-	if($info['tables'] == "t") {
+	if($list['tables'] == "t") {
 		$output .= "</tbody></table>";
 	} else {
 		$output .= "</ol>";
 	}
 	echo $output;
 	unset($output);
+}
 ?>
 	</div>
 
@@ -143,113 +165,111 @@ ob_start();
 ?>
 <script type="text/javascript">
 	var is_table = <?php echo ($info['tables'] == 't' ? 'true' : 'false'); ?>;
-	var original_rows = [];
+	var original_rows = {};
+	var list_keys = [<?php echo implode(',',array_keys($assets)); ?>];
 
-	function double_shuffle(id) {
-		id = id || 'list_body';
-		shuffle_rows(id);
-		shuffle_rows(id);
-	}
-	function shuffle_rows(id) {
-		var id = id || 'list_body';
-	    var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
-	    var rows = new Array();
-		var row;
-		for (var i=list_rows.length-1; i>=0; i--) {
-		    row = list_rows[i];
-		    rows.push(row);
-		    row.parentNode.removeChild(row);
-	    }
-	    shuffle(rows);
-	    for (i=0; i<rows.length; i++) {
-	    	$id(id).appendChild(rows[i]);
-		}
-	}
-	function reset_table(id) {
-		var id = id || 'list_body';
-	    var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
-		var row;
-		for (i=list_rows.length-1; i>=0; i--) {
-		    row = list_rows[i];
-		    row.parentNode.removeChild(row);
-	    }
-	    for (i=original_rows.length - 1; i >= 0; i--) {
-	    	$id(id).appendChild(original_rows[i]);
-		}
-	}
-	function set_original_rows(id) {
-		var id = id || 'list_body';
-	    var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
-		var row;
-		for (var i=list_rows.length-1; i>=0; i--) {
-		    row = list_rows[i];
-		    original_rows.push(row);
-	    }
-	}
+	// function double_shuffle(id) {
+	// 	id = id || 'list_body';
+	// 	shuffle_rows(id);
+	// 	shuffle_rows(id);
+	// }
+	// function shuffle_rows(id) {
+	// 	var id = id || 'list_body';
+	//     var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
+	//     var rows = new Array();
+	// 	var row;
+	// 	for (var i=list_rows.length-1; i>=0; i--) {
+	// 	    row = list_rows[i];
+	// 	    rows.push(row);
+	// 	    row.parentNode.removeChild(row);
+	//     }
+	//     shuffle(rows);
+	//     for (i=0; i<rows.length; i++) {
+	//     	$id(id).appendChild(rows[i]);
+	// 	}
+	// }
+	// function reset_table(id) {
+	// 	var id = id || 'list_body';
+	//     var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
+	// 	var row;
+	// 	for (i=list_rows.length-1; i>=0; i--) {
+	// 	    row = list_rows[i];
+	// 	    row.parentNode.removeChild(row);
+	//     }
+	//     for (i=original_rows.length - 1; i >= 0; i--) {
+	//     	$id(id).appendChild(original_rows[i]);
+	// 	}
+	// }
+	// function set_original_rows(id) {
+	// 	var id = id || 'list_body';
+	//     var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
+	// 	var row;
+	// 	for (var i=list_rows.length-1; i>=0; i--) {
+	// 	    row = list_rows[i];
+	// 	    original_rows.push(row);
+	//     }
+	// }
 
-	function get_filters() {
-		var filters = $query('#custom_filters input[name^=filter]');
-		var checked = [];
-		for(var i=0,len=filters.length; i<len; i++) {
-			if(filters[i].checked) {
-				checked[checked.length] = filters[i].value;
-			}
-		}
-		return checked;
-	}
+	// function get_filters() {
+	// 	var filters = $query('#custom_filters input[name^=filter]');
+	// 	var checked = [];
+	// 	for(var i=0,len=filters.length; i<len; i++) {
+	// 		if(filters[i].checked) {
+	// 			checked[checked.length] = filters[i].value;
+	// 		}
+	// 	}
+	// 	return checked;
+	// }
 
-	function build_list(id) {
-		var id = id || 'list_body';
-	    var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
+	// function build_list(id) {
+	// 	var id = id || 'list_body';
+	//     var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
 
-		var limit = parseInt($id('limit').value);
-		var randomize = $id('randomize').checked;
+	// 	var limit = parseInt($id('limit').value);
+	// 	var randomize = $id('randomize').checked;
 
-		var checked;
+	// 	var checked;
 
-		if(limit < 0 || limit > list_rows.length) {
-			limit = list_rows.length;
-		}
+	// 	if(limit < 0 || limit > list_rows.length) {
+	// 		limit = list_rows.length;
+	// 	}
 
-		if(randomize) {
-			shuffle_rows();
-		} else {
-			reset_table();
-		}
+	// 	if(randomize) {
+	// 		shuffle_rows();
+	// 	} else {
+	// 		reset_table();
+	// 	}
 
-		checked = get_filters();
-		r = new RegExp('(^|\\s)('+ checked.join("|") +')(\\s|$)');
+	// 	checked = get_filters();
+	// 	r = new RegExp('(^|\\s)('+ checked.join("|") +')(\\s|$)');
 
-		// console.log(checked)
-		// console.log(limit)
-		// console.log(randomize)
-		// console.log(list_rows)
+	// 	// console.log(checked)
+	// 	// console.log(limit)
+	// 	// console.log(randomize)
+	// 	// console.log(list_rows)
 
-		cnt = 0;
-		for(var i=0; i<list_rows.length; i++) {
-			if(checked.length == 0) {
-				list_rows[i].style.display = (cnt < limit ? "" : "none");
-				cnt += 1;
-			} else {
-				if(r.test(list_rows[i].dataset.filters)) {
-					list_rows[i].style.display = (cnt < limit ? "" : "none");
-					cnt += 1;
-				} else {
-					list_rows[i].style.display = "none";
-				}
-			}
-		}
+	// 	cnt = 0;
+	// 	for(var i=0; i<list_rows.length; i++) {
+	// 		if(checked.length == 0) {
+	// 			list_rows[i].style.display = (cnt < limit ? "" : "none");
+	// 			cnt += 1;
+	// 		} else {
+	// 			if(r.test(list_rows[i].dataset.filters)) {
+	// 				list_rows[i].style.display = (cnt < limit ? "" : "none");
+	// 				cnt += 1;
+	// 			} else {
+	// 				list_rows[i].style.display = "none";
+	// 			}
+	// 		}
+	// 	}
 
 		
-	}
+	// }
 
 	set_original_rows();
 </script>
 <?php
 $js = trim(ob_get_clean());
-if(!empty($GLOBALS['show_js_now'])) {
-	echo $js;
-}
 if(!empty($js)) { add_js_code($js); }
 
 ##################################################
