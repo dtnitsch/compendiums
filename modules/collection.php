@@ -67,9 +67,6 @@ while($row = db_fetch_row($assets_res)) {
 	$assets[$row['list_id']]['assets'][] = $row['asset'];
 	$assets[$row['list_id']]['tags'][] = $row['tags'];
 }
-echo "<pre>";
-print_r($assets);
-die();
 
 ##################################################
 #   Pre-Content

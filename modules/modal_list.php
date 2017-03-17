@@ -76,7 +76,9 @@ $top_5_lists = db_query($q,"Getting Top 5 Lists");
 
 			</div>
 
-			<div id="modal_list_page"></div>
+			<div id="modal_list_page">
+				<div class='listcounter' id="listcounter"></div>
+			</div>
 		</div> <!-- end modal inner -->
 	</div>
 </div>
@@ -218,8 +220,14 @@ function modal_list_page(val) {
 }
 function display_modal_list_page(res) {
 	console.log(res)
-	$id('modal_list_page').innerHTML = res.output;
+
+	$id('modal_list_page').innerHTML = res.output.html;
+	list_keys = [res.output.info.id];
+	set_original_rows();
 }
+var list_keys = [];
+var original_rows = {};
+
 </script>
 
 <?php

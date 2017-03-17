@@ -85,7 +85,7 @@ while($row = db_fetch_row($res)) {
 		foreach($info['tags'] as $v) {
 			$output .= '
 			<label for="filter_'. $cnt .'">
-				<input type="checkbox" id="filter_'. $cnt .'" name="filters['. $v .']" onclick="build_list()" value="'. $v .'"> '. $v .'
+				<input type="checkbox" id="filter_'. $cnt .'" name="filters['. $v .']" onclick="build_all_lists()" value="'. $v .'"> '. $v .'
 			</label> &nbsp; 
 			';
 			$cnt += 1;
@@ -109,7 +109,7 @@ foreach($assets as $k => $list) {
 	$title = (!empty($list['list_label']) ? $list['list_label'] : $list['list_title']);
 	$output = '
 		<strong>'. $title .'</strong><br>
-		<ol class="list_ordered" id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'">
+		<ol class="list_ordered" id="list_body_'. $k .'">
 	';
 	$i = 0;
 	if($list['tables'] == "t") {
@@ -122,7 +122,7 @@ foreach($assets as $k => $list) {
 					<th>'. implode('</th><th>',explode("|",$list['assets'][0])) .'</th>
 				</tr>
 			</thead>
-			<tbody id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'">
+			<tbody id="list_body_'. $k .'">
 		';
 	}
 	$cnt = 0;
@@ -165,8 +165,9 @@ ob_start();
 ?>
 <script type="text/javascript">
 	var is_table = <?php echo ($info['tables'] == 't' ? 'true' : 'false'); ?>;
-	var original_rows = {};
 	var list_keys = [<?php echo implode(',',array_keys($assets)); ?>];
+	var original_rows = {};
+	set_original_rows();
 
 	// function double_shuffle(id) {
 	// 	id = id || 'list_body';
