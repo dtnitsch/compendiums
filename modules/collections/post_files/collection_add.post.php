@@ -55,13 +55,18 @@ if(!empty($_POST) && !error_message()) {
 			$q = "select id,key from public.list where key in (". substr($q,0,-1) .")";
 			$res = db_query($q,"Getting list_ids");
 			
-			$key_id_map = array_flip($_POST['list_keys']);
+			// $key_id_map = array_flip($_POST['list_keys']);
 			$q = "";
+			$key_index_map = [];
 			while($row = db_fetch_row($res)) {
-				$index = $key_id_map[$row['key']];
+				$key_index_map[$row['key']] = $row['id'];
+			}
+
+			$key_id_map = array_flip($_POST['list_keys']);
+			foreach($_POST['list_keys'] as $index => $key) {
 				$q .= "(
 					'". db_prep_sql($collection_id) ."'
-					,'". db_prep_sql($row['id']) ."'
+					,'". db_prep_sql($key_index_map[$key]) ."'
 					,'". db_prep_sql(trim($_POST['list_labels'][$index])) ."'
 					,'". (int)$_POST['randomize'][$index] ."'
 					,'". (int)$_POST['display_limit'][$index] ."'

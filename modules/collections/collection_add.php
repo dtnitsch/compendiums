@@ -40,12 +40,12 @@ add_js("list_functions.js",10);
 			<input type="text" name="title" id="title" value="">
 		</div>
 
-		<table id="lists">
+		<table cellspacing="0" cellpadding="0" id="lists" class="list_table">
 			<thead>
 				<tr>
 					<th></th>
-					<th>List Key</th>
 					<th>Label</th>
+					<th>List Key</th>
 					<th>Randomize</th>
 					<th>Display Limit</th>
 					<th>Search</th>
@@ -57,7 +57,7 @@ add_js("list_functions.js",10);
 		</table>
 
 		<p>
-			<input type="button" value="Add Lists" onclick="add_list()">
+			<input type="button" value="Add Lists" onclick="search_for_list()">
 		</p>
 
 		<p>
@@ -76,41 +76,37 @@ ob_start();
 <script type="text/javascript">
 
 var list_count = 0;
-function add_list() {
+function add_list(info,limit,randomize) {
 	var list_body = $id('list_body');
 	var output = '';
-	var cnt = 5;
 	var tr;
+	var checked = (randomize ? " checked" : "");
 
-	while(cnt--) {
-		list_count += 1;
-		tr = document.createElement("tr");
-		output = `
-			<td>`+ list_count +`</td>
-			<td>
-				<input type="input" id="key`+ list_count +`" name="list_keys[`+ list_count +`]" placeholder="List Key">
-			</td>
-			<td>
-				<input type="input" id="label`+ list_count +`" name="list_labels[`+ list_count +`]" placeholder="List Label">
-			</td>
+	list_count += 1;
+	tr = document.createElement("tr");
+
+
+	output = `
+		<td>`+ list_count +`</td>
+		<td>
+			<input type="input" id="label`+ list_count +`" name="list_labels[`+ list_count +`]" placeholder="List Label" value="`+ info.title +`">
+		</td>
+		<td>
+			<input type="input" id="key`+ list_count +`" name="list_keys[`+ list_count +`]" placeholder="List Key" value="`+ info.key +`">
+		</td>
 			<td>
 				<label for="randomize`+ list_count +`">
-					<input checked type="checkbox" name="randomize[`+ list_count +`]" id="randomize`+ list_count +`" value="1"> Randomize
+					<input`+ checked +` type="checkbox" name="randomize[`+ list_count +`]" id="randomize`+ list_count +`" value="1"> Randomize
 				</label>
 			</td>
 			<td>
-				<input type="input" name="display_limit[`+ list_count +`]" value="0" style="width: 40px;">
+				<input type="input" name="display_limit[`+ list_count +`]" value="`+ limit +`" style="width: 40px;">
 			</td>
-			<td>
-				<input type="button" value="Search for List" onclick="search_for_list(`+ list_count +`)">
-			</td>
-		`;
-		tr.innerHTML = output;
-		lists.appendChild(tr);
-	}
+		<td>-</td>
+	`;
+	tr.innerHTML = output;
+	lists.appendChild(tr);
 }
-
-add_list();
 
 var modal_id = 0;
 function search_for_list(id) {
@@ -119,10 +115,10 @@ function search_for_list(id) {
 	$id('modal_search').focus();
 }
 
-function set_key(val) {
-	$id('key'+modal_id).value = val;
-	modal_clear();
-}
+// function set_key(val) {
+// 	$id('key'+modal_id).value = val;
+// 	modal_clear();
+// }
 </script>
 <?php
 $js = trim(ob_get_clean());

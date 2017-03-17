@@ -38,47 +38,52 @@ $top_5_lists = db_query($q,"Getting Top 5 Lists");
 		<div class="modal_inner">
 			<div id="modal_details">
 				<div class="float_right">
-					Search
-					<input type="text" id="modal_search" placeholder="Search Lists" onkeyup="modal_search(this.value)">
-					<div style="position:fixed;" id="modal_search_results"></div>
-				</div>
-				<div class="clear"></div>
+					<div>
+						Search
+						<input type="text" id="modal_search" placeholder="Search Lists" onkeyup="modal_search(this.value)">
+						<div style="position:fixed;" id="modal_search_results"></div>
+					</div>
 
-				<div class="float_left" style="width: 30%;">
-					<h3>Newest Lists</h3>
-					<ul>
+					<div>
+						<h3>Newest Lists</h3>
+						<ul>
 <?php
 	$output = "";
 	while($row = db_fetch_row($top_5_lists)) {
 		$output .= '<li><a href="javascript:void(0);" onclick="modal_list_page(\''. $row['key'] .'\');">'. $row['title'] .'</a></li>';
 	}
 	echo $output;
-?>					</ul>
+?>					
+						</ul>
+					</div>
+					<div>
+						<h3>My Favorite Lists</h3>
+						<ul>
+							<li><a href="javascript:void(0);" onclick="modal_list_page('One');">One</a></li>
+							<li><a href="javascript:void(0);" onclick="modal_list_page('Two');">Two</a></li>
+							<li><a href="javascript:void(0);" onclick="modal_list_page('Three');">Three</a></li>
+						</ul>
+					</div>
+					<div>
+						<h3>Popular Lists</h3>
+						<ul>
+							<li><a href="javascript:void(0);" onclick="modal_list_page('One');">One</a></li>
+							<li><a href="javascript:void(0);" onclick="modal_list_page('Two');">Two</a></li>
+							<li><a href="javascript:void(0);" onclick="modal_list_page('Three');">Three</a></li>
+						</ul>
+					</div>
 				</div>
-				<div class="float_left" style="width: 30%;">
-					<h3>My Favorite Lists</h3>
-					<ul>
-						<li><a href="javascript:void(0);" onclick="modal_list_page('One');">One</a></li>
-						<li><a href="javascript:void(0);" onclick="modal_list_page('Two');">Two</a></li>
-						<li><a href="javascript:void(0);" onclick="modal_list_page('Three');">Three</a></li>
-					</ul>
-				</div>
-				<div class="float_left" style="width: 30%;">
-					<h3>Popular Lists</h3>
-					<ul>
-						<li><a href="javascript:void(0);" onclick="modal_list_page('One');">One</a></li>
-						<li><a href="javascript:void(0);" onclick="modal_list_page('Two');">Two</a></li>
-						<li><a href="javascript:void(0);" onclick="modal_list_page('Three');">Three</a></li>
-					</ul>
-				</div>
-
-				<div class="clear"></div>
 
 			</div>
 
-			<div id="modal_list_page">
+			<div id="modal_list_page" class="float:left;">
 				<div class='listcounter' id="listcounter"></div>
 			</div>
+
+			<input type="button" id="add_list_button" value="Add List" style='display: none;' onclick="add_new_list()">
+			<div class="clear"></div>
+
+
 		</div> <!-- end modal inner -->
 	</div>
 </div>
@@ -98,9 +103,12 @@ ob_start();
 	top: 0;
 	width: 100%; /* Full width */
 	height: 100%; /* Full height */
-	overflow: auto; /* Enable scroll if needed */
 	background-color: rgb(0,0,0); /* Fallback color */
 	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	/*overflow: auto;*/ /* Enable scroll if needed */
+	/*max-height: 100%;*/
+	overflow-y: auto;
+	max-height: calc(100vh - 100px);
 }
 
 /* Modal Content */
@@ -187,7 +195,6 @@ function modal_search(val) {
 			,success: parse_modal_search
 		});
 	} else {
-		console.log("cached")
 		parse_modal_search(search_cache[search_data],true)
 	}
 }
@@ -219,14 +226,23 @@ function modal_list_page(val) {
 	});
 }
 function display_modal_list_page(res) {
-	console.log(res)
-
 	$id('modal_list_page').innerHTML = res.output.html;
 	list_keys = [res.output.info.id];
+	returned_info = res.output.info;
 	set_original_rows();
+	$id('add_list_button').style.display = "";
 }
+
+function add_new_list() {
+	var limit = $id("limit").value;
+	var checked = $id("randomize").checked;
+	add_list(returned_info,limit,checked);
+	modal_clear();
+}
+
 var list_keys = [];
 var original_rows = {};
+var returned_info = {}
 
 </script>
 
