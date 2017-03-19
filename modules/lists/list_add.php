@@ -34,7 +34,7 @@ add_js("validation.js");
   	<div id="messages">
 		<?php echo dump_messages(); ?>
 	</div>
-	<form id="addform" method="post" action="" onsubmit="return v.validate();">
+	<form id="addform" method="post" action="" onsubmit="return true;">
 
 		<div class="float_left" style="width: 49%;">
 			<label class="form_label" for="title">List Name <span>*</span></label>
@@ -58,12 +58,12 @@ Soup; 20; poor,middle class, lunch, dinner
 Bread; 20; poor,middle class,rich, breakfast, lunch, dinner
 Apples; 10; poor,middle class,rich, snack</textarea-->
 				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 90%; height: 150px;">
-				Name|Color|Thiny
-				Orange|Orange|yucky;;orange
-				Sky|Blue|Clouds;;blue,orange
-				Water|Transparent|Wet;;clear
-				Computer|Silver|Apple;;Silver
-				Ore|Silver,Black|Nasty;;black,silver
+Name|Color|Thiny
+Orange|Orange|yucky;60;orange
+Sky|Blue|Clouds;20;blue,orange
+Water|Transparent|Wet;10;clear
+Computer|Silver|Apple;10;Silver
+Ore|Silver,Black|Nasty;20;black,silver
 				</textarea>
 				<div style="font-size: 80%;">*Notes: Tab Deliminated List - Name &nbsp; Percentage &nbsp; Tags</div>
 			</div>

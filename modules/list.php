@@ -26,6 +26,7 @@ $q = "
 	select
 		public.asset.*
 		,list_asset_map.tags
+		,list_asset_map.percentage
 	from public.asset
 	join public.list_asset_map on 
 		list_asset_map.asset_id = asset.id
@@ -54,10 +55,12 @@ while($row = db_fetch_row($res)) {
             ,'tables' => $info['tables']
             ,'assets' => []
             ,'tags' => []
+            ,'percentages' => []
 		];
 	}
 	$assets[$info['id']]['assets'][] = $row['title'];
 	$assets[$info['id']]['tags'][] = $row['tags'];
+	$assets[$info['id']]['percentages'][] = $row['percentage'];
 }
 
 ##################################################
@@ -74,6 +77,9 @@ while($row = db_fetch_row($res)) {
 
 		<label for="randomize">
 			<input checked type="checkbox" name="options" id="randomize" value="randomize"> Randomize
+		</label>
+		<label for="percentages">
+			<input checked type="checkbox" name="options" id="percentages" value="percentages"> Use Percentages
 		</label>
 	</div>
 
@@ -129,15 +135,16 @@ foreach($assets as $k => $list) {
 	for($len=count($list['assets']); $i<$len; $i++) {
 		$a = $list['assets'][$i];
 		$t = json_decode($list['tags'][$i]);
+		$p = $list['percentages'][$i];
 
 
 		$display = ($cnt < $list['display_limit'] ? '' : " style='display:none;'");
 		if($list['tables'] == "t") {
-			$output .= '<tr data-filters="'. implode(' ',$t) .'"'. $display .'>
+			$output .= '<tr data-filters="'. implode(' ',$t) .'" data-perc="'. $p .'"'. $display .'>
 				<td>'. implode("</td><td>",explode('|',$a)) .'</td>
 			</tr>';
 		} else {
-			$output .= '<li data-filters="'. implode(' ',$t) .'"'. $display .'>
+			$output .= '<li data-filters="'. implode(' ',$t) .'" data-perc="'. $p .'"'. $display .'>
 				'. $a .'
 			</li>';
 		}
@@ -169,105 +176,107 @@ ob_start();
 	var original_rows = {};
 	set_original_rows();
 
-	// function double_shuffle(id) {
-	// 	id = id || 'list_body';
-	// 	shuffle_rows(id);
-	// 	shuffle_rows(id);
-	// }
-	// function shuffle_rows(id) {
-	// 	var id = id || 'list_body';
-	//     var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
-	//     var rows = new Array();
-	// 	var row;
-	// 	for (var i=list_rows.length-1; i>=0; i--) {
-	// 	    row = list_rows[i];
-	// 	    rows.push(row);
-	// 	    row.parentNode.removeChild(row);
-	//     }
-	//     shuffle(rows);
-	//     for (i=0; i<rows.length; i++) {
-	//     	$id(id).appendChild(rows[i]);
-	// 	}
-	// }
-	// function reset_table(id) {
-	// 	var id = id || 'list_body';
-	//     var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
-	// 	var row;
-	// 	for (i=list_rows.length-1; i>=0; i--) {
-	// 	    row = list_rows[i];
-	// 	    row.parentNode.removeChild(row);
-	//     }
-	//     for (i=original_rows.length - 1; i >= 0; i--) {
-	//     	$id(id).appendChild(original_rows[i]);
-	// 	}
-	// }
-	// function set_original_rows(id) {
-	// 	var id = id || 'list_body';
-	//     var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
-	// 	var row;
-	// 	for (var i=list_rows.length-1; i>=0; i--) {
-	// 	    row = list_rows[i];
-	// 	    original_rows.push(row);
-	//     }
-	// }
 
-	// function get_filters() {
-	// 	var filters = $query('#custom_filters input[name^=filter]');
-	// 	var checked = [];
-	// 	for(var i=0,len=filters.length; i<len; i++) {
-	// 		if(filters[i].checked) {
-	// 			checked[checked.length] = filters[i].value;
-	// 		}
-	// 	}
-	// 	return checked;
-	// }
 
-	// function build_list(id) {
-	// 	var id = id || 'list_body';
-	//     var list_rows = (is_table ? $id(id).rows : $query('#list_body li'));
 
-	// 	var limit = parseInt($id('limit').value);
-	// 	var randomize = $id('randomize').checked;
+// ------------------------------------
+// Testing Percentages
+// ------------------------------------
 
-	// 	var checked;
+// var choices = ['apple', 'banana', 'peach', 'pear', 'orange'];
+// var weights = [ 1, 4,  1, 3, 1];
 
-	// 	if(limit < 0 || limit > list_rows.length) {
-	// 		limit = list_rows.length;
-	// 	}
+// var tmp = [], thresholds = [], weight;
+// var total = 0;
+// for(i = 0, len = choices.length; i<len; i++) {
+// 	tmp[tmp.length] = [choices[i],weights[i]];
+// }
+// thresholds = tmp.sort(function(a, b) {
+//     return a[1] - b[1];
+// }).reverse();
+// // console.log(thresholds)
+// for(i in thresholds) {
+// 	total += thresholds[i][1];
+// 	thresholds[i][2] = total;
+// }
 
-	// 	if(randomize) {
-	// 		shuffle_rows();
-	// 	} else {
-	// 		reset_table();
-	// 	}
+// console.log(thresholds)
+// console.log(total)
+function random_by_weight(arr,total) {
+	var used_keys = {};
+	var used_keys_total = 0;
+	var num_keys = Object.keys(arr).length;
+	// var total = total_array(arr);
+	var r;
+	var new_arr = [];
+	// console.log(num_keys)
+	// console.log(total)
+	// console.log(arr);
+	// return;
+	x = 0;
+	while(used_keys_total < num_keys) {
+		r = rand(1,total);
+		// console.log(r)
+		// console.log(used_keys)
+		for(var i = 0; i < arr.length; i++) {
+			// console.log("i: "+ typeof used_keys[arr[i][0]] + " -- "+ arr[i][1] +" ("+ r +")")
+			if(typeof used_keys[arr[i][0]] == "undefined" && r <= arr[i][2]) {
+				// console.log("???")
+				used_keys[arr[i][0]] = 1;
+				used_keys_total += 1;
+				new_arr[new_arr.length] = arr[i];
+				break;
+			}
+		}
+	}
+	
+	return new_arr;
+}
 
-	// 	checked = get_filters();
-	// 	r = new RegExp('(^|\\s)('+ checked.join("|") +')(\\s|$)');
+function build_keys(arr) {
+	var output = "";
+	for(k in arr) {
+		output += arr[k][0]+","
+	}
+	return output;
+}
 
-	// 	// console.log(checked)
-	// 	// console.log(limit)
-	// 	// console.log(randomize)
-	// 	// console.log(list_rows)
 
-	// 	cnt = 0;
-	// 	for(var i=0; i<list_rows.length; i++) {
-	// 		if(checked.length == 0) {
-	// 			list_rows[i].style.display = (cnt < limit ? "" : "none");
-	// 			cnt += 1;
-	// 		} else {
-	// 			if(r.test(list_rows[i].dataset.filters)) {
-	// 				list_rows[i].style.display = (cnt < limit ? "" : "none");
-	// 				cnt += 1;
-	// 			} else {
-	// 				list_rows[i].style.display = "none";
-	// 			}
-	// 		}
-	// 	}
+// ------------------------------------
+// Proofs
+// ------------------------------------
+percs = []
 
-		
-	// }
+// for(i = 0; i<100000; i++) {
+// 	var z = random_by_weight(thresholds,total);
+// 	str = build_keys(z);
+// 	if(typeof percs[str] == "undefined") {
+// 		percs[str] = 0;
+// 	}
+// 	percs[str] += 1;
+// }
+// // console.log(choices);
+// // console.log(weights);
+// y = [];
+// for(k in percs) {
+// 	y[y.length] = [k,percs[k]];
+// }
+// y.sort(function(a, b) {
+//     return a[1] - b[1];
+// }).reverse();
 
-	set_original_rows();
+// cnt = 0;
+// for(k in y) {
+// 	if(cnt++ > 10) {
+// 		break;
+// 	}
+// 	console.log(k +": "+ y[k])
+// }
+
+if($id("randomize").checked) {
+	build_all_lists();
+}
+
 </script>
 <?php
 $js = trim(ob_get_clean());

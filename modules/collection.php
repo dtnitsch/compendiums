@@ -188,15 +188,12 @@ if(!empty($js)) { add_js_code($js); }
 ##################################################
 function shuffle_assoc(&$arr) {
 	$keys = array_keys($arr);
-
 	shuffle($keys);
 
 	foreach($keys as $key) {
 		$new[$key] = $arr[$key];
 	}
-
 	$arr = $new;
-
 	return true;
 }
 

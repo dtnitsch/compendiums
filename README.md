@@ -1,7 +1,7 @@
 - Lists
 	- Generic Lists (One Item)
 	- Tables
-	- Percentages
+	- Percentages (not 100)
 	- Tags and Sub categories
 - Collections
 	- Choose any list
@@ -13,7 +13,7 @@
 	* - Create a "Multi-part" list
 
 - Compendium
-	
+
 
 - Users
 	- "My lists"
