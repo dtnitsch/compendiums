@@ -1,17 +1,20 @@
 - Lists
-	- Single
-	- Probability (must add up to 100 - default is 0, aka: all equal)
-	- Always a textbox, newline for new items, comma for probability (last comma for probability, numeric only)
-	- Generate a "key" for referencing list
-	- Combine / Build off of existing list?
-		- Keep reference to other people?
-		- Build "static" list (use others, but take snapshot)
-		- Build "Dynamic" list (if others change, yours does as well)
-- Compendiums (list of list)
-	- Cannot custom build list from here, must use list key
-	- Add key, ajax to get title
-	- show "number of rolls" (2 - 6 items from list)
-	- Reorder?
+	- Generic Lists (One Item)
+	- Tables
+	- Percentages
+	- Tags and Sub categories
+- Collections
+	- Choose any list
+	- Display limits
+	- Randomize or no
+	
+	* - ?? Triggers ?? - If option from list is of tag X, randomize from list Y?
+	
+	* - Create a "Multi-part" list
+
+- Compendium
+	
+
 - Users
 	- "My lists"
 	- "My Favorites"

@@ -92,3 +92,6 @@ create table public.collection_list_map (
 insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
 	('ff15890b1815ec8d9eaf91ad22a5286e', 'modules/ajax_files/', 'list.ajax.php', '{}')
 ;
+
+INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder, description, dynamic_variables) VALUES 
+	('/compendiums', 'compendium', 'default', 'Compendiums', 'compendiums', '', '', '[]')
