@@ -76,7 +76,7 @@ ob_start();
 <script type="text/javascript">
 
 var list_count = 0;
-function add_list(info,limit,randomize) {
+function add_list(info,limit,randomize,multi) {
 	var list_body = $id('list_body');
 	var output = '';
 	var tr;
@@ -108,9 +108,12 @@ function add_list(info,limit,randomize) {
 	lists.appendChild(tr);
 }
 
-var modal_id = 0;
-function search_for_list(id) {
-	modal_id = id;
+// var modal_id = 0;
+// var multi = 0;
+function search_for_list() {
+	// multi = multi || 0;
+	// console.log("Multi: "+ multi)
+	// modal_id = id;
 	$id("simple_modal").style.display = "block";
 	$id('modal_search').focus();
 }

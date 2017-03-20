@@ -81,6 +81,8 @@ $top_5_lists = db_query($q,"Getting Top 5 Lists");
 			</div>
 
 			<input type="button" id="add_list_button" value="Add List" style='display: none;' onclick="add_new_list()">
+			<input type="button" id="add_multi_button" value="Add Multi-List" style='display: none;' onclick="add_new_multi_list()">
+			<span id="mutli-titles"></span>
 			<div class="clear"></div>
 
 
@@ -231,6 +233,7 @@ function display_modal_list_page(res) {
 	returned_info = res.output.info;
 	set_original_rows();
 	$id('add_list_button').style.display = "";
+	$id('add_multi_button').style.display = "";
 }
 
 function add_new_list() {
@@ -240,9 +243,22 @@ function add_new_list() {
 	modal_clear();
 }
 
+function add_new_multi_list() {
+	var limit = $id("limit").value;
+	var checked = $id("randomize").checked;
+	returned_info_multi[returned_info_multi.length] = {returned_info,limit,checked};
+
+	var output = $id('mutli-titles').innerHTML;
+	if(output != "") {
+		output += ", ";
+	}
+	$id('mutli-titles').innerHTML = output + returned_info['title'];
+}
+
 var list_keys = [];
 var original_rows = {};
 var returned_info = {}
+var returned_info_multi = []
 
 </script>
 
