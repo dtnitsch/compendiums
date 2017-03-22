@@ -136,7 +136,9 @@ foreach($assets as $k => $list) {
 		$a = $list['assets'][$i];
 		$t = json_decode($list['tags'][$i]);
 		$p = $list['percentages'][$i];
-
+		// if(preg_match("/\[\d*[D|d]\d+\]/",$a,$matches)) {
+		// 	$a = str_replace($matches[0],$matches[0].":".random($matches[0]),$a);
+		// }
 
 		$display = ($cnt < $list['display_limit'] ? '' : " style='display:none;'");
 		if($list['tables'] == "t") {
@@ -285,7 +287,13 @@ if(!empty($js)) { add_js_code($js); }
 ##################################################
 #   Additional PHP Functions
 ##################################################
-
+// function random($str) {
+// 	$str = str_replace(["[","]"],"",$str);
+// 	$pieces = explode("d",strtolower($str));
+// 	$min = (!(int)$pieces[0] ? 1 : (int)$pieces[0]);
+// 	$max = (int)$pieces[1];
+// 	return mt_rand($min,$max);
+// }
 ##################################################
 #   EOF
 ##################################################
