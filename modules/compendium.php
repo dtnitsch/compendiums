@@ -130,19 +130,21 @@ $sections = [
 <style type="text/css">
 	ul.compendium { list-style-type: none; }
 	ul.compendium li { }
-	.ul1 { background: #ccc; padding-left: 5px; }
-	.ul2 { background: lightpink; padding-left: 10px; }
-	.ul3 { background: lightgreen; padding-left: 15px; }
-	.ul4 { background: lightblue; padding-left: 20px; }
-	.ul5 { background: orange; padding-left: 25px; }
-	.ul6 { background: brown; padding-left: 30px; }
-	.ul8 { background: purple; padding-left: 35px; }
-	.ul9 { background: teal; padding-left: 40px; }
+	.ul1 { padding-left: 5px; }
+	.ul2 { padding-left: 10px; }
+	.ul3 { padding-left: 15px; }
+	.ul4 { padding-left: 20px; }
+	.ul5 { padding-left: 25px; }
+	.ul6 { padding-left: 30px; }
+	.ul8 { padding-left: 35px; }
+	.ul9 { padding-left: 40px; }
 </style>
 <div class='clearfix'>
 	<h2 class='lists'>Compendiums</h2>
 
-	<?php echo recursive_menu($sections); ?>
+	<div id="ul_navs">
+		<?php echo recursive_menu($sections); ?>
+	</div>
 
 </div>
 <?php
@@ -170,10 +172,27 @@ function isNode(o){
 
 //Returns true if it is a DOM element    
 function isElement(o){
-  return (
-    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
-    o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
-);
+	return (
+		typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+		o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
+	);
+}
+
+function menus(type) {
+	type = type || "";
+	var lis = document.getElementById("ul_navs").getElementsByTagName("li");
+	for(var i=0, len=lis.length; i<len; i++) {
+		if(lis[i].childNodes.length == 1) {
+			if(type == "" || type == "toggle") {
+				lis[i].style.display = (lis[i].style.display == "none" ? "" : "none");	
+			} else if(type == "open") {
+				lis[i].style.display = "";
+			} else if(type == "close") {
+				lis[i].style.display = "none";
+			}
+		}
+		
+	}
 }
 </script>
 <?php

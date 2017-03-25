@@ -212,9 +212,9 @@ ob_start();
 		echo "\nassets['". $k ."'] = {}; ";
 		foreach($v['assets'] as $k2 => $v2) {
 
-			$output = "\nassets['". $k ."']['". $k2 ."'] = [";
+			$output = "\nassets['". addslashes($k) ."']['". addslashes($k2) ."'] = [";
 			foreach($v2 as $v3) {
-				$output .= "'". $v3 ."',";
+				$output .= "'". addslashes($v3) ."',";
 			}
 			echo substr($output,0,-1) .'];';
 		}

@@ -5,7 +5,7 @@
 function $id(x) { return document.getElementById(x) || false; }
 function $tag(x) {
 	x = x || false;
-	if(!x) { return false; }
+	// if(!x) { return false; }
 	return (x.toString() ? document.getElementsByTagName(x) : false);
 }
 function $class(x) {

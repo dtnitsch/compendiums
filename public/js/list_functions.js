@@ -187,7 +187,7 @@ function generate_lists(id,key) {
 			if(typeof data[limit] == "undefined") {
 				data[limit] = "";
 			}
-			data[limit] += a +' ';
+			data[limit] += parse_random(a) +' ';
 
 			if(is_table) {
 				a = a.split("|").join("</td><td>")

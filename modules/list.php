@@ -42,6 +42,7 @@ $res = db_query($q,"Getting list assets");
 // add_css('pagination.css');
 // add_js('sortlist.new.js');
 add_js("list_functions.js",10);
+library("slug.php");
 
 $assets[$info['id']] = [];
 while($row = db_fetch_row($res)) {
@@ -89,9 +90,13 @@ while($row = db_fetch_row($res)) {
 		$output = '<div id="custom_filters" class="mb">';
 		$cnt = 0;
 		foreach($info['tags'] as $v) {
+			if(!trim($v)) {
+				continue;
+			}
+			$slug = convert_to_alias($v);
 			$output .= '
 			<label for="filter_'. $cnt .'">
-				<input type="checkbox" id="filter_'. $cnt .'" name="filters['. $v .']" onclick="build_all_lists()" value="'. $v .'"> '. $v .'
+				<input type="checkbox" id="filter_'. $cnt .'" name="filters['. $slug .']" onclick="build_all_lists()" value="'. $slug .'"> '. $v .'
 			</label> &nbsp; 
 			';
 			$cnt += 1;
@@ -136,6 +141,9 @@ foreach($assets as $k => $list) {
 		$a = $list['assets'][$i];
 		$t = json_decode($list['tags'][$i]);
 		$p = $list['percentages'][$i];
+		foreach($t as $tk => $tv) {
+			$t[$tk] = convert_to_alias($tv);
+		}
 		// if(preg_match("/\[\d*[D|d]\d+\]/",$a,$matches)) {
 		// 	$a = str_replace($matches[0],$matches[0].":".random($matches[0]),$a);
 		// }

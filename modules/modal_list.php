@@ -41,7 +41,7 @@ $top_5_lists = db_query($q,"Getting Top 5 Lists");
 					<div>
 						Search
 						<input type="text" id="modal_search" placeholder="Search Lists" onkeyup="modal_search(this.value)">
-						<div style="position:fixed;" id="modal_search_results"></div>
+						<div style="position:relative; top: 0px; left: 0px;" id="modal_search_results"></div>
 					</div>
 
 					<div>

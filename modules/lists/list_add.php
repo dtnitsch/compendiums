@@ -57,14 +57,7 @@ Eggs; 10; poor,middle class,rich,breakfast
 Soup; 20; poor,middle class, lunch, dinner
 Bread; 20; poor,middle class,rich, breakfast, lunch, dinner
 Apples; 10; poor,middle class,rich, snack</textarea-->
-				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 90%; height: 150px;">
-Name|Color|Thiny
-Orange|Orange|yucky;60;orange
-Sky|Blue|Clouds;20;blue,orange
-Water|Transparent|Wet;10;clear
-Computer|Silver|Apple;10;Silver
-Ore|Silver,Black|Nasty;20;black,silver
-				</textarea>
+				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 90%; height: 150px;"></textarea>
 				<div style="font-size: 80%;">*Notes: Tab Deliminated List - Name &nbsp; Percentage &nbsp; Tags</div>
 			</div>
 
@@ -213,6 +206,8 @@ ob_start();
 		var output = "";
 		var cnt = 0;
 		for(key in tags) {
+			key = key.trim();
+			if(!key) { continue; }
 			alias = slug(key,'_');
 			output += `
 				<label for="filter_`+ cnt +`">
