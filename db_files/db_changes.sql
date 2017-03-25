@@ -78,6 +78,8 @@ create table public.collection_list_map (
 	id serial primary key
 	,active boolean default true
 	,randomize boolean default true
+	,is_multi boolean default false
+	,connected smallint default 0
 	,collection_id int not null default 0
 	,list_id int not null default 0
 	,display_limit int default 0
@@ -95,3 +97,7 @@ insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
 
 INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder, description, dynamic_variables) VALUES 
 	('/compendiums', 'compendium', 'default', 'Compendiums', 'compendiums', '', '', '[]')
+;
+
+alter table public.collection_list_map add column is_multi boolean default false;
+alter table public.collection_list_map add column connected smallint default 0;

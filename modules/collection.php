@@ -27,6 +27,8 @@ $q = "
 		public.asset.id
 		,public.asset.title as asset
 		,collection_list_map.id as collection_list_map_id
+		,collection_list_map.connected
+		,collection_list_map.is_multi
 		,collection_list_map.list_id
 		,collection_list_map.collection_id
 		,collection_list_map.label
@@ -45,13 +47,18 @@ $q = "
 		list.id = collection_list_map.list_id
 	order by
 		collection_list_map.id
+		,collection_list_map.connected
 		,asset.id
 ";
+
 $assets_res = db_query($q,"Getting collection assets");
 
 $assets = array();
 while($row = db_fetch_row($assets_res)) {
 	$id = $row['list_id'] ."-". $row['collection_list_map_id'];
+	if($row['connected']) {
+		$id = 'multi_'. $row['connected'];
+	}
 	if(empty($assets[$id])) {
 		$assets[$id] = [
 			"list_title" => $row['list_title']
@@ -60,14 +67,17 @@ while($row = db_fetch_row($assets_res)) {
 			,"display_limit" => $row['display_limit']
 			,"list_id" => $row['list_id']
 			,"tables" => $row['tables']
+			,"connected" => $row['connected']
 			,"assets" => []
 			,"tags" => []
 		];
 	}
-	$assets[$id]['assets'][] = $row['asset'];
-	$assets[$id]['tags'][] = $row['tags'];
+	$assets[$id]['assets'][$row['list_id']][] = $row['asset'];
+	$assets[$id]['tags'][$row['list_id']][] = $row['tags'];
 }
-
+// echo "<pre>";
+// print_r($assets);
+// die();
 ##################################################
 #   Pre-Content
 ##################################################
@@ -90,7 +100,9 @@ $split_on_count = 3;
 	</div-->
 
 	<div class="mb">
-		<button onclick="build_all_lists()">Randomize List</button>
+		<!--button onclick="build_all_lists()">Randomize List</button-->
+		<button onclick="generate_all_lists()">Randomize List</button>
+		
 	</div>
 
 		<div class='listcounter' id="listcounter" style='display:;'>
@@ -99,8 +111,9 @@ foreach($assets as $k => $list) {
 	$l = $list['display_limit'];
 	$r = $list['randomize'];
 	$title = (!empty($list['list_label']) ? $list['list_label'] : $list['list_title']);
-	shuffle_assoc($list['assets']);
-	shuffle_assoc($list['tags']);
+	// shuffle_assoc($list['assets'][$list['list_id']]);
+	// shuffle_assoc($list['tags'][$list['list_id']]);
+
 
 	$output = '<strong>'. $title .'</strong>';
 
@@ -114,23 +127,35 @@ foreach($assets as $k => $list) {
 		<table cellspacing="0" cellpadding="0" class="list_table">
 			<thead>
 				<tr>
-					<th>'. implode('</th><th>',explode("|",$list['assets'][0])) .'</th>
+					<th>'. implode('</th><th>',explode("|",$list['assets'][$list['list_id']][0])) .'</th>
 				</tr>
 			</thead>
 			<tbody id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'">
+			</tbody>
+		</table>
 		';
 	} else {
 		$output .= '
-			<br>
-			<ol class="list_ordered" id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'">
+			<br><ol class="list_ordered" id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'"></ol>
 		';
 
 	}
-	$cnt = 0;
+	// $cnt = 0;
 	// for($len=count($list['assets']); $i<$len; $i++) {
+/*
 	foreach($list['assets'] as $i => $v) {
 		$t = json_decode($list['tags'][$i]);
 		$display = ($cnt < $list['display_limit'] ? '' : " style='display:none;'");
+
+		// $data = '';
+		// foreach($list['assets'][$list['list_id']]) {
+		// 	$data = '';
+		// }
+
+		// echo "<pre>";
+		// print_r($i);
+		// print_r($v);
+		// die();
 
 		// if($list['display_limit'] < $split_on_count) {
 		// 	// $output .= '<span data-filters="'. implode(' ',$t) .'"'. $display .'>'. $v .', </span>';
@@ -151,6 +176,7 @@ foreach($assets as $k => $list) {
 		$cnt += 1;
 	}
 
+
 	// if($list['display_limit'] < $split_on_count) {
 	// 	$output = substr($output,0,-2) ."</span>";
 	// } else 
@@ -159,6 +185,7 @@ foreach($assets as $k => $list) {
 	} else {
 		$output .= "</ol>";
 	}
+*/
 	echo $output;
 	unset($output);
 }
@@ -176,6 +203,32 @@ ob_start();
 <script type="text/javascript">
 	var original_rows = {};
 	var list_keys = ['<?php echo implode("','",array_keys($assets)); ?>'];
+	var assets = {};
+	var tags = {};
+<?php
+	$output = '';
+	foreach($assets as $k => $v) {
+		$cnt = 0;
+		echo "\nassets['". $k ."'] = {}; ";
+		foreach($v['assets'] as $k2 => $v2) {
+
+			$output = "\nassets['". $k ."']['". $k2 ."'] = [";
+			foreach($v2 as $v3) {
+				$output .= "'". $v3 ."',";
+			}
+			echo substr($output,0,-1) .'];';
+		}
+		echo "\ntags['". $k ."'] = {}; ";
+		foreach($v['tags'] as $k2 => $v2) {
+
+			$output = "\ntags['". $k ."']['". $k2 ."'] = [";
+			foreach($v2 as $v3) {
+				$output .= "'". $v3 ."',";
+			}
+			echo substr($output,0,-1) .'];';
+		}
+	}
+?>
 
 	set_original_rows();
 </script>

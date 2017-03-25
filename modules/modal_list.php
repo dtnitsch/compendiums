@@ -239,7 +239,12 @@ function display_modal_list_page(res) {
 function add_new_list() {
 	var limit = $id("limit").value;
 	var checked = $id("randomize").checked;
-	add_list(returned_info,limit,checked);
+	if(returned_info_multi.length) {
+		add_list(returned_info_multi,limit,checked);	
+	} else {
+		add_list(returned_info,limit,checked);
+	}
+	
 	modal_clear();
 }
 
@@ -260,6 +265,14 @@ var original_rows = {};
 var returned_info = {}
 var returned_info_multi = []
 
+
+function reset_modal() {
+	list_keys = [];
+	original_rows = {};
+	returned_info = {}
+	returned_info_multi = []
+	$id('mutli-titles').innerHTML = '';
+}
 </script>
 
 <?php

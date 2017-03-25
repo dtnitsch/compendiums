@@ -137,3 +137,82 @@ function parse_random(s) {
 	} while (m);
 	return s
 }
+
+
+
+
+
+
+function generate_all_lists() {
+	var id,list_rows,row,i;
+	for(key in list_keys) {
+		id = 'list_body_'+ list_keys[key];
+		generate_lists(id,list_keys[key]);
+	}
+}
+
+function generate_lists(id,key) {
+	var obj;
+	var output = '';
+	var length, a, t, i, is_table;
+	var used = {};
+	var data = [];
+
+	// console.log(id)
+	// console.log(key)
+	// console.log(assets)
+	// console.log(assets[key])
+
+	for(k in assets[key]) {
+		// console.log(assets[key])
+		// console.log(assets[key][k])
+		output = '';
+		// data = [];
+		used = [];
+		obj = $id(id);
+		limit = (assets[key][k].length < obj.dataset.limit ? assets[key][k].length : obj.dataset.limit);
+		length = assets[key][k].length - 1;
+		is_table = (assets[key][k][0].indexOf('|') != -1 ? true : false);
+		// for(var i=0,len=limit; i<len; i++) {
+		while(limit--) {
+			r = rand(1,length);
+			t = JSON.parse(tags[key][k][r]);
+			a = assets[key][k][r];
+
+			if(typeof used[a] != "undefined") {
+				limit += 1;
+				continue;
+			}
+			used[a] = 1;
+			if(typeof data[limit] == "undefined") {
+				data[limit] = "";
+			}
+			data[limit] += a +' ';
+
+			if(is_table) {
+				a = a.split("|").join("</td><td>")
+				output += `
+					<tr data-filters="`+ t.join(" ") +`">
+						<td>{{`+ limit +`}}</td>
+					</tr>
+				`;
+			} else {
+				output += `
+					<li data-filters="`+ t.join(" ") +`">
+						{{`+ limit +`}}
+					</li>
+				`;				
+			}
+
+		}
+	}
+
+	for(var i=0, len=data.length; i<len; i++) {
+		if(is_table) {
+			data[i] = data[i].split("|").join("</td><td>")
+		}
+		output = output.replace("{{"+ i +"}}", data[i]);
+	}
+
+	$id(id).innerHTML = output;
+}

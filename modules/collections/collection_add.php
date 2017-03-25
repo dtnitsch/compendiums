@@ -79,25 +79,44 @@ var list_count = 0;
 function add_list(info,limit,randomize,multi) {
 	var list_body = $id('list_body');
 	var output = '';
-	var tr;
+	var tr, i, len;
 	var checked = (randomize ? " checked" : "");
+	var title = '';
+	var key = '';
+	var is_multi = 0;
+
+	// console.log(info)
 
 	list_count += 1;
 	tr = document.createElement("tr");
+
+	if(typeof info.title == "undefined" && info.length) {
+		is_multi = 1;
+		for(i = 0,len=info.length; i<len; i++) {
+			title += info[i].returned_info.title +",";
+			key += info[i].returned_info.key +",";
+		}
+		title = title.substring(0,title.length - 1);
+		key = key.substring(0,key.length - 1);
+	} else {
+		title = info.title;
+		key = info.key;
+	}
 
 
 	output = `
 		<td>`+ list_count +`</td>
 		<td>
-			<input type="input" id="label`+ list_count +`" name="list_labels[`+ list_count +`]" placeholder="List Label" value="`+ info.title +`">
+			<input type="input" id="label`+ list_count +`" name="list_labels[`+ list_count +`]" placeholder="List Label" value="`+ title +`">
 		</td>
 		<td>
-			<input type="input" id="key`+ list_count +`" name="list_keys[`+ list_count +`]" placeholder="List Key" value="`+ info.key +`">
+			<input type="input" id="key`+ list_count +`" name="list_keys[`+ list_count +`]" placeholder="List Key" value="`+ key +`">
 		</td>
 			<td>
 				<label for="randomize`+ list_count +`">
 					<input`+ checked +` type="checkbox" name="randomize[`+ list_count +`]" id="randomize`+ list_count +`" value="1"> Randomize
 				</label>
+				<input type="hidden" name="is_multi" value="`+ is_multi +`" />
 			</td>
 			<td>
 				<input type="input" name="display_limit[`+ list_count +`]" value="`+ limit +`" style="width: 40px;">
@@ -114,8 +133,13 @@ function search_for_list() {
 	// multi = multi || 0;
 	// console.log("Multi: "+ multi)
 	// modal_id = id;
+	if(typeof reset_modal == "function") {
+		console.log("?")
+		reset_modal();
+	}
 	$id("simple_modal").style.display = "block";
 	$id('modal_search').focus();
+
 }
 
 // function set_key(val) {

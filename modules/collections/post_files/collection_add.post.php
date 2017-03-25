@@ -46,11 +46,15 @@ if(!empty($_POST) && !error_message()) {
 			$collection_id = $res['id'];
 
 			$q = "";
+			$list_keys = [];
 			foreach($_POST['list_keys'] as $k => $v) {
-				$v = trim($v);
-				if(!empty($v)) {
-					$q .= "'". db_prep_sql($v) ."',";
-				}
+				$keys = explode(",", $v);
+				foreach($keys as $v2) {
+					$v2 = trim($v2);	
+					if(!empty($v2)) {
+						$q .= "'". db_prep_sql($v2) ."',";
+					}
+				}				
 			}
 			$q = "select id,key from public.list where key in (". substr($q,0,-1) .")";
 			$res = db_query($q,"Getting list_ids");
@@ -63,22 +67,34 @@ if(!empty($_POST) && !error_message()) {
 			}
 
 			$key_id_map = array_flip($_POST['list_keys']);
+			$connected = 0;
 			foreach($_POST['list_keys'] as $index => $key) {
-				$q .= "(
-					'". db_prep_sql($collection_id) ."'
-					,'". db_prep_sql($key_index_map[$key]) ."'
-					,'". db_prep_sql(trim($_POST['list_labels'][$index])) ."'
-					,'". (int)$_POST['randomize'][$index] ."'
-					,'". (int)$_POST['display_limit'][$index] ."'
-					,now()
-					,now()
-				),";
+				$keys = explode(",", $key);
+				// Don't inc unless there are multi keys
+				if(!empty($keys[1])) {
+					$connected += 1;	
+				}
+				foreach($keys as $key) {
+					$q .= "(
+						'". db_prep_sql($collection_id) ."'
+						,'". db_prep_sql($key_index_map[$key]) ."'
+						,'". (int)$_POST['is_multi'] ."'
+						,'". (int)$connected ."'
+						,'". db_prep_sql(trim($_POST['list_labels'][$index])) ."'
+						,'". (int)$_POST['randomize'][$index] ."'
+						,'". (int)$_POST['display_limit'][$index] ."'
+						,now()
+						,now()
+					),";
+				}
 			}
 			if(!empty($q)) {
 				$q = "
 					insert into collection_list_map (
 						collection_id
 						,list_id
+						,is_multi
+						,connected
 						,label
 						,randomize
 						,display_limit
