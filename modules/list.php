@@ -80,14 +80,25 @@ while($row = db_fetch_row($res)) {
 			<input checked type="checkbox" name="options" id="randomize" value="randomize"> Randomize
 		</label>
 		<label for="percentages">
-			<input checked type="checkbox" name="options" id="percentages" value="percentages"> Use Percentages
+			<input type="checkbox" name="options" id="percentages" value="percentages"> Use Percentages
 		</label>
 	</div>
 
 <?php
 	$info['tags'] = json_decode($info['tags']);
 	if(!empty($info['tags'])) {
-		$output = '<div id="custom_filters" class="mb">';
+		$output = '
+			<div id="custom_filters" class="mb">
+				<div>
+					<strong>Filters</strong>
+					<label for="filter_and">
+						<input type="radio" id="filter_and" name="and_or" value="and" /> And
+					</label> &nbsp; 
+					<label for="filter_or">
+						<input checked type="radio" id="filter_or" name="and_or" value="or" /> Or
+					</label>
+				</div>
+		';
 		$cnt = 0;
 		foreach($info['tags'] as $v) {
 			if(!trim($v)) {

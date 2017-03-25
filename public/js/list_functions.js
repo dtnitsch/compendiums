@@ -83,6 +83,7 @@ function build_list(id,key) {
 	var randomize = ($id(id).dataset && $id(id).dataset.randomize ? parseInt($id(id).dataset.randomize) : $id('randomize').checked);
 
 	var checked;
+	var and_or, r, display;
 
 	if(limit < 0 || limit > list_rows.length) {
 		limit = list_rows.length;
@@ -95,25 +96,68 @@ function build_list(id,key) {
 	}
 
 	checked = get_filters();
-	r = new RegExp('(^|\\s)('+ checked.join("|") +')(\\s|$)');
+	if(checked.length) {
+		and_or = ($id('filter_or').checked ? "or" : "and");
+		// if(and_or == "or") {
+		// 	r = new RegExp('(^|\\s)('+ checked.join("|") +')(\\s|$)');
+		// }
+	}
+	
 
 	cnt = 0;
 	for(var i=0; i<list_rows.length; i++) {
+		// No filters
 		if(checked.length == 0) {
-			list_rows[i]
 			list_rows[i].style.display = (cnt < limit ? "" : "none");
 			list_rows[i].innerHTML = parse_random(list_rows[i].innerHTML);
 			cnt += 1;
 		} else {
-			if(r.test(list_rows[i].dataset.filters)) {
-				list_rows[i].style.display = (cnt < limit ? "" : "none");
-				list_rows[i].innerHTML = parse_random(list_rows[i].innerHTML);
+			// Some filters
+			// console.log("---")
+			// console.log(and_or)
+			// console.log(checked)
+			// console.log(list_rows[i].dataset.filters.split(" "))
+			display = "none";
+			// console.log(filter_criteria(and_or, checked, list_rows[i].dataset.filters.split(" ")))
+			if(cnt < limit && filter_criteria(and_or, checked, list_rows[i].dataset.filters.split(" "))) {
+				// console.log("---")
+				// console.log(list_rows[i])
+				// console.log(and_or)
+				// console.log(checked)
+				// console.log(list_rows[i].dataset.filters.split(" "))
+				display = "";
 				cnt += 1;
-			} else {
-				list_rows[i].style.display = "none";
 			}
+			list_rows[i].style.display = display;
 		}
 	}
+}
+
+function filter_criteria(and_or,list1,list2) {
+	var map = {};
+	// var pieces = list2.split(" ");
+	var matches = 0;
+
+	// No need to check, they can't be the same
+	if(and_or == "and" && list1.length > list2.length) {
+		return false;
+	}
+
+	for(var i=0,len=list1.length; i<len; i++) {
+		map[list1[i]] = 1;
+	}
+	for(var i=0,len=list2.length; i<len; i++) {
+		if(typeof map[list2[i]] != "undefined") {
+			matches += 1;
+		}
+	}
+
+	if(and_or == "or" && matches > 0) {
+		return true
+	} else if(and_or == "and" && matches == list1.length ) {
+		return true;
+	}
+	return false;
 }
 
 function parse_random(s) {
