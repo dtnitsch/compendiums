@@ -125,6 +125,7 @@ function build_list(id,key) {
 				// console.log(and_or)
 				// console.log(checked)
 				// console.log(list_rows[i].dataset.filters.split(" "))
+				list_rows[i].innerHTML = parse_random(list_rows[i].innerHTML);
 				display = "";
 				cnt += 1;
 			}

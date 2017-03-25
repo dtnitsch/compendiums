@@ -76,50 +76,6 @@ _error_debug("MODULE: ". basename(__FILE__)); 	# Debugger
 // add_js("list_functions.js",10);
 // $split_on_count = 3;
 
-$sections = [
-	"Environment" => [
-		"Weather" => "1"
-		,"Location" => "2"
-	]
-	,"People" => [
-		"Male Names" => [
-			"All Races" => "z"
-			,"Humans" => "y"
-			,"Elves" => "x"
-			,"Dwarves" => "w"
-		]
-		,"Female Names" => [
-			"All Races" => "v"
-			,"Humans" => "u"
-			,"Elves" => "t"
-			,"Dwarves" => "s"
-			,"Other Languages" => [
-				"French" => ["Baggette","Hon hon hon"]
-				,"Hungarian" => ["Jo regelt"]
-			]
-		]
-	]
-	,"Places" => [
-		"Names" => [
-			"Taverns" => "3"
-			,"Shops" => "4"
-			,"Continents" => "5"
-			,"Ships" => "6"
-			,"Drinks and Foods" => "7"
-
-		]
-	]
-	,"Items" => [
-		"Equipment" => "8"
-		,"Book Names" => "9"
-	]
-	,"Other" => [
-		"Feelings" => "a"
-		,"Colors" => "b"
-		,"Holidays" => "c"
-	]
-];
-
 
 
 // zoe eden nitsch
@@ -128,24 +84,53 @@ $sections = [
 ##################################################
 ?>
 <style type="text/css">
-	ul.compendium { list-style-type: none; }
-	ul.compendium li { }
-	.ul1 { padding-left: 5px; }
-	.ul2 { padding-left: 10px; }
-	.ul3 { padding-left: 15px; }
-	.ul4 { padding-left: 20px; }
-	.ul5 { padding-left: 25px; }
-	.ul6 { padding-left: 30px; }
-	.ul8 { padding-left: 35px; }
-	.ul9 { padding-left: 40px; }
+.w3-bar{width:100%;overflow:hidden}.w3-center .w3-bar{display:inline-block;width:auto}
+.w3-bar .w3-bar-item{padding:8px 16px;float:left;width:auto;border:none;outline:none;display:block}
+.w3-bar .w3-dropdown-hover,.w3-bar .w3-dropdown-click{position:static;float:left}
+.w3-bar .w3-button{white-space:normal}
+.w3-bar-block .w3-bar-item{width:100%;display:block;padding:8px 16px;text-align:left;border:none;outline:none;white-space:normal}
+.w3-bar-block.w3-center .w3-bar-item{text-align:center}.w3-block{display:block;width:100%}
+.w3-black,.w3-hover-black:hover{color:#fff!important;background-color:#000!important}
+
+.w3-btn,.w3-button{border:none;display:inline-block;outline:0;padding:8px 16px;vertical-align:middle;overflow:hidden;text-decoration:none;
+color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap}
+.w3-btn:hover{box-shadow:0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)}
+.w3-btn,.w3-button{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}   
+.w3-disabled,.w3-btn:disabled,.w3-button:disabled{cursor:not-allowed;opacity:0.3}.w3-disabled *,:disabled *{pointer-events:none}
+
+.w3-red,.w3-hover-red:hover{color:#fff!important;background-color:#f44336!important}
+.w3-container:after,.w3-container:before,.w3-panel:after,.w3-panel:before,.w3-row:after,.w3-row:before,.w3-row-padding:after,.w3-row-padding:before,
+.w3-cell-row:before,.w3-cell-row:after,.w3-clear:after,.w3-clear:before,.w3-bar:before,.w3-bar:after
+{content:"";display:table;clear:both}
+.w3-container{padding:0.01em 16px}
 </style>
+
 <div class='clearfix'>
 	<h2 class='lists'>Compendiums</h2>
 
-	<div id="ul_navs">
-		<?php echo recursive_menu($sections); ?>
-	</div>
+	  <div id="compendium_buttons" class="w3-bar w3-black">
+	    <button class="w3-bar-item w3-button tablink w3-red" onclick="openCity(this,'London')">London</button>
+	    <button class="w3-bar-item w3-button tablink" onclick="openCity(this,'Paris')">Paris</button>
+	    <button class="w3-bar-item w3-button tablink" onclick="openCity(this,'Tokyo')">Tokyo</button>
+	  </div>
+	  
+	  <div id="compendium_bodies">
+		  <div id="London" class="w3-container w3-border city">
+		    <h2>London</h2>
+		    <p>London is the capital city of England.</p>
+		  </div>
 
+		  <div id="Paris" class="w3-container w3-border city" style="display:none">
+		    <h2>Paris</h2>
+		    <p>Paris is the capital of France.</p> 
+		  </div>
+
+		  <div id="Tokyo" class="w3-container w3-border city" style="display:none">
+		    <h2>Tokyo</h2>
+		    <p>Tokyo is the capital of Japan.</p>
+		  </div>
+		</div>
+	</div>
 </div>
 <?php
 ##################################################
@@ -153,48 +138,46 @@ $sections = [
 ##################################################
 ob_start();
 ?>
-<script type="text/javascript">
-function show_hide_children(obj) {
-	node = obj.parentNode.getElementsByTagName('ul');
-	if(typeof node[0] != "undefined") {
-		node = node[0];
-	}
-	node.style.display = (node.style.display == "none" ? "" : "none");
+
+<script>
+function openCity(evt, cityName) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("city");
+  for (i = 0; i < x.length; i++) {
+     x[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" w3-red", ""); 
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.className += " w3-red";
 }
 
-//Returns true if it is a DOM node
-function isNode(o){
-  return (
-    typeof Node === "object" ? o instanceof Node : 
-    o && typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName==="string"
-  );
-}
+function add_compendium_buttons(name) {
+	var btn = document.createElement("button");
+	btn.className = "w3-bar-item w3-button tablink";
+	btn.onclick = function() { openCity(this,name); }
+	btn.innerHTML = name;
+	
+	var div = document.createElement("div");
+	div.id = name;
+	div.className = "w3-container w3-border city";
+	div.style.display = "none";
+	div.innerHTML = `
+		    <h2>`+ name +`</h2>
+		    <p>`+ name +` is the capital of Somewhere.</p>
+	`;
 
-//Returns true if it is a DOM element    
-function isElement(o){
-	return (
-		typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
-		o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
-	);
-}
+	// console.log(btn)
+	// console.log(div)
+	$id('compendium_buttons').appendChild(btn);
+	$id('compendium_bodies').appendChild(div);
 
-function menus(type) {
-	type = type || "";
-	var lis = document.getElementById("ul_navs").getElementsByTagName("li");
-	for(var i=0, len=lis.length; i<len; i++) {
-		if(lis[i].childNodes.length == 1) {
-			if(type == "" || type == "toggle") {
-				lis[i].style.display = (lis[i].style.display == "none" ? "" : "none");	
-			} else if(type == "open") {
-				lis[i].style.display = "";
-			} else if(type == "close") {
-				lis[i].style.display = "none";
-			}
-		}
-		
-	}
 }
 </script>
+
+
 <?php
 $js = trim(ob_get_clean());
 if(!empty($js)) { add_js_code($js); }
@@ -202,23 +185,6 @@ if(!empty($js)) { add_js_code($js); }
 ##################################################
 #   Additional PHP Functions
 ##################################################
-function recursive_menu($arr,$output="",$level=1) {
-	$output = '<ul class="compendium ul'. $level .'">';
-	foreach($arr as $k => $v) {
-		if(is_array($v)) {
-			$output .= '<li>';
-			$output .= '<a href="javascript:void(0);" onclick="show_hide_children(this)">'. $k .'</a>';
-			$output .= recursive_menu($v, $output, $level + 1);
-		} else {
-			$output .= '<li>';
-			$output .= $v;
-		}
-		
-		$output .= '</li>';
-	}
-	$output .= '</ul>';
-	return $output;
-}
 
 
 ##################################################
