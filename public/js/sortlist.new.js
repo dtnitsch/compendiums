@@ -2,7 +2,7 @@ function sortlist(){
     // Settings: S
     var remote = {}
         ,local = {}
-        ,sort_icons = { 'asc': '<span class="sort_asc"></span>', 'desc': '<span class="sort_dsc"></span>' };
+        ,sort_icons = { 'asc': '<span class="sort_asc">&#8593;</span>', 'desc': '<span class="sort_dsc">&#8595;</span>' };
 
     function init(x) {
         x = x || {};

@@ -23,11 +23,11 @@ _error_debug("MODULE: ". basename(__FILE__)); 	# Debugger
 add_css('pagination.css');
 add_js('sortlist.new.js');
 
-$add_button = "<button onclick='window.location.href=\"/lists/add/\"' class='add'>Add New List</button>";
+$add_button = '<input type="button" value="Add New List" class="add" onclick="window.location.href=\'/lists/add/\'">';
 
 // $edit_onclick = "";
 // if(!empty($security_list['lists_edit'])) {
-    $edit_onclick = " onclick='window.location=\"/lists/edit/?key={{key}}\"'";
+    // $edit_onclick = " onclick='window.location=\"/lists/edit/?key={{key}}\"'";
 // }
 
 $delete_link = "";
@@ -49,7 +49,10 @@ if(!empty($security_list['lists_delete'])) {
 </div>
 <div class='content_container clear'>
 <?php echo dump_messages(); ?>
-	<fieldset class='filters' id='filters'>
+	
+<div class="filters" onclick="show_hide('filter_details')">Filters</div>
+<div class="filter_details" id="filter_details" style="display: none;">
+
 	<form id="form_filters" method="" action="" onsubmit="return false;">
 		
 		<div class='inputs float_left'>
@@ -57,16 +60,14 @@ if(!empty($security_list['lists_delete'])) {
 			<input type='text' name='filters[list]' id='list'>
 		</div>
 
-		<div class='inputs float_left'>
+		<div class='inputs float_left' style="margin-left: 1em;">
 			<label for='alias'><b>Alias</b></label><br>
 			<input type='text' name='filters[alias]' id='alias'>
 		</div>
 
-		<div class='inputs float_left'>
-      <label>&nbsp;</label><br>
-      <button onclick='filter_results()' class='filter'>Filter Results</button>
-    </div>
-
+		<div class="clear">
+			<input type="button" value="Filter Results" onclick='filter_results()' class='filter mt'>
+		</div>
     </form>
 
 	<form id="export_csv" method="post" action="/export/csv/" style='display: none;'>
@@ -75,16 +76,21 @@ if(!empty($security_list['lists_delete'])) {
 		<input type="hidden" name="query_csv" id="query_csv" value="">
 	</form>
 
-	</fieldset>
+</div>
+
+	<!--fieldset class='filters' id='filters'>
+
+
+	</fieldset-->
 
 	<span class='show_pagination'></span>
-	<table id='asl_sort' cellpadding="0" cellspacing="0" class='asl_sort'>
+	<table id='asl_sort' cellpadding="0" cellspacing="0" class='asl_sort mt'>
 		<thead>
 		<tr>
 			<th data-col="title">List</th>
 			<th data-col="alias">Alias</th>
 			<th data-col="modified">Date Modified</th>
-			<th class='options' style='width: 1%;'><img src='/images/options.png' /></th>
+			<th class='options' style='width: 1%;'>&#9881;</th>
 		</tr>
 		</thead>
 		<tbody style='display: none;'>
@@ -113,7 +119,8 @@ ob_start();
 		,data: 'apid=06a0fc087756944595785e90f79ecad4'
 		,filters: 'form_filters'
 		,type: "pagination"
-        ,column: "title"
+        ,column: "modified"
+        ,direction: "desc"
 	});
 
 	function filter_results() {
