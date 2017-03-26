@@ -4,7 +4,7 @@
 .logo a:link,.logo a:visited,.logo a:hover { color: #fff; text-decoration: none; }
 .header .nav { float: left; margin: 0.5em 0 0 2em; }
 .header .nav a { margin-left: 2em; }
-.header .user { float: right; margin: 0.35em 0 0 2em; }
+.header .user { float: right; margin: 0.35em 1em 0 2em; }
 
 
 .header .search { float: right; }
@@ -55,9 +55,20 @@ input[type=submit]:hover, input[type=button]:hover {
 .asl_sort .options span { font-size: 150%; }
 .asl_sort .options span:hover { color: red; }
 
-.filters { cursor: pointer; border-bottom: 1px solid #ccc; padding: 0.3em; }
+.filters { cursor: pointer; border-bottom: 1px solid #ccc; padding: 0.3em; font-size: 120%; }
+.filter_count { font-size: 80%; }
 .filter_details { background: #fff; border: 1px solid #ccc; border-top: none; padding: 0.3em; }
 
+.tbl { width: 100%; cursor: pointer; }
+.tbl th { margin: 0; padding: 0.3em; text-align: left; border-bottom: 3px solid #ccc; font-weight: bold; font-size: 125%; }
+.tbl td { text-align: left; border-bottom: 1px solid #eee; padding: 0.3em; font-size: 90%; }
+.tbl tr:nth-child(even) { background: #fff; }
+.tbl tbody tr:hover { background: #cdebf4; }
+.tbl th span { color: #999; }
+
+.list_ordered { margin: 0; padding: 0; list-style-type: none; }
+.list_ordered li { padding: 0.1em; border-bottom: 1px solid #ccc; }
+.list_ordered li:nth-child(even) { background: #fff; }
 
 /*.list_table { margin: 0 0 1em 0; padding: 0; border-top: 1px solid #ccc; border-right: 1px solid #ccc; }
 .list_table td, .list_table th { padding: 0.2em 0.5em; border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; }

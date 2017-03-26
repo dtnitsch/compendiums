@@ -138,7 +138,7 @@ foreach($assets as $k => $list) {
 		$i = 1;
 		$output = '
 		<strong>'. $title .'</strong><br>
-		<table cellspacing="0" cellpadding="0" class="list_table">
+		<table cellspacing="0" cellpadding="0" class="tbl">
 			<thead>
 				<tr>
 					<th>'. implode('</th><th>',explode("|",$list['assets'][0])) .'</th>

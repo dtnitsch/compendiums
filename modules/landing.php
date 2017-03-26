@@ -30,28 +30,35 @@ $top_10_collections = db_query($q,"Getting Top 10 Collections");
 #   Content
 ##################################################
 ?>
-<p>Total Lists: <?php echo $list_count['cnt']; ?></p>
-<div style="float: left; width: 32%">
+<p>
+	<strong>Total Lists</strong>: <?php echo $list_count['cnt']; ?>
+	<br><strong>Total Collections</strong>: <?php echo $collection_count['cnt']; ?>
+</p>
+
+
+<div style="float: left; width: 32%; border: 1px solid #ccc; background: #fff; padding: 1em;">
 	Last 10 lists created:
-	<br>
+	<ul style="">
 <?php
 	$output = "";
 	while($row = db_fetch_row($top_10_lists)) {
-		$output .= "<br><a href='/list/". $row['key'] ."/'>". $row['title'] ."</a>";
+		$output .= "<li><a href='/list/". $row['key'] ."/'>". $row['title'] ."</a></li>";
 	}
 	echo $output;
 ?>
+	</ul>
 </div>
-<div style="float: left; width: 32%">
+<div style="float: left; width: 32%; border: 1px solid #ccc; background: #fff; padding: 1em; margin-left: 3px;">
 	Last 10 collections created:
-	<br>
+	<ul style="">
 <?php
 	$output = "";
 	while($row = db_fetch_row($top_10_collections)) {
-		$output .= "<br><a href='/collection/". $row['key'] ."/'>". $row['title'] ."</a>";
+		$output .= "<li><a href='/collection/". $row['key'] ."/'>". $row['title'] ."</a></li>";
 	}
 	echo $output;
 ?>
+	</ul>
 </div>
 
 <div class="clear"></div>

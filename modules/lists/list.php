@@ -50,7 +50,9 @@ if(!empty($security_list['lists_delete'])) {
 <div class='content_container clear'>
 <?php echo dump_messages(); ?>
 	
-<div class="filters" onclick="show_hide('filter_details')">Filters</div>
+<div class="filters" onclick="show_hide('filter_details')">
+	Filters (<span class="filter_count" id="filter_count">0 applied</span>)
+</div>
 <div class="filter_details" id="filter_details" style="display: none;">
 
 	<form id="form_filters" method="" action="" onsubmit="return false;">

@@ -124,7 +124,7 @@ foreach($assets as $k => $list) {
 	if($list['tables'] == "t") {
 		$output .= '
 		<br>
-		<table cellspacing="0" cellpadding="0" class="list_table">
+		<table cellspacing="0" cellpadding="0" class="tbl">
 			<thead>
 				<tr>
 					<th>'. implode('</th><th>',explode("|",$list['assets'][$list['list_id']][0])) .'</th>
