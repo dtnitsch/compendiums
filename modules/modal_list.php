@@ -22,6 +22,7 @@ $top_5_lists = db_query($q,"Getting Top 5 Lists");
 #	Pre-Content
 ##################################################
 // $info = (!empty($_POST) ? $_POST : array());
+add_css('modal.css');
 
 ##################################################
 #	Content
@@ -95,62 +96,7 @@ $top_5_lists = db_query($q,"Getting Top 5 Lists");
 ob_start();
 ?>
 <style>
-/* The Modal (background) */
-.modal {
-	display: none; /* Hidden by default */
-	position: fixed; /* Stay in place */
-	z-index: 1; /* Sit on top */
-	padding-top: 100px; /* Location of the box */
-	left: 0;
-	top: 0;
-	width: 100%; /* Full width */
-	height: 100%; /* Full height */
-	background-color: rgb(0,0,0); /* Fallback color */
-	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-	/*overflow: auto;*/ /* Enable scroll if needed */
-	/*max-height: 100%;*/
-	overflow-y: auto;
-	max-height: calc(100vh - 100px);
-}
 
-/* Modal Content */
-.modal_outer {
-	background-color: #fefefe;
-	margin: auto;
-	padding: 5px;
-	width: 80%;
-	background-color: rgb(0,0,0); /* Fallback color */
-	background-color: rgba(0,0,0,0.1); /* Black w/ opacity */
-}
-.modal_inner {
-	background-color: #fefefe;
-	margin: auto;
-	padding: 10px;
-	border: 1px solid #666;
-	border-top: none;
-}
-
-/* The Close Button */
-.close {
-	color: #aaaaaa;
-	float: right;
-	font-size: 20px;
-	font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-	color: #000;
-	text-decoration: none;
-	cursor: pointer;
-}
-.modal_header {
-	font-size: 130%;
-	border: 1px solid #666;
-	background: #eee;
-	color: #666;
-	padding: 10px;
-}
 </style>
 <?php
 $js = trim(ob_get_clean());

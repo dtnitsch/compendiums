@@ -101,3 +101,16 @@ INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder,
 
 alter table public.collection_list_map add column is_multi boolean default false;
 alter table public.collection_list_map add column connected smallint default 0;
+
+
+INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder, description, dynamic_variables) VALUES 
+	('/compendiums/', 'compendium', 'default', 'compendiums', 'Compendiums', 'modules/compendiums/', '', '[]')
+	,('/compendiums/add/', 'compendium_add', 'default', 'Add Compendium', 'compendium_add', 'modules/compendiums/', '', '[]')
+	,('/compendiums/edit/', 'compendium_edit', 'default', 'Edit Compendium', 'compendium_edit', 'modules/compendiums/', '', '[]')
+	,('/compendiums/audit/', 'compendium_audit', 'default', 'Audit Compendium', 'compendium_audit', 'modules/compendiums/', '', '[]')
+	,('/compendiums/delete/', 'compendium_delete', 'default', 'Delete Compendium', 'compendium_delete', 'modules/compendiums/', '', '[]')
+;
+
+insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
+	('bc31fc693c24f4aa0bf13dcf0fbfb1e8', 'modules/compendiums/ajax_files/', 'compendium.ajax.php', '{"db_schema":"public","db_table":"compendiums"}')
+;

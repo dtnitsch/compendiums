@@ -139,8 +139,8 @@ function search_for_list() {
 	}
 	$id("simple_modal").style.display = "block";
 	$id('modal_search').focus();
-
 }
+modal_init();
 
 // function set_key(val) {
 // 	$id('key'+modal_id).value = val;

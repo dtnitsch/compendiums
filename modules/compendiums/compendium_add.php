@@ -42,18 +42,49 @@ color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-sp
 .w3-cell-row:before,.w3-cell-row:after,.w3-clear:after,.w3-clear:before,.w3-bar:before,.w3-bar:after
 {content:"";display:table;clear:both}
 .w3-container{padding:0.01em 16px}
+
+.tag_table { border-top: 1px solid #ccc; border-right: 1px solid #ccc; width: 100%; }
+.tag_table td { border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; padding: 10px; }
+.tag_table td.tag_nav { background: #eee; border-left: 1px solid #ccc; width: 230px; }
+
 </style>
 
+
 <div class='clearfix'>
-	<h2 class='lists'>Compendiums</h2>
+	<h2 class='compendiums'>Add Compendium</h2>
+  
+  	<?php echo dump_messages(); ?>
+	<form id="addform" method="post" action="" onsubmit="">
+
+		<label class="form_label" for="title">Compendium Name <span>*</span></label>
+		<div class="form_data">
+			<input type="text" name="title" id="title" value="">
+		</div>
+
+	</form>
 
 	<div id="compendium_buttons" class="w3-bar w3-black">
-		<!--button class="w3-bar-item w3-button tablink w3-red" onclick="openCity(this,'London')">London</button-->
+		<button class="w3-bar-item w3-button tablink w3-red" onclick="openCity(this,'London')">London</button>
 	</div>
-
 	<div id="compendium_bodies">
 
+		<div id="London" class="w3-container w3-border city" style="display: block;">
+			<table cellpadding="0" cellspacing="0" class='tag_table'>
+				<tr>
+					<td>
+						Testing 2
+					</td>
+					<td class="tag_nav">
+						<button onclick="add_list_link(this)">Add List</button>
+						<button onclick="add_collection_link(this)">Add Collection</button>
+					</td>
+				</tr>
+			</table>
+		</div>
+
 	</div>
+	<button onclick="display_modal('modal_tabs');">Add Compendium</button>
+
 </div>
 
 <?php echo run_module("modal_tabs"); ?>
@@ -86,26 +117,47 @@ function openCity(evt, cityName) {
   evt.className += " w3-red";
 }
 
-function add_compendium_buttons(name) {
+function add_compendium_buttons(info) {
 	var btn = document.createElement("button");
 	btn.className = "w3-bar-item w3-button tablink";
-	btn.onclick = function() { openCity(this,name); }
-	btn.innerHTML = name;
+	btn.onclick = function() { openCity(this,info.name); }
+	btn.innerHTML = info.name;
 	
 	var div = document.createElement("div");
-	div.id = name;
+	div.id = info.name;
 	div.className = "w3-container w3-border city";
 	div.style.display = "none";
 	div.innerHTML = `
-		    <h2>`+ name +`</h2>
-		    <p>`+ name +` is the capital of Somewhere.</p>
+		<table cellpadding="0" cellspacing="0" class='tag_table'>
+			<tr>
+				<td>
+					`+ info.name +`
+				</td>
+				<td class="tag_nav">
+					<div>
+						<button onclick="add_list_link(this)">Add List</button>
+						<button onclick="add_collection_link(this)">Add Collection</button>
+					</div>
+				</td>
+			</tr>
+		</table>
 	`;
 
 	// console.log(btn)
 	// console.log(div)
 	$id('compendium_buttons').appendChild(btn);
 	$id('compendium_bodies').appendChild(div);
+}
 
+function add_list_link(obj) {
+	var div = document.createElement("div");
+	div.innerHTML = '<a href="#">List</a>';
+	obj.parentNode.appendChild(div);
+}
+function add_collection_link(obj) {
+	var div = document.createElement("div");
+	div.innerHTML = '<a href="#">Collection</a>';
+	obj.parentNode.appendChild(div);
 }
 </script>
 
