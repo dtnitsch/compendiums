@@ -29,7 +29,9 @@
 		</div>
 
 		<div class="search">
-			<input type="text" placeholder="Search"> <button>Go</button>
+			<form method="get" action="/search/">
+				<input type="text" name="search" placeholder="Search"> <button>Go</button>
+			</form>
 		</div>
 	</div>
 

@@ -111,6 +111,57 @@ INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder,
 	,('/compendiums/delete/', 'compendium_delete', 'default', 'Delete Compendium', 'compendium_delete', 'modules/compendiums/', '', '[]')
 ;
 
+INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder, description, dynamic_variables) VALUES 
+	('/search/', 'search', 'default', 'Search', 'search', '', '', '[]')
+;
+
 insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
 	('bc31fc693c24f4aa0bf13dcf0fbfb1e8', 'modules/compendiums/ajax_files/', 'compendium.ajax.php', '{"db_schema":"public","db_table":"compendiums"}')
 ;
+
+
+
+drop table if exists public.compendium;
+create table public.compendium (
+	id serial primary key
+	,active boolean default true
+	,public boolean default true
+	,user_id int default 0
+	,key varchar(10) not null default ''
+	,title varchar(200) not null default ''
+	,alias varchar(200) not null default ''
+	,sections json default '{}'::json
+	,description text default ''
+	,created timestamp default '0001-01-01 00:00:00'
+	,modified timestamp default '0001-01-01 00:00:00'
+);
+
+
+drop table if exists public.compendium_list_map;
+create table public.compendium_list_map (
+	id serial primary key
+	,active boolean default true
+	,compendium_id int not null default 0
+	,list_id int default 0
+	,collection_id int default 0
+	,key varchar(10) not null default ''
+	,section varchar(50) not null default ''
+	,label varchar(100) not null default ''
+	,created timestamp default '0001-01-01 00:00:00'
+	,modified timestamp default '0001-01-01 00:00:00'
+);
+
+drop table if exists public.compendium_notes;
+create table public.compendium_list_map (
+	id serial primary key
+	,active boolean default true
+	,compendium_id int not null default 0
+	,list_id int default 0
+	,collection_id int default 0
+	,key varchar(10) not null default ''
+	,section varchar(50) not null default ''
+	,label varchar(100) not null default ''
+	,created timestamp default '0001-01-01 00:00:00'
+	,modified timestamp default '0001-01-01 00:00:00'
+);
+

@@ -15,8 +15,8 @@ _error_debug("MODULE: ". basename(__FILE__)); 	# Debugger
 ##################################################
 #   Pre-Content
 ##################################################
-add_css('pagination.css');
-add_js('sortlist.new.js');
+// add_css('pagination.css');
+// add_js('sortlist.new.js');
 
 $add_button = "<button onclick='window.location.href=\"/compendiums/add/\"' class='add'>Add New Compendium</button>";
 
@@ -102,23 +102,23 @@ ob_start();
 
 <script type="text/javascript">
 
-	asl_sort = sortlist().remote;
-	asl_sort.init('/ajax.php',{
-		id:'asl_sort'
-		,data: 'apid=db6d9b451b818ccc9a449383f2f0c450'
-		,filters: 'form_filters'
-		,type: "pagination"
-        ,column: "title"
-	});
+	// asl_sort = sortlist().remote;
+	// asl_sort.init('/ajax.php',{
+	// 	id:'asl_sort'
+	// 	,data: 'apid=db6d9b451b818ccc9a449383f2f0c450'
+	// 	,filters: 'form_filters'
+	// 	,type: "pagination"
+ //        ,column: "title"
+	// });
 
-	function filter_results() {
-		asl_sort.sort(asl_sort,true);
-	}
-	// True is needed to show it's a custom call
-	asl_sort.sort(asl_sort,true);
+	// function filter_results() {
+	// 	asl_sort.sort(asl_sort,true);
+	// }
+	// // True is needed to show it's a custom call
+	// asl_sort.sort(asl_sort,true);
 
-	// Onfocus
-    $id("compendium").focus();
+	// // Onfocus
+ //    $id("compendium").focus();
 
 </script>
 

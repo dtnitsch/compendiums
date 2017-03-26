@@ -8,6 +8,10 @@ if(!empty($_POST) && !error_message()) {
 	// validate_from_json($json);
 	// error_message(get_all_validation_errors());
 
+	echo "<pre>";
+	print_r($_POST);
+	die();
+
 	if(!error_message()) {
 
 

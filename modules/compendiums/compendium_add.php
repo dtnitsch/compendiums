@@ -4,6 +4,8 @@
 ##################################################
 _error_debug("MODULE: ". basename(__FILE__)); 	# Debugger 
 
+post_queue($module_name,'modules/compendiums/post_files/');
+
 ##################################################
 #   Validation
 ##################################################
@@ -17,6 +19,7 @@ _error_debug("MODULE: ". basename(__FILE__)); 	# Debugger
 ##################################################
 add_css('modal.css');
 add_js('modal.js');
+add_js("list_functions.js",10);
 
 ##################################################
 #   Content
@@ -36,14 +39,15 @@ color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-sp
 .w3-btn:hover{box-shadow:0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)}
 .w3-btn,.w3-button{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}   
 .w3-disabled,.w3-btn:disabled,.w3-button:disabled{cursor:not-allowed;opacity:0.3}.w3-disabled *,:disabled *{pointer-events:none}
+.w3-bar-item, .w3-button { border-right: 1px solid #ccc; }
 
 .w3-red,.w3-hover-red:hover{color:#fff!important;background-color:#f44336!important}
 .w3-container:after,.w3-container:before,.w3-panel:after,.w3-panel:before,.w3-row:after,.w3-row:before,.w3-row-padding:after,.w3-row-padding:before,
 .w3-cell-row:before,.w3-cell-row:after,.w3-clear:after,.w3-clear:before,.w3-bar:before,.w3-bar:after
 {content:"";display:table;clear:both}
-.w3-container{padding:0.01em 16px}
+.w3-container{padding:0.01em 0px}
 
-.tag_table { border-top: 1px solid #ccc; border-right: 1px solid #ccc; width: 100%; }
+.tag_table { border-right: 1px solid #ccc; width: 100%; }
 .tag_table td { border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; padding: 10px; }
 .tag_table td.tag_nav { background: #eee; border-left: 1px solid #ccc; width: 230px; }
 
@@ -54,40 +58,47 @@ color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-sp
 	<h2 class='compendiums'>Add Compendium</h2>
   
   	<?php echo dump_messages(); ?>
-	<form id="addform" method="post" action="" onsubmit="">
+	<form id="addform" method="post" action="" onsubmit="return submit_form();">
 
 		<label class="form_label" for="title">Compendium Name <span>*</span></label>
 		<div class="form_data">
 			<input type="text" name="title" id="title" value="">
 		</div>
 
-	</form>
+		<input type="button" value="Create Compendium Tab" onclick="display_modal('modal_tabs');">
 
-	<div id="compendium_buttons" class="w3-bar w3-black">
-		<button class="w3-bar-item w3-button tablink w3-red" onclick="openCity(this,'London')">London</button>
-	</div>
-	<div id="compendium_bodies">
-
-		<div id="London" class="w3-container w3-border city" style="display: block;">
-			<table cellpadding="0" cellspacing="0" class='tag_table'>
-				<tr>
-					<td>
-						Testing 2
-					</td>
-					<td class="tag_nav">
-						<button onclick="add_list_link(this)">Add List</button>
-						<button onclick="add_collection_link(this)">Add Collection</button>
-					</td>
-				</tr>
-			</table>
+		<div id="compendium_buttons" class="w3-bar w3-black mt">
+			<!--button class="w3-bar-item w3-button tablink w3-red" onclick="open_compendium_tab(this,'default')">Default</button>
+			<input type="hidden" name="sections[default]" value="Default" /-->
 		</div>
+		<div id="compendium_bodies">
 
+			<!--div id="default" class="w3-container w3-border city" style="display: block;">
+				<table cellpadding="0" cellspacing="0" class='tag_table'>
+					<tr>
+						<td>
+							Testing 2
+						</td>
+						<td class="tag_nav">
+							<button onclick="search_for_list(this,'default')">Add List</button>
+							<button onclick="search_for_collection(this,'default')">Add Collection</button>
+						</td>
+					</tr>
+				</table>
+			</div-->
+
+		</form>
 	</div>
-	<button onclick="display_modal('modal_tabs');">Add Compendium</button>
 
+	<div class="mt">
+		<input type="submit" value="Save Compendium" onclick="read_for_submit();">
+	</div>
 </div>
 
+
+
 <?php echo run_module("modal_tabs"); ?>
+<?php echo run_module("modal_list"); ?>
 
 <?php
 ##################################################
@@ -97,13 +108,39 @@ ob_start();
 ?>
 
 <script type="text/javascript">
+var parent_object;
+var modal_section;
+var submit_bool = false;
+
+function submit_form() {
+	return submit_bool;
+}
+
+function read_for_submit() {
+	submit_bool = true;
+	$id('addform').submit();
+}
+
 function display_modal(id) {
 	id = id || "simple_modal";
+	modal_init(id);
 	if(typeof reset_modal == "function") { reset_modal(); }
 	$id(id).style.display = "block";
 }
 
-function openCity(evt, cityName) {
+function search_for_list(obj,section) {
+	parent_object = obj;
+	modal_section = section;
+	modal_init("simple_modal");
+	if(typeof reset_modal == "function") {
+		reset_modal();
+	}
+	$id("simple_modal").style.display = "block";
+	$id('modal_search').focus();
+}
+modal_init("modal_tabs");
+
+function open_compendium_tab(evt, cityName) {
   var i, x, tablinks;
   x = document.getElementsByClassName("city");
   for (i = 0; i < x.length; i++) {
@@ -120,9 +157,10 @@ function openCity(evt, cityName) {
 function add_compendium_buttons(info) {
 	var btn = document.createElement("button");
 	btn.className = "w3-bar-item w3-button tablink";
-	btn.onclick = function() { openCity(this,info.name); }
+	btn.onclick = function() { open_compendium_tab(this,info.name); }
 	btn.innerHTML = info.name;
-	
+	var alias = slug(info.name,'_');
+
 	var div = document.createElement("div");
 	div.id = info.name;
 	div.className = "w3-container w3-border city";
@@ -135,8 +173,9 @@ function add_compendium_buttons(info) {
 				</td>
 				<td class="tag_nav">
 					<div>
-						<button onclick="add_list_link(this)">Add List</button>
-						<button onclick="add_collection_link(this)">Add Collection</button>
+						<button onclick="search_for_list(this,'`+ alias +`')">Add List</button>
+						<button onclick="search_for_collection(this,'`+ alias +`')">Add Collection</button>
+						<input type="hidden" name="sections[`+ alias +`]" value="`+ info.name +`" />
 					</div>
 				</td>
 			</tr>
@@ -149,15 +188,20 @@ function add_compendium_buttons(info) {
 	$id('compendium_bodies').appendChild(div);
 }
 
-function add_list_link(obj) {
-	var div = document.createElement("div");
-	div.innerHTML = '<a href="#">List</a>';
-	obj.parentNode.appendChild(div);
-}
 function add_collection_link(obj) {
 	var div = document.createElement("div");
 	div.innerHTML = '<a href="#">Collection</a>';
 	obj.parentNode.appendChild(div);
+	modal_clear('modal_list');
+}
+
+function add_list(info,limit,randomize,multi) {
+	var list_body = $id('list_body');
+	var div = document.createElement("div");
+
+	div.innerHTML = '<input type="text" name="lists['+ modal_section +']['+ info.key +']" value="'+ info.title +'" />';
+	parent_object.parentNode.appendChild(div);
+	modal_clear('simple_modal');
 }
 </script>
 

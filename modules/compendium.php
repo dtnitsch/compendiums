@@ -47,6 +47,8 @@ color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-sp
 <div class='clearfix'>
 	<h2 class='lists'>Compendiums</h2>
 
+	<a href="/compendiums/add/">Add Compendium</a>
+
 	<div id="compendium_buttons" class="w3-bar w3-black">
 		<!--button class="w3-bar-item w3-button tablink w3-red" onclick="openCity(this,'London')">London</button-->
 	</div>
