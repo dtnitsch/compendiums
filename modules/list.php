@@ -73,14 +73,14 @@ while($row = db_fetch_row($res)) {
   
 	<div class="mb">
 		<label for="limit">
-			Limit Display: <input type="input" name="limit" id="limit" value="20" class='xs'> 
+			Limit Display: <input type="input" name="limit" id="limit_<?php echo $info['key']; ?>" value="20" class='xs'> 
 		</label>
 
 		<label for="randomize">
-			<input checked type="checkbox" name="options" id="randomize" value="randomize"> Randomize
+			<input checked type="checkbox" name="options" id="randomize_<?php echo $info['key']; ?>" value="randomize"> Randomize
 		</label>
 		<label for="percentages">
-			<input type="checkbox" name="options" id="percentages" value="percentages"> Use Percentages
+			<input type="checkbox" name="options" id="percentages_<?php echo $info['key']; ?>" value="percentages"> Use Percentages
 		</label>
 	</div>
 
@@ -88,7 +88,7 @@ while($row = db_fetch_row($res)) {
 	$info['tags'] = json_decode($info['tags']);
 	if(!empty($info['tags'])) {
 		$output = '
-			<div id="custom_filters" class="mb">
+			<div id="custom_filters_'. $info['key'] .'" class="mb">
 				<div>
 					<strong>Filters</strong>
 					<label for="filter_and">
@@ -107,7 +107,7 @@ while($row = db_fetch_row($res)) {
 			$slug = convert_to_alias($v);
 			$output .= '
 			<label for="filter_'. $cnt .'">
-				<input type="checkbox" id="filter_'. $cnt .'" name="filters['. $slug .']" onclick="build_all_lists()" value="'. $slug .'"> '. $v .'
+				<input type="checkbox" id="filter_'. $cnt .'" name="filters['. $slug .']" onclick="build_all_lists(\''. $info['key'] .'\')" value="'. $slug .'"> '. $v .'
 			</label> &nbsp; 
 			';
 			$cnt += 1;
@@ -118,7 +118,7 @@ while($row = db_fetch_row($res)) {
 ?>
 
 	<div class="mb">
-		<button onclick="build_all_lists()">Update</button>
+		<button onclick="build_all_lists('<?php echo $info['key']; ?>')">Update</button>
 	</div>
 
 

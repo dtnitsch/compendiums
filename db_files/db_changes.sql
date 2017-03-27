@@ -96,7 +96,7 @@ insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
 ;
 
 INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder, description, dynamic_variables) VALUES 
-	('/compendiums', 'compendium', 'default', 'Compendiums', 'compendiums', '', '', '[]')
+	('/compendium', 'compendium', 'default', 'Compendiums', 'compendiums', '', '', '[]')
 ;
 
 alter table public.collection_list_map add column is_multi boolean default false;
@@ -144,7 +144,6 @@ create table public.compendium_list_map (
 	,compendium_id int not null default 0
 	,list_id int default 0
 	,collection_id int default 0
-	,key varchar(10) not null default ''
 	,section varchar(50) not null default ''
 	,label varchar(100) not null default ''
 	,created timestamp default '0001-01-01 00:00:00'

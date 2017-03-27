@@ -60,6 +60,8 @@ if(substr($path,0,6) == '/list/') {
 	$path_type = "list";
 } else if(substr($path,0,12) == '/collection/') {
 	$path_type = "collection";
+} else if(substr($path,0,12) == '/compendium/') {
+	$path_type = "compendium";
 } else {
 	$custom = 0;
 }

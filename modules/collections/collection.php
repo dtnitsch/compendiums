@@ -44,24 +44,27 @@ if(!empty($security_collection['collections_delete'])) {
 </div>
 <div class='content_container clear'>
 <?php echo dump_messages(); ?>
-	<fieldset class='filters' id='filters'>
+
+<div class="filters" onclick="show_hide('filter_details')">
+	Filters (<span class="filter_count" id="filter_count">0 applied</span>)
+</div>
+<div class="filter_details" id="filter_details" style="display: none;">
+
 	<form id="form_filters" method="" action="" onsubmit="return false;">
 		
 		<div class='inputs float_left'>
-			<label for='collection'><b>Collection</b></label><br>
-			<input type='text' name='filters[collection]' id='collection'>
+			<label for='list'><b>List</b></label><br>
+			<input type='text' name='filters[list]' id='list'>
 		</div>
 
-		<div class='inputs float_left'>
+		<div class='inputs float_left' style="margin-left: 1em;">
 			<label for='alias'><b>Alias</b></label><br>
 			<input type='text' name='filters[alias]' id='alias'>
 		</div>
 
-		<div class='inputs float_left'>
-      <label>&nbsp;</label><br>
-      <button onclick='filter_results()' class='filter'>Filter Results</button>
-    </div>
-
+		<div class="clear">
+			<input type="button" value="Filter Results" onclick='filter_results()' class='filter mt'>
+		</div>
     </form>
 
 	<form id="export_csv" method="post" action="/export/csv/" style='display: none;'>
@@ -70,10 +73,11 @@ if(!empty($security_collection['collections_delete'])) {
 		<input type="hidden" name="query_csv" id="query_csv" value="">
 	</form>
 
-	</fieldset>
+</div>
+
 
 	<span class='show_pagination'></span>
-	<table id='asl_sort' cellpadding="0" cellspacing="0" class='asl_sort'>
+	<table id='asl_sort' cellpadding="0" cellspacing="0" class='asl_sort mt'>
 		<thead>
 		<tr>
 			<th data-col="title">Collection</th>

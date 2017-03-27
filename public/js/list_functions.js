@@ -57,8 +57,8 @@ function set_original_rows() {
 	}
 }
 
-function get_filters() {
-	var filters = $query('#custom_filters input[name^=filter]');
+function get_filters(list_key) {
+	var filters = $query('#custom_filters_'+ list_key +' input[name^=filter]');
 	var checked = [];
 	for(var i=0,len=filters.length; i<len; i++) {
 		if(filters[i].checked) {
@@ -68,19 +68,19 @@ function get_filters() {
 	return checked;
 }
 
-function build_all_lists() {
+function build_all_lists(list_key) {
 	var id,list_rows,row,i;
 	for(key in list_keys) {
 		id = 'list_body_'+ list_keys[key];
-		build_list(id,list_keys[key]);
+		build_list(id,list_keys[key],list_key);
 	}
 }
-function build_list(id,key) {
+function build_list(id,key,list_key) {
 	var id = id || 'list_body';
     var list_rows = ($id(id).rows ? $id(id).rows : $query('#'+ id +' li'));
 
-	var limit = ($id(id).dataset && $id(id).dataset.limit ? parseInt($id(id).dataset.limit) : $id('limit').value);
-	var randomize = ($id(id).dataset && $id(id).dataset.randomize ? parseInt($id(id).dataset.randomize) : $id('randomize').checked);
+	var limit = ($id(id).dataset && $id(id).dataset.limit ? parseInt($id(id).dataset.limit) : $id('limit_'+ list_key).value);
+	var randomize = ($id(id).dataset && $id(id).dataset.randomize ? parseInt($id(id).dataset.randomize) : $id('randomize_'+ list_key).checked);
 
 	var checked;
 	var and_or, r, display;
@@ -95,7 +95,7 @@ function build_list(id,key) {
 		reset_table(id,key);
 	}
 
-	checked = get_filters();
+	checked = get_filters(list_key);
 	if(checked.length) {
 		and_or = ($id('filter_or').checked ? "or" : "and");
 		// if(and_or == "or") {
@@ -103,7 +103,6 @@ function build_list(id,key) {
 		// }
 	}
 	
-
 	cnt = 0;
 	for(var i=0; i<list_rows.length; i++) {
 		// No filters

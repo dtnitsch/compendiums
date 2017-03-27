@@ -8,16 +8,13 @@ if(!empty($_POST) && !error_message()) {
 	// validate_from_json($json);
 	// error_message(get_all_validation_errors());
 
-	echo "<pre>";
-	print_r($_POST);
-	die();
-
 	if(!error_message()) {
 
 
 		library("slug.php");
 		$title = trim($_POST['title']);
 		$alias = convert_to_alias($title);
+		$sections = json_encode($_POST['sections']);
 		$key = create_key();
 
 		$q = "
@@ -25,6 +22,7 @@ if(!empty($_POST) && !error_message()) {
 			,'". $key ."'
 			,'". db_prep_sql($title) ."'
 			,'". db_prep_sql($alias) ."'
+			,'". db_prep_sql($sections) ."'
 			,now()
 			,now()
 		";
@@ -35,6 +33,7 @@ if(!empty($_POST) && !error_message()) {
 				,key
 				,title
 				,alias
+				,sections
 				,created
 				,modified
 			) values (
@@ -51,12 +50,11 @@ if(!empty($_POST) && !error_message()) {
 
 			$q = "";
 			$list_keys = [];
-			foreach($_POST['list_keys'] as $k => $v) {
-				$keys = explode(",", $v);
-				foreach($keys as $v2) {
-					$v2 = trim($v2);	
-					if(!empty($v2)) {
-						$q .= "'". db_prep_sql($v2) ."',";
+			foreach($_POST['lists'] as $k => $v) {
+				foreach($v as $k2 => $v2) {
+					$k2 = trim($k2);	
+					if(!empty($k2) && !empty($v2)) {
+						$q .= "'". db_prep_sql($k2) ."',";
 					}
 				}				
 			}
@@ -70,23 +68,16 @@ if(!empty($_POST) && !error_message()) {
 				$key_index_map[$row['key']] = $row['id'];
 			}
 
-			$key_id_map = array_flip($_POST['list_keys']);
+			// $key_id_map = array_flip($_POST['list_keys']);
 			$connected = 0;
-			foreach($_POST['list_keys'] as $index => $key) {
-				$keys = explode(",", $key);
-				// Don't inc unless there are multi keys
-				if(!empty($keys[1])) {
-					$connected += 1;	
-				}
-				foreach($keys as $key) {
+			foreach($_POST['lists'] as $index => $v) {
+				foreach($v as $key => $label) {
 					$q .= "(
 						'". db_prep_sql($compendium_id) ."'
 						,'". db_prep_sql($key_index_map[$key]) ."'
-						,'". (int)$_POST['is_multi'] ."'
-						,'". (int)$connected ."'
-						,'". db_prep_sql(trim($_POST['list_labels'][$index])) ."'
-						,'". (int)$_POST['randomize'][$index] ."'
-						,'". (int)$_POST['display_limit'][$index] ."'
+						,'". db_prep_sql($key) ."'
+						,'". db_prep_sql($index) ."'
+						,'". db_prep_sql(trim($label)) ."'
 						,now()
 						,now()
 					),";
@@ -97,11 +88,9 @@ if(!empty($_POST) && !error_message()) {
 					insert into compendium_list_map (
 						compendium_id
 						,list_id
-						,is_multi
-						,connected
+						,key
+						,section
 						,label
-						,randomize
-						,display_limit
 						,created
 						,modified
 					) VALUES 

@@ -16,11 +16,17 @@ $list_count = db_fetch($q,"Getting List");
 $q = "select count(id) as cnt from public.collection where active";
 $collection_count = db_fetch($q,"Getting Collection");
 
+$q = "select count(id) as cnt from public.compendium where active";
+$compendium_count = db_fetch($q,"Getting Compendium");
+
 $q = "select title,key from public.list where active order by id desc limit 10 ";
 $top_10_lists = db_query($q,"Getting Top 10 Lists");
 
 $q = "select title,key from public.collection where active order by id desc limit 10 ";
 $top_10_collections = db_query($q,"Getting Top 10 Collections");
+
+$q = "select title,key from public.compendium where active order by id desc limit 10 ";
+$top_10_compendiums = db_query($q,"Getting Top 10 Compendiums");
 
 ##################################################
 #   Pre-Content
@@ -33,10 +39,11 @@ $top_10_collections = db_query($q,"Getting Top 10 Collections");
 <p>
 	<strong>Total Lists</strong>: <?php echo $list_count['cnt']; ?>
 	<br><strong>Total Collections</strong>: <?php echo $collection_count['cnt']; ?>
+	<br><strong>Total Compendiums</strong>: <?php echo $compendium_count['cnt']; ?>
 </p>
 
 
-<div style="float: left; width: 32%; border: 1px solid #ccc; background: #fff; padding: 1em;">
+<div style="float: left; width: 30%; border: 1px solid #ccc; background: #fff; padding: 1em;">
 	Last 10 lists created:
 	<ul style="">
 <?php
@@ -48,13 +55,27 @@ $top_10_collections = db_query($q,"Getting Top 10 Collections");
 ?>
 	</ul>
 </div>
-<div style="float: left; width: 32%; border: 1px solid #ccc; background: #fff; padding: 1em; margin-left: 3px;">
+
+<div style="float: left; width: 30%; border: 1px solid #ccc; background: #fff; padding: 1em;">
 	Last 10 collections created:
 	<ul style="">
 <?php
 	$output = "";
 	while($row = db_fetch_row($top_10_collections)) {
 		$output .= "<li><a href='/collection/". $row['key'] ."/'>". $row['title'] ."</a></li>";
+	}
+	echo $output;
+?>
+	</ul>
+</div>
+
+<div style="float: left; width: 30%; border: 1px solid #ccc; background: #fff; padding: 1em;">
+	Last 10 compendiums created:
+	<ul style="">
+<?php
+	$output = "";
+	while($row = db_fetch_row($top_10_compendiums)) {
+		$output .= "<li><a href='/compendium/". $row['key'] ."/'>". $row['title'] ."</a></li>";
 	}
 	echo $output;
 ?>
