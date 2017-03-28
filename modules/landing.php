@@ -56,7 +56,7 @@ $top_10_compendiums = db_query($q,"Getting Top 10 Compendiums");
 	</ul>
 </div>
 
-<div style="float: left; width: 30%; border: 1px solid #ccc; background: #fff; padding: 1em;">
+<div style="float: left; width: 30%; border: 1px solid #ccc; background: #fff; padding: 1em; margin-left: 3px;">
 	Last 10 collections created:
 	<ul style="">
 <?php
@@ -69,7 +69,7 @@ $top_10_compendiums = db_query($q,"Getting Top 10 Compendiums");
 	</ul>
 </div>
 
-<div style="float: left; width: 30%; border: 1px solid #ccc; background: #fff; padding: 1em;">
+<div style="float: left; width: 30%; border: 1px solid #ccc; background: #fff; padding: 1em; margin-left: 3px;">
 	Last 10 compendiums created:
 	<ul style="">
 <?php

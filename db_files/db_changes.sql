@@ -164,3 +164,18 @@ create table public.compendium_list_map (
 	,modified timestamp default '0001-01-01 00:00:00'
 );
 
+
+
+INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder, description, dynamic_variables) VALUES 
+	('/register/', 'register', 'default', 'Register', 'register', '', '', '[]')
+;
+
+INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder, description, dynamic_variables) VALUES 
+	('/u/(\w+)/lists/', 'user_lists', 'default', 'User List', 'user_list', '', '', '[]')
+	,('/u/(\w+)/collections/', 'user_collections', 'default', 'User Collection', 'user_collection', '', '', '[]')
+	,('/u/(\w+)/compendiums/', 'user_compendiums', 'default', 'User Compendium', 'user_compendium', '', '', '[]')
+;
+
+INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder, description, dynamic_variables) VALUES 
+	('/u/(\w+)/', 'user_page', 'default', 'User Page', 'user_page', '', '', '[]')
+;

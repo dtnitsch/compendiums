@@ -1,8 +1,6 @@
 <?php
 _error_debug("Starting Ajax",'',__LINE__,__FILE__);
 
-
-
 $q = "
 	select
 	    key

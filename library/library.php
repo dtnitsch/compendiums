@@ -141,7 +141,8 @@ function set_safe_redirect($url) {
 function load_path_data($path) {
 
 	if(!empty($GLOBALS["routing_options"]["db"])) {	
-		$q = "select * from system.paths where path ilike '". $path ."'";
+		// $q = "select * from system.paths where path ilike '". $path ."'";
+		$q = "select *,regexp_matches('". $path ."',path)::text from system.paths where '". $path ."' similar to path";
 		$res = db_fetch($q,"Load Path Information");
 	} else {
 		include("../routes/". md5($path) .".php");

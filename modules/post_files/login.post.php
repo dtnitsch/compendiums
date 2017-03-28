@@ -8,7 +8,7 @@ if(!empty($_POST) && !error_message() && !empty($_POST["login_input"])) {
 	# Check to see if this is a submission of the login form
 	if($login != "") { 
 		$login = $_POST["login_input"];
-		$column = "email";
+		$column = "username";
 		if(strpos($login,"@") !== false) { $column = "email"; }
 
 		#################################################################################
@@ -17,9 +17,6 @@ if(!empty($_POST) && !error_message() && !empty($_POST["login_input"])) {
 
 		$users_table = "users";
 		if(uses_schema()) { $users_table = '"system"."users"'; }
-
-		$students_table = "students";
-		if(uses_schema()) { $students_table = '"system"."students"'; }
 
 		$q = "
 			select
@@ -41,27 +38,16 @@ if(!empty($_POST) && !error_message() && !empty($_POST["login_input"])) {
 
 		if(!empty($info["id"])) {
 
-			if(user_compare_passwords($_POST["login_password"], $info["password_acu"], $info["password_salt_acu"])) {
+			if(user_compare_passwords($_POST["login_password"], $info["password"], $info["password_salt"])) {
 
 				$_SESSION["is_guest"] = false;
 
 				# Set the session variables that will be used in the rest of the site
-				$_SESSION["user"]["firstname"] = $info["firstname"];
-				$_SESSION["user"]["lastname"] = $info["lastname"];
-				$_SESSION["user"]["email"] = $info["email"];
 				$_SESSION["user"]["id"] = $info["id"];
-
-				if(!empty($info["username"])) {
-					$_SESSION["user"]["username"] = $info["username"];
-				}
-				if(empty($GLOBALS["security_options"]["enabled"])) {
-					$_SESSION["user"]["is_superadmin"] = 1;
-				} else {
-					$_SESSION["user"]["is_superadmin"] = (!empty($info["is_superadmin"]) && $info["is_superadmin"] == "t" ? 1 : 0);	
-				}
+				$_SESSION["user"]["username"] = $info["username"];
 
 				audit("logins",$info["id"]);
-				safe_redirect("/acu/");
+				safe_redirect("/");
 
 			} else {
 				# Nothing came back for this email address in the DB.  Generic message ensues.

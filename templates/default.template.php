@@ -31,7 +31,13 @@
 		</div>
 
 		<div class="user">
-			Welcome, <a href="javascript:void(0);" onclick="show_hide('header_details');">Name</a>
+<?php
+	$output = '<a href="/login/">Login</a>';
+	if(!empty($_SESSION['user'])) {
+		$output = '<a href="javascript:void(0);" onclick="show_hide(\'header_details\');">'. $_SESSION['user']['username'] .'</a>';	
+	}
+	echo $output;
+?>
 		</div>
 
 		<div class="search">
@@ -41,10 +47,25 @@
 		</div>
 		<div class="clear"></div>
 	</div>
-
-	<div id="header_details" class="header_details" style="display: none;">
-		details here
+<?php
+if(!empty($_SESSION['user'])) {
+	$username = $_SESSION['user']['username'];
+?>
+	<div id="header_details" class="header_details">
+		<div class="float_right">
+			<a href="/u/<?php echo $username; ?>/">My Profile</a>
+			<a href="?logout=1">Logout</a>
+		</div>
+		
+		<a href="/u/<?php echo $username; ?>/lists/">My Lists</a>
+		<a href="/u/<?php echo $username; ?>/collections/">My Collections</a>
+		<a href="/u/<?php echo $username; ?>/compendiums/">My Compendiums</a>
+		<a href="/u/<?php echo $username; ?>/reports/">My Reports</a>
 	</div>
+
+<?php	
+}
+?>
 
 <!--Start Body Content-->
 <div class="body_content">

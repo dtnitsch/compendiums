@@ -85,11 +85,10 @@ _error_debug("Path Details",$path_data);
 // }
 
 // If logout is set, perform all logout goodness
-// if(!empty($_GET["logout"])) {
-// 	library("membership.php");
-// 	$url = (strpos($path_data['path'],'acu') !== false ? '/acu/' : '/');
-// 	user_logout($url);
-// }
+if(!empty($_GET["logout"])) {
+	library("membership.php");
+	user_logout("/");
+}
 
 // Check to see if we need to reload their information, or if we need to log them out
 check_session_timeout();

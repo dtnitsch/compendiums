@@ -76,37 +76,16 @@ function user_login($user_id) {
 
 function create_new_user($info) {
 
-	if (empty($info["firstname"])) { return false; }
-	else if(empty($info["lastname"])) { return false; }
-	else if(empty($info["email"])) { return false; }
+	if(empty($info["username"])) { return false; }
 	else if(empty($info["password"])) { return false; }
 
 	list($password, $password_salt) = user_hash_passwords($info["password"]);
 
 	$username = (!empty($info["username"]) ? $info["username"] : 0);
 
-	$registration_type_id = (!empty($info["registration_type_id"]) ? $info["registration_type_id"] : 0);
-
-	$region_id = (empty($info["region_id"]) ? 0 : $info["region_id"]);
-	$region_str = (empty($info["region_str"]) ? "" : $info["region_str"]);
-	$country_id = (empty($info["country_id"]) ? 0 : $info["country_id"]);
-	$country_str = (empty($info["country_str"]) ? "" : $info["country_str"]);
-	$pin = (!empty($info["pin"]) ? $info["pin"] : 0);
-
-	$address = (!empty($info["address"]) ? $info["address"] : 0);
-	$city = (!empty($info["city"]) ? $info["city"] : 0);
-	$title = (empty($info["title"]) ? "" : $info["title"]);
-	$postal_code = (!empty($info["postal_code"]) ? $info["postal_code"] : '');
-
-	$phone1 = (!empty($info["phone1"]) ? $info["phone1"] : 0);
-	$phone2 = (!empty($info["phone2"]) ? $info["phone2"] : 0);
-	$phone3 = (!empty($info["phone3"]) ? $info["phone3"] : 0);
-
-	$marketing_source = (!empty($info["marketing_source"]) ? $info["marketing_source"] : "");
-
 	$table = "users";
 
-	$datetime = time();
+	// $datetime = time();
 
 	if (uses_schema()) {
 		$table = '"system"."users"';
@@ -115,52 +94,20 @@ function create_new_user($info) {
 
 	$q = "
 		insert into ". $table ." (
-			registration_type_id
-			,firstname
-			,lastname
-			,username
-			,email
+			username
 			,password
 			,password_salt
-			,pin
 			,is_superadmin
-			,city
-			,title
-			,region_id
-			,region_str
-			,country_id
-			,country_str
-			,postal_code
-			,phone1
-			,phone2
-			,phone3
-			,marketing_source
 			,created
 			,modified
 		)
 		values (
-			'". db_prep_sql($registration_type_id) ."'
-			,'". db_prep_sql($info["firstname"]) ."'
-			,'". db_prep_sql($info["lastname"]) ."'
-			,'". db_prep_sql($username) ."'
-			,'". db_prep_sql($info['email']) ."'
+			'". db_prep_sql($username) ."'
 			,'". db_prep_sql($password) ."'
-			,'". db_prep_sql($password_salt,(uses_schema() ? "bytea" : "")) ."'
-			,'". db_prep_sql($pin) ."'
-			,'". db_prep_sql(!empty($info["is_superadmin"]) ? 't' : 'f') ."'
-			,'". db_prep_sql($city) ."'
-			,'". db_prep_sql($title) ."'
-			,'". db_prep_sql($region_id) ."'
-			,'". db_prep_sql($region_str) ."'
-			,'". db_prep_sql($country_id) ."'
-			,'". db_prep_sql($country_str) ."'
-			,'". db_prep_sql($postal_code) ."'
-			,'". db_prep_sql($phone1) ."'
-			,'". db_prep_sql($phone2) ."'
-			,'". db_prep_sql($phone3) ."'
-			,'".db_prep_sql($marketing_source)."'
-			,". $datetime ."
-			,". $datetime ."
+			,'". db_prep_sql($password_salt,"bytea") ."'
+			,'f'
+			,now()
+			,now()
 		)
 	";
 
@@ -169,11 +116,9 @@ function create_new_user($info) {
 	if (db_affected_rows($res)) {
 
 		$id = db_insert_id($res);
-
 		if (!empty($id)) {
 			return $id;
 		}
-
 	}
 
 	return false;

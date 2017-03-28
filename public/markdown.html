@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Design Test</title>
+
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<link href="/css/styles.css" type="text/css" rel="stylesheet" media="screen" />
+</head>
+<body>
+
+
+<textarea id = "input" onkeyup="parse_markdown()"></textarea>
+
+<div id="outEle" style="border: 1px solid #ccc"></div>
+
+
+<script type="text/javascript" src="/js/markdown.min.js"></script>
+<script type="text/javascript">
+function parse_markdown() {
+	var input = document.getElementById('input').value,
+	outputEle = document.getElementById('outEle');
+
+	outputEle.innerHTML = micromarkdown.parse(input);
+}
+	
+</script>
+
+</body>
+</html>

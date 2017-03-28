@@ -1,5 +1,6 @@
 .header { padding: 0.8em; background: #333; color: white; border-bottom: 1px solid #999; } 
 .header a:link,.header a:visited,.header a:hover { color: #cdebf4; text-decoration: none; }
+.header a:hover { text-decoration: underline; }
 .header .logo { float: left; font-size: 165%; }
 .logo a:link,.logo a:visited,.logo a:hover { color: #fff; text-decoration: none; }
 .header .nav { float: left; margin: 0.5em 0 0 2em; }
@@ -11,6 +12,7 @@
 
 
 .header_details { padding: 1em; border-bottom: 1px solid #999; background: #fff; }
+.header_details a { margin-right: 1em; }
 
 .title { font-weight: bold; }
 

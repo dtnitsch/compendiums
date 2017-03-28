@@ -40,7 +40,7 @@ $res = db_query($q,"Doing Search");
 
 <h2 class='home'>Search Results</h2>
 
-<table class="list_table">
+<table class="tbl" cellspacing="0" cellpadding="0">
 <?php
 	$output = '';
 	while($row = db_fetch_row($res)) {
