@@ -158,18 +158,19 @@ foreach($assets as $k => $list) {
 	$cnt = 0;
 	for($len=count($list['assets']); $i<$len; $i++) {
 		$a = $list['assets'][$i];
-		$t = json_decode($list['filters'][$i]);
+		$t = json_decode($list['filters'][$i],true);
 		$p = $list['percentages'][$i];
 		foreach($t as $tk => $tv) {
 			$t[$tk] = convert_to_alias($tv);
 		}
+		$t_list = (!empty($t) ? implode(' ',$t) : '');
 		// if(preg_match("/\[\d*[D|d]\d+\]/",$a,$matches)) {
 		// 	$a = str_replace($matches[0],$matches[0].":".random($matches[0]),$a);
 		// }
 
 		$display = ($cnt < $list['display_limit'] ? '' : " style='display:none;'");
 		if($list['tables'] == "t") {
-			$output .= '<tr data-filters="'. implode(' ',$t) .'" data-perc="'. $p .'"'. $display .'>
+			$output .= '<tr data-filters="'. $t_list .'" data-perc="'. $p .'"'. $display .'>
 				<td>'. implode("</td><td>",explode('|',$a)) .'</td>
 			</tr>';
 		} else {

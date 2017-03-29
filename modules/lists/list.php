@@ -25,15 +25,15 @@ add_js('sortlist.new.js');
 
 $add_button = '<input type="button" value="Add New List" class="add" onclick="window.location.href=\'/lists/add/\'">';
 
-// $edit_onclick = "";
+$edit_onclick = "";
 // if(!empty($security_list['lists_edit'])) {
-    // $edit_onclick = " onclick='window.location=\"/lists/edit/?key={{key}}\"'";
+    $edit_onclick = " onclick='window.location=\"/lists/edit/?key={{key}}\"'";
 // }
 
 $delete_link = "";
-if(!empty($security_list['lists_delete'])) {
+// if(!empty($security_list['lists_delete'])) {
     $delete_link = '<a href="/lists/delete/?id={{id}}" title="Delete: {{path}}" class="delete"></a>';
-}
+// }
 
 ##################################################
 #   Content

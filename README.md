@@ -14,7 +14,6 @@
 
 - Lists
 	- Sub categories
-	- Pretty filters
 	- Edit page
 	- Filterable list page
 	- Delete?
