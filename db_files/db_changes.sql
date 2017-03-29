@@ -11,6 +11,8 @@ create table public.list (
 	,title varchar(200) not null default ''
 	,alias varchar(200) not null default ''
 	,tags json default '{}'::json
+	,filter_labels json default '{}'::json
+	,filter_orders json default '{}'::json
 	,description text default ''
 	,created timestamp default '0001-01-01 00:00:00'
 	,modified timestamp default '0001-01-01 00:00:00'
@@ -36,6 +38,7 @@ create table public.list_asset_map (
 	,asset_id int not null default 0
 	,percentage int not null default 0
 	,tags json default '{}'::json
+	,filters json default '{}'::json
 	,created timestamp default '0001-01-01 00:00:00'
 	,modified timestamp default '0001-01-01 00:00:00'
 );
@@ -80,6 +83,7 @@ create table public.collection_list_map (
 	,randomize boolean default true
 	,is_multi boolean default false
 	,connected smallint default 0
+	,list_order smallint default 0
 	,collection_id int not null default 0
 	,list_id int not null default 0
 	,display_limit int default 0
@@ -179,3 +183,11 @@ INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder,
 INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder, description, dynamic_variables) VALUES 
 	('/u/(\w+)/', 'user_page', 'default', 'User Page', 'user_page', '', '', '[]')
 ;
+
+alter table public.list add column filter_labels json default '{}'::json;
+alter table public.list add column filter_orders json default '{}'::json;
+
+alter table public.collection_list_map add column list_order smallint default 0;
+
+alter table public.list_asset_map add column filters json default '{}'::json;
+

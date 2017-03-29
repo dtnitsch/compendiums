@@ -2,6 +2,8 @@
 if(!empty($_POST) && !error_message()) {
 	library('uuid.php');
 	library('validation.php');
+	library("slug.php");
+
 
 	$percentages = calc_percentages();
 
@@ -14,7 +16,7 @@ if(!empty($_POST) && !error_message()) {
 
 	if(!error_message()) {
 
-		library("slug.php");
+		
 		$title = trim($_POST['title']);
 		$alias = convert_to_alias($title);
 		$key = create_key();
@@ -28,6 +30,8 @@ if(!empty($_POST) && !error_message()) {
 			,'". $is_table ."'
 			,'". ($percentages == 100 ? "t" : "f") ."'
 			,'". db_prep_sql(json_encode(array_keys(unique_tags()))) ."'
+			,'". db_prep_sql(json_encode($_POST['filter_labels'])) ."'
+			,'". db_prep_sql(json_encode($_POST['filter_order'])) ."'
 			,now()
 			,now()
 		";
@@ -41,6 +45,8 @@ if(!empty($_POST) && !error_message()) {
 				,tables
 				,percentages
 				,tags
+				,filter_labels
+				,filter_orders
 				,created
 				,modified
 			) values (
@@ -59,6 +65,7 @@ if(!empty($_POST) && !error_message()) {
 			$assets = array();
 			$percentages = "";
 			$map_ids = [];
+			$alias_list = [];
 			foreach($pieces as $v) {
 				$v = trim($v);
 				if($v == "") {
@@ -69,67 +76,94 @@ if(!empty($_POST) && !error_message()) {
 				$asset = trim($inner_pieces[0]);
 				# Percentages
 				$perc = (!empty($inner_pieces[1]) ? (int)$inner_pieces[1] : 0);
-				$tags = [];
+				# Filters
+				$filter_labels = [];
 				if(!empty($inner_pieces[2])) {
 					$tmp = explode(",",$inner_pieces[2]);
 					foreach($tmp as $k => $v) {
 						if(trim($k) == "" || trim($v) == "") {
 							continue;
 						}
-						$tags[$k] = strtolower(trim($v));
+						$filter_labels[$k] = convert_to_alias($v);
 					}
 				}
-				$tags = json_encode($tags);
+				$filter_labels = json_encode($filter_labels);
 
 				$alias = convert_to_alias($asset);
+				$alias = db_prep_sql($alias);
+				$alias_list[$alias] = [
+					"asset" => $asset
+					,"perc" => $perc
+					,"filter_labels" => $filter_labels
+				];
+			}
+			$q = "select id,alias from public.asset where alias in ('". implode("','",array_keys($alias_list)) ."')";
+			$res = db_query($q,"Checking existing assets");
+			$existing = [];
+			while($row = db_fetch_row($res)) {
+				$existing[$row['alias']] = $row['id'];
+				$alias_list[$row['alias']]['id'] = $row['id'];
+			}
+			
+			$q = '';
+			foreach($alias_list as $k => $v) {
+				if(empty($existing[$k])) {
+					$q = "
+						(
+							'". db_prep_sql($asset) ."'
+							,'". db_prep_sql($alias) ."'
+							,now()
+							,now()
+					),";
+				}
+			}
+			if(!empty($q)) {
 				$q = "
 					insert into public.asset (
 						title
 						,alias
 						,created
 						,modified
-					) values (
-						'". db_prep_sql($asset) ."'
-						,'". db_prep_sql($alias) ."'
-						,now()
-						,now()
-					)
-					on conflict (alias)
-					do nothing;
-					select * from public.asset where alias='". db_prep_sql($alias) ."';
+					) values ". substr($q,0,-1) ."
+					RETURNING id,title,alias
 				";
-				$res = db_fetch($q,"Inserting/Selecting Asset: ". $title);
-
-				$assets[$alias]['title'] = $asset;
-				$assets[$alias]['id'] = $res['id'];
-				$assets[$alias]['perc'] = $perc;
+				$res = db_query($q,"Inserting/Selecting Asset: ". $title);
+				while($row = db_fetch_row($res)) {
+					$alias_list[$row['alias']]['id'] = $row['id'];
+				}
+			}
+			foreach($alias_list as $k => $v) {
 				$map_ids[] = "(
 					". $list_id ."
-					,". $res['id'] ."
-					,". db_prep_sql($perc) ."
-					,'". db_prep_sql($tags) ."'::json
+					,". $v['id'] ."
+					,". db_prep_sql($v['perc']) ."
+					,'". db_prep_sql($v['filter_labels']) ."'::json
 					,now()
 					,now()
-				)";
+				)";				
 			}
+
 
 			$q = "
 				insert into list_asset_map (
 					list_id
 					,asset_id
 					,percentage
-					,tags
+					,filters
 					,created
 					,modified
 				) values ". implode(',',$map_ids);
-			db_query($q,"Inserting list asset map");
-		
+			$res = db_query($q,"Inserting list asset map");
+			if (db_is_error($res)) {
+				error_message("AN error occured trying to insert the new asset.");
+			}
 
-			// $redirection_path = '/lists/';
-			// set_post_message("You have successfully created a new record");
-			// set_safe_redirect($redirection_path);
+			if(!error_message()) {
+				$redirection_path = '/lists/';
+				set_post_message("You have successfully created a new record");
+				set_safe_redirect($redirection_path);
+			}
 
-			// error_message("An error has occurred while trying to create a new record");
 		}
 	}
 }
@@ -164,7 +198,7 @@ function unique_tags() {
 		if(!empty($inner_pieces[2])) {
 			$tags = explode(',',trim($inner_pieces[2]));
 			for($j=0,$lenj=count($tags); $j<$lenj; $j++) {
-				$output[strtolower(trim($tags[$j]))] = 1;
+				$output[convert_to_alias($tags[$j])] = 1;
 			}
 		} else {
 			continue;

@@ -22,11 +22,15 @@ $key = trim($pieces[2]);
 $q = "select * from public.list where key='". db_prep_sql($key) ."'";
 $info = db_fetch($q,"Getting list information");
 
+$info['filter_labels'] = json_decode($info['filter_labels'],true);
+$info['filter_orders'] = json_decode($info['filter_orders'],true);
+
 $q = "
 	select
 		public.asset.*
 		,list_asset_map.tags
 		,list_asset_map.percentage
+		,list_asset_map.filters
 	from public.asset
 	join public.list_asset_map on 
 		list_asset_map.asset_id = asset.id
@@ -57,10 +61,12 @@ while($row = db_fetch_row($res)) {
             ,'assets' => []
             ,'tags' => []
             ,'percentages' => []
+            ,'filters' => []
 		];
 	}
 	$assets[$info['id']]['assets'][] = $row['title'];
 	$assets[$info['id']]['tags'][] = $row['tags'];
+	$assets[$info['id']]['filters'][] = $row['filters'];
 	$assets[$info['id']]['percentages'][] = $row['percentage'];
 }
 
@@ -85,8 +91,11 @@ while($row = db_fetch_row($res)) {
 	</div>
 
 <?php
-	$info['tags'] = json_decode($info['tags']);
-	if(!empty($info['tags'])) {
+asort($info['filter_orders']);
+// echo "<pre>";
+// print_r($info);
+// echo "<pre>";
+	if(!empty($info['filter_orders'])) {
 		$output = '
 			<div id="custom_filters_'. $info['key'] .'" class="mb">
 				<div>
@@ -100,11 +109,12 @@ while($row = db_fetch_row($res)) {
 				</div>
 		';
 		$cnt = 0;
-		foreach($info['tags'] as $v) {
+		foreach($info['filter_orders'] as $slug => $order) {
+			$v = $info['filter_labels'][$slug];
 			if(!trim($v)) {
 				continue;
 			}
-			$slug = convert_to_alias($v);
+			// $slug = convert_to_alias($v);
 			$output .= '
 			<label for="filter_'. $cnt .'">
 				<input type="checkbox" id="filter_'. $cnt .'" name="filters['. $slug .']" onclick="build_all_lists(\''. $info['key'] .'\')" value="'. $slug .'"> '. $v .'
@@ -148,7 +158,7 @@ foreach($assets as $k => $list) {
 	$cnt = 0;
 	for($len=count($list['assets']); $i<$len; $i++) {
 		$a = $list['assets'][$i];
-		$t = json_decode($list['tags'][$i]);
+		$t = json_decode($list['filters'][$i]);
 		$p = $list['percentages'][$i];
 		foreach($t as $tk => $tv) {
 			$t[$tk] = convert_to_alias($tv);

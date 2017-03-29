@@ -506,7 +506,7 @@ function sortlist(){
         output = "<div class='pagi_details'>Results <span class='pagi_nums'>"+ (((current - 1) * obj.rpp) + 1) +"</span> - <span class='pagi_nums'>"+ ((obj.rpp * current > obj.pagination.total_records) ? obj.pagination.total_records : obj.rpp * current) +"</span> of <span class='pagi_nums'>"+ obj.pagination.total_records +"</span></div>";
 
         // Only one page?  Don't show pagination
-        if(pages > 1) {
+        // if(pages > 1) {
 
             output += "<div class='pagi'>";
             output += "<div class='pagi_direction'><a href='javascript:void(0)' title='Previous Page' onclick='"+ obj.id +".pagination_sort("+ prev +")' class='prev'>Prev</a></div>";
@@ -552,7 +552,7 @@ function sortlist(){
             var sel = "<select name='change_counts' onchange='"+ obj.id +".update(\"rpp\",parseInt(this.value,10))'><option value='10'>10</option><option value='20'>20</option><option value='50'>50</option><option value='100'>100</option></select>";
             output += sel.replace("'"+ obj.rpp +"'","'"+ obj.rpp +"' selected");
             output += "</div>";
-        }
+        // }
 
         var show_pagination = $classes('.show_pagination.'+obj.id);
         var len = show_pagination.length;
@@ -598,10 +598,10 @@ function sortlist(){
     }
 
     remote.no_results = function() {
-        no_results(this);
+        no_results(remote);
     }
     remote.loading = function() {
-        loading(this);
+        loading(remote);
     }
 
     function no_results(obj) {
