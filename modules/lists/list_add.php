@@ -57,7 +57,17 @@ Eggs; 10; poor,middle class,rich,breakfast
 Soup; 20; poor,middle class, lunch, dinner
 Bread; 20; poor,middle class,rich, breakfast, lunch, dinner
 Apples; 10; poor,middle class,rich, snack</textarea-->
-				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 90%; height: 150px;"></textarea>
+				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 90%; height: 250px;">1;;odd
+2;;even
+3;;odd,fizz
+4;;even
+5;;odd,Buzz
+6;;even,fizz
+7;;odd
+8;;even
+9;;odd,fizz
+10;;even,buzz
+</textarea>
 				<div style="font-size: 80%;">*Notes: Tab Deliminated List - Name &nbsp; Percentage &nbsp; Tags</div>
 			</div>
 
@@ -78,7 +88,21 @@ Apples; 10; poor,middle class,rich, snack</textarea-->
 
 			<!--input type="button" value="Add List" onclick="addform()"-->
 			</div>
-		<div id="example" class="float_left" style="width: 49% padding: 1em;"></div>
+		<div class="float_left" style="width: 49% padding: 1em;">
+			<table cellspacing="0" id="filters_table" class="tbl">
+				<thead>
+					<tr>
+						<th>&nbsp;</th>
+						<th>Filter label</th>
+						<th>Filter Value</th>
+						<th>Order</th>
+					</tr>
+				</thead>
+				<tbody id="filters_table_tbody">
+				</tbody>
+			</table>
+			<div id="example"></div>
+		</div>
 		<div class="clear"></div>
 		<input type="submit" value="Add List">
 	</form>
@@ -109,7 +133,7 @@ ob_start();
 
 		var output = "<strong>Example Output</strong>";
 		output += '<div id="filter_examples">';
-		output += "<br>"+ build_filters();
+		output += "<br>"+ build_filters_table();
 
 		output += (is_table ? '<table cellspacing="0" cellpadding="0" class="list_table"><thead>' : '<ol class="mt">');
 		percentages = 0;
@@ -218,6 +242,74 @@ ob_start();
 		}
 		return output;
 	}
+
+	function build_filters_table() {
+		var tags = unique_tags();
+		var existing_tag = filters_table_tbody_values();
+		var rem_tags = filters_table_tbody_values();
+		var cnt = Object.keys(tags).length;
+		var tr;
+
+		// console.log(existing_tag)
+		// console.log(rem_tags)
+		var cnt = 0;
+		for(key in tags) {
+			key = key.trim();
+			if(!key) { continue; }
+			alias = slug(key,'_');
+			// console.log(alias)
+			if(typeof existing_tag[alias] == "undefined") {
+				tr = document.createElement('tr');
+				tr.setAttribute('data-key',alias);
+				tr.innerHTML = `
+					<td>
+						<label for="filter_`+ cnt +`">
+						<input type="checkbox" id="filter_`+ cnt +`" name="filters[`+ alias +`]" onclick="filter_list('`+ alias +`')" value="`+ alias +`">
+						</label>
+					</td>
+					<td><input type="text" value="`+ key +`"></td>
+					<td>`+ key +`</td>
+					<td><input type="text" value="`+ cnt +`" class="s"></td>
+				`;
+				cnt += 1;
+				$id('filters_table_tbody').appendChild(tr);
+			} else {
+				delete rem_tags[alias];
+			}
+			cnt += 1;
+		}
+
+		if(Object.keys(rem_tags).length) {
+			delete_filters_table_tbody_values(rem_tags);
+		}
+
+	}
+
+
+	function filters_table_tbody_values() {
+		var trs = $id('filters_table_tbody').getElementsByTagName('tr');
+		var filters = {};
+
+		for(var i=0,len=trs.length; i<len; i++) {
+			if(trs[i].dataset.key) {
+				filters[trs[i].dataset.key] = 1;
+			}
+		}
+		return filters;
+	}
+
+
+	function delete_filters_table_tbody_values(tags) {
+		var trs = $id('filters_table_tbody').getElementsByTagName('tr');
+
+		for(var i=0,len=trs.length; i<len; i++) {
+			if(typeof trs[i] != "undefined" && typeof tags[trs[i].dataset.key] != "undefined") {
+				trs[i].parentNode.removeChild(trs[i]);
+			}
+		}
+	}
+
+
 
 	function filter_list(key) {
 		// console.log("Filter List: "+ key)

@@ -1,23 +1,45 @@
+- General
+	- Likes (one upvote)
+	- Forgot password
+	- Re-draw tables / uls (non-css)
+	- Markdown on all pages (read only to most)?
+	- Export to
+		- CSV
+		- JSON
+	- Register Domain
+	- Private vs Public?
+
+- Re-write javascript 
+	- Modularize?
+
 - Lists
-	- Generic Lists (One Item)
-	- Tables
-	- Percentages (not 100)
-	- Tags and Sub categories
+	- Sub categories
+	- Pretty filters
+	- Edit page
+	- Filterable list page
+	- Delete?
+
 - Collections
-	- Choose any list
-	- Display limits
-	- Randomize or no
+	- Better UI for multi?
+	- Fix Display limits (after chosing)
+	- Longer Label box
+	- Edit page
+	- Filterable list page
+	- Delete?
+	- Ensure order of multi-parts (bug)
 	
 	* - ?? Triggers ?? - If option from list is of tag X, randomize from list Y?
 	
-	* - Create a "Multi-part" list
-
 - Compendium
-
+	- Unlimited Markdown Boxes (add list / collection / MD box)
+	- showhide all input boxes after first ajax call.  No 2nd ajax calls.
 
 - Users
-	- "My lists"
+	- "My Lists"
+	- "My Collections"
+	- "My Compendiums"
 	- "My Favorites"
+	- "My Likes"
 	- Fun stats
 		- reports for how many others are using your lists (compendiums)
 		- Report for last time lists were looked up
@@ -30,16 +52,18 @@ Big Question:
 		- UI?
 
 
-API - make public?
-
-
+API
+	- REST
+	- GET / POST only
+	- Get (List/Collection/Compendium) by:
+		- Key
+	- List Statistics
+		- Views
+		- Used in Collections
+		- Used Compendiums
+		- Likes
 
 DB
 --
-- Assets: title, alias (unique list of all items), datetime
-- Lists: Name of list, alias, user id, datetime, description 
-- Asset List Map: asset id, list id, datetime
-- Compendiums: title, alias, desc, user, datetime
-- Compendium List Map: list_id, list description (custom to here - label?), number_to_display (show 2 - 6 items from list)
 
 # gm_tools

@@ -64,7 +64,8 @@ input[type=submit]:hover, input[type=button]:hover {
 .tbl { width: 100%; cursor: pointer; }
 .tbl th { margin: 0; padding: 0.3em; text-align: left; border-bottom: 3px solid #ccc; font-weight: bold; font-size: 125%; }
 .tbl td { text-align: left; border-bottom: 1px solid #eee; padding: 0.3em; font-size: 90%; }
-.tbl tr:nth-child(even) { background: #fff; vertical-align: top; }
+.tbl tr { vertical-align: top; }
+.tbl tr:nth-child(even) { background: #fff; }
 .tbl tbody tr:hover { background: #cdebf4; }
 .tbl th span { color: #999; }
 

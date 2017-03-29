@@ -130,14 +130,12 @@ foreach($assets as $k => $list) {
 	$r = $list['randomize'];
 	$title = (!empty($list['list_label']) ? $list['list_label'] : $list['list_title']);
 	$output = '
-		<strong>'. $title .'</strong><br>
 		<ol class="list_ordered" id="list_body_'. $k .'">
 	';
 	$i = 0;
 	if($list['tables'] == "t") {
 		$i = 1;
 		$output = '
-		<strong>'. $title .'</strong><br>
 		<table cellspacing="0" cellpadding="0" class="tbl">
 			<thead>
 				<tr>
