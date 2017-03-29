@@ -384,3 +384,41 @@ function slug(str,type) {
 		.replace(/^-+/, '')
 		.replace(/-+$/, '');
 }
+
+// function paint_rows(obj,even,odd,type) {
+// 	if(typeof obj == "string") { obj = $id(obj); }
+// 	type = type || ["tr","li"];
+// 	even = even || "inherit";
+// 	odd = odd || "#fff";
+// 	for(i in type) {
+// 		e = obj.getElementsByTagName(type[i]);
+// 		if(e.length) { break; }
+// 	}
+// 	if(!e.length) { return false; }
+// 	console.log(e)
+// 	var cnt = 0;
+// 	for(var i=0,len=e.length; i<len; i++) {
+// 		if(typeof e[i].style.display != "undefined" && e[i].style.display != "none") {
+// 			e[i].style.backgroundColor = ((cnt++ % 2) == 0 ? even : odd);	
+// 		} 
+// 	}
+// }
+function paint_rows(id,even,odd,type) {
+	// if(typeof id == "string") { id = $id(id); }
+	// var type = type || "";
+	var type = type || ["tr","li"];
+	var even = even || "inherit";
+	var odd = odd || "#fff";
+	var e;
+	for(i in type) {
+		e = $query('#'+ id +' '+ type[i] +':not([style*="display:none"]):not([style*="display: none"])');
+		if(e.length) { break; }
+	}
+	if(!e.length) { return false; }
+	var cnt = 0;
+	for(var i=0,len=e.length; i<len; i++) {
+		if(typeof e[i].style.display != "undefined" && e[i].style.display != "none") {
+			e[i].style.backgroundColor = ((cnt++ % 2) == 0 ? even : odd);	
+		} 
+	}
+}	

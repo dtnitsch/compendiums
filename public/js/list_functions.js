@@ -131,6 +131,7 @@ function build_list(id,key,list_key) {
 			list_rows[i].style.display = display;
 		}
 	}
+	paint_rows(id);
 }
 
 function filter_criteria(and_or,list1,list2) {

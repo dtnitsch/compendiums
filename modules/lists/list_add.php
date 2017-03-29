@@ -22,6 +22,7 @@ post_queue($module_name,'modules/lists/post_files/');
 ##################################################
 $info = (!empty($_POST) ? $_POST : array());
 
+
 library("validation.php");
 add_js("validation.js");
 
@@ -39,7 +40,7 @@ add_js("validation.js");
 		<div class="float_left" style="width: 49%;">
 			<label class="form_label" for="title">List Name <span>*</span></label>
 			<div class="form_data">
-				<input type="text" name="title" id="title" value="">
+				<input type="text" name="title" id="title" value="<?php echo $info['title'] ?? ""; ?>">
 			</div>
 
 			<!--label class="form_label">Visibility</label>
@@ -50,24 +51,14 @@ add_js("validation.js");
 
 			<label class="form_label" for="title">Inputs</label>
 			<div class="form_data">
-				<!--textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">Chicken; 30; poor,middle class,rich,lunch,dinner
-Beef; 5; middle class,rich, lunch, dinner
-Oysters; 5; poor,rich, dinner
-Eggs; 10; poor,middle class,rich,breakfast
-Soup; 20; poor,middle class, lunch, dinner
-Bread; 20; poor,middle class,rich, breakfast, lunch, dinner
-Apples; 10; poor,middle class,rich, snack</textarea-->
-				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 90%; height: 250px;">1;;odd
-2;;even
-3;;odd,fizz
-4;;even
-5;;odd,Buzz
-6;;even,fizz
-7;;odd
-8;;even
-9;;odd,fizz
-10;;even,buzz
-</textarea>
+				<!--textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">Chicken; 30; Poor,Middle Class,Rich,Lunch,Dinner
+Beef; 5; Middle Class,Rich, Lunch, Dinner
+Oysters; 5; Poor,Rich, Dinner
+Eggs; 10; Poor,Middle Class,Rich,breakfast
+Soup; 20; Poor,Middle Class, Lunch, Dinner
+Bread; 20; Poor,Middle Class,Rich, breakfast, Lunch, Dinner
+Apples; 10; Poor,Middle Class,Rich, snack</textarea-->
+				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 90%; height: 250px;"><?php echo $info['inputs'] ?? ""; ?></textarea>
 				<div style="font-size: 80%;">*Notes: Tab Deliminated List - Name &nbsp; Percentage &nbsp; Tags</div>
 			</div>
 
@@ -89,7 +80,7 @@ Apples; 10; poor,middle class,rich, snack</textarea-->
 			<!--input type="button" value="Add List" onclick="addform()"-->
 			</div>
 		<div class="float_left" style="width: 49% padding: 1em;">
-			<table cellspacing="0" id="filters_table" class="tbl">
+			<table cellspacing="0" id="filters_table" class="tbl" style='display: none;'>
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
@@ -131,17 +122,17 @@ ob_start();
 			is_table = true;
 		}
 
-		var output = "<strong>Example Output</strong>";
-		output += '<div id="filter_examples">';
-		output += "<br>"+ build_filters_table();
-
-		output += (is_table ? '<table cellspacing="0" cellpadding="0" class="list_table"><thead>' : '<ol class="mt">');
+		// var output = "<strong>Example Output</strong>";
 		percentages = 0;
 		// // Limit the demo exmaple?
 		// if(len > 10) {
 		// 	len = 10;
 		// }
+		var html = "";
 		for(var i=0; i<len; i++) {
+			if(pieces[i].trim() == "") {
+				continue;
+			}
 			inner_pieces = pieces[i].split(';');
 
 			if(parseInt(inner_pieces[1])) {
@@ -177,13 +168,21 @@ ob_start();
 				}
   			}
 
-  			output += (is_table ? '<tr'+ filters +'>'+ inner.trim() +'</tr>' : '<li'+ filters +'>'+ inner_pieces[0].trim() +'</li>');
+  			html += (is_table ? '<tr'+ filters +'>'+ inner.trim() +'</tr>' : '<li'+ filters +'>'+ inner_pieces[0].trim() +'</li>');
 		}
 
+		if(html.trim() != "") {
+			var output = '<div id="filter_examples">';
+			// output += "<br>"+ build_filters_table();
 
-		output += (is_table ? "</tbody></table>" : "</ol>");
-		output += '</div>';
-		$id('example').innerHTML = output;
+			output += (is_table ? '<table cellspacing="0" cellpadding="0" class="list_table"><thead>' : '<ol class="mt">');
+			output += html;
+			output += (is_table ? "</tbody></table>" : "</ol>");
+			output += '</div>';
+			build_filters_table();
+			$id('example').innerHTML = output;
+			$id('filters_table').style.display = "";
+		}
 	}
 	show_example();
 
@@ -215,8 +214,8 @@ ob_start();
 			if(typeof inner_pieces[2] != "undefined") {
 				tags = inner_pieces[2].trim().split(",");
 				for(var j=0,jlen=tags.length; j<jlen; j++) {
-					tag = tags[j].trim().toLowerCase();
-					output[tag] = 1;
+					tag = slug(tags[j],'_');
+					output[tag] = tags[j];
 				}
   			} else {
 				continue;
@@ -267,22 +266,20 @@ ob_start();
 						<input type="checkbox" id="filter_`+ cnt +`" name="filters[`+ alias +`]" onclick="filter_list('`+ alias +`')" value="`+ alias +`">
 						</label>
 					</td>
-					<td><input type="text" value="`+ key +`"></td>
+					<td><input type="text" name="filter_labels[`+ key +`]" value="`+ tags[key] +`"></td>
 					<td>`+ key +`</td>
-					<td><input type="text" value="`+ cnt +`" class="s"></td>
+					<td><input type="text" name="filter_order[`+ key +`]" value="`+ cnt +`" class="s"></td>
 				`;
-				cnt += 1;
 				$id('filters_table_tbody').appendChild(tr);
 			} else {
 				delete rem_tags[alias];
 			}
-			cnt += 1;
+			cnt += 5;
 		}
 
 		if(Object.keys(rem_tags).length) {
 			delete_filters_table_tbody_values(rem_tags);
 		}
-
 	}
 
 

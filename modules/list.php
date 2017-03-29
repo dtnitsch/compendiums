@@ -294,6 +294,7 @@ percs = []
 
 if($id("randomize").checked) {
 	build_all_lists();
+	
 }
 
 </script>
