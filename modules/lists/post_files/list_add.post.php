@@ -89,6 +89,8 @@ if(!empty($_POST) && !error_message()) {
 				}
 				$filter_labels = json_encode($filter_labels);
 
+// echo "<pre>Asset: ";
+// print_r($asset);
 				$alias = convert_to_alias($asset);
 				$alias = db_prep_sql($alias);
 				$alias_list[$alias] = [
@@ -96,29 +98,35 @@ if(!empty($_POST) && !error_message()) {
 					,"perc" => $perc
 					,"filter_labels" => $filter_labels
 				];
+// echo "<br>Alias:";
+// print_r($alias);
+// echo "<br>-----------</br>";
 			}
-			$q = "select id,alias from public.asset where alias in ('". implode("','",array_keys($alias_list)) ."')";
+			echo $q = "select id,alias from public.asset where alias in ('". implode("','",array_keys($alias_list)) ."')";
 			$res = db_query($q,"Checking existing assets");
 			$existing = [];
 			while($row = db_fetch_row($res)) {
 				$existing[$row['alias']] = $row['id'];
 				$alias_list[$row['alias']]['id'] = $row['id'];
 			}
-			
+// echo "<pre>";
+// print_r($alias_list);
 			$q = '';
 			foreach($alias_list as $k => $v) {
 				if(empty($existing[$k])) {
-					$q = "
+					$q .= "
 						(
-							'". db_prep_sql($asset) ."'
-							,'". db_prep_sql($alias) ."'
+							'". db_prep_sql($v['asset']) ."'
+							,'". db_prep_sql($k) ."'
 							,now()
 							,now()
 					),";
 				}
 			}
+// die($q);
+
 			if(!empty($q)) {
-				$q = "
+				echo $q = "
 					insert into public.asset (
 						title
 						,alias
@@ -127,20 +135,23 @@ if(!empty($_POST) && !error_message()) {
 					) values ". substr($q,0,-1) ."
 					RETURNING id,title,alias
 				";
+			// die();
 				$res = db_query($q,"Inserting/Selecting Asset: ". $title);
 				while($row = db_fetch_row($res)) {
 					$alias_list[$row['alias']]['id'] = $row['id'];
 				}
 			}
 			foreach($alias_list as $k => $v) {
-				$map_ids[] = "(
-					". $list_id ."
-					,". $v['id'] ."
-					,". db_prep_sql($v['perc']) ."
-					,'". db_prep_sql($v['filter_labels']) ."'::json
-					,now()
-					,now()
-				)";				
+				if(!empty($v['id'])) {
+					$map_ids[] = "(
+						". $list_id ."
+						,". $v['id'] ."
+						,". db_prep_sql($v['perc']) ."
+						,'". db_prep_sql($v['filter_labels']) ."'::json
+						,now()
+						,now()
+					)";					
+				}
 			}
 
 

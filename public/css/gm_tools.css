@@ -69,6 +69,9 @@ input[type=submit]:hover, input[type=button]:hover {
 .tbl tbody tr:hover { background: #cdebf4; }
 .tbl th span { color: #999; }
 
+.basic_table { width: 100%; }
+.basic_table td, .basic_table td { text-align: left; vertical-align: top; }
+
 .list_ordered { margin: 0; padding: 0; list-style-type: none; }
 .list_ordered li { padding: 0.1em; border-bottom: 1px solid #ccc; }
 .list_ordered li:nth-child(even) { background: #fff; }

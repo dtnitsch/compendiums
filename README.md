@@ -14,7 +14,6 @@
 
 - Lists
 	- Sub categories
-	- Edit page
 	- Filterable list page
 	- Delete?
 

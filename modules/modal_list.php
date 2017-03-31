@@ -39,16 +39,19 @@ add_css('modal.css');
 		</div>
 		<div class="modal_inner">
 			<div id="modal_details">
-				<div class="float_right">
-					<div>
-						Search
-						<input type="text" id="modal_search" placeholder="Search Lists" onkeyup="modal_search(this.value)">
-						<div style="position:relative; top: 0px; left: 0px;" id="modal_search_results"></div>
-					</div>
+			<table cellpadding="0" cellspacing="0" border="0" class="basic_table">
+				<tr>
+					<td id="modal_list_page" style="padding-right: 10px;">&nbsp;</td>
+					<td style="width: 200px;">
+						<div>
+							Search
+							<input type="text" id="modal_search" placeholder="Search Lists" onkeyup="modal_search(this.value)">
+							<div style="position:relative; top: 0px; left: 0px;" id="modal_search_results"></div>
+						</div>
 
-					<div>
-						<h3>Newest Lists</h3>
-						<ul>
+						<div>
+							<h3>Newest Lists</h3>
+							<ul>
 <?php
 	$output = "";
 	while($row = db_fetch_row($top_5_lists)) {
@@ -56,31 +59,28 @@ add_css('modal.css');
 	}
 	echo $output;
 ?>					
-						</ul>
-					</div>
-					<div>
-						<h3>My Favorite Lists</h3>
-						<ul>
-							<li><a href="javascript:void(0);" onclick="modal_list_page('One');">One</a></li>
-							<li><a href="javascript:void(0);" onclick="modal_list_page('Two');">Two</a></li>
-							<li><a href="javascript:void(0);" onclick="modal_list_page('Three');">Three</a></li>
-						</ul>
-					</div>
-					<div>
-						<h3>Popular Lists</h3>
-						<ul>
-							<li><a href="javascript:void(0);" onclick="modal_list_page('One');">One</a></li>
-							<li><a href="javascript:void(0);" onclick="modal_list_page('Two');">Two</a></li>
-							<li><a href="javascript:void(0);" onclick="modal_list_page('Three');">Three</a></li>
-						</ul>
-					</div>
-				</div>
+							</ul>
+						</div>
+						<div>
+							<h3>My Favorite Lists</h3>
+							<ul>
+								<li><a href="javascript:void(0);" onclick="modal_list_page('One');">One</a></li>
+								<li><a href="javascript:void(0);" onclick="modal_list_page('Two');">Two</a></li>
+								<li><a href="javascript:void(0);" onclick="modal_list_page('Three');">Three</a></li>
+							</ul>
+						</div>
+						<div>
+							<h3>Popular Lists</h3>
+							<ul>
+								<li><a href="javascript:void(0);" onclick="modal_list_page('One');">One</a></li>
+								<li><a href="javascript:void(0);" onclick="modal_list_page('Two');">Two</a></li>
+								<li><a href="javascript:void(0);" onclick="modal_list_page('Three');">Three</a></li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+			</table>
 
-			</div>
-
-			<div id="modal_list_page" class="float:left;">
-				<div class='listcounter' id="listcounter"></div>
-			</div>
 
 			<input type="button" id="add_list_button" value="Add List" style='display: none;' onclick="add_new_list('simple_modal')">
 			<input type="button" id="add_multi_button" value="Add Multi-List" style='display: none;' onclick="add_new_multi_list('simple_modal')">

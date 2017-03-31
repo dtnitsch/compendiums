@@ -106,7 +106,7 @@ ob_start();
 
 <script type="text/javascript">
 
-	asl_sort = sortlist().remote;
+	asl_sort = sortlist.remote;
 	asl_sort.init('/ajax.php',{
 		id:'asl_sort'
 		,data: 'apid=db6d9b451b818ccc9a449383f2f0c450'
@@ -122,7 +122,7 @@ ob_start();
 	asl_sort.sort(asl_sort,true);
 
 	// Onfocus
-    $id("collection").focus();
+    // $id("collection").focus();
 
 </script>
 
