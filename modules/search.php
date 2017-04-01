@@ -17,13 +17,59 @@ $text = db_prep_sql($text);
 $text = str_replace(" ","%",$text);
 
 $q = "
-	select title,modified,key,'list' as type from public.list where title ilike '%". $text ."%'
-	union
-	select title,modified,key,'collection' as type from public.collection where title ilike '%". $text ."%'
-	-- union
-	-- select title,modified,key,'compendium' as type from public.collection where title ilike '%". $text ."%'
+	select
+		id
+	    ,title
+		,modified
+		,key
+		,type
+	    ,sum(weight) as weight
+	from (
+		select id,title,modified,key,'list' as type,10 as weight from public.list where title ilike '". $text ."'
+			union
+		select id,title,modified,key,'list' as type,9 as weight from public.list where title ilike '%". $text ."%'
+			union
+		select id,title,modified,key,'collection' as type,10 as weight from public.collection where title ilike '". $text ."'
+			union
+		select id,title,modified,key,'collection' as type,9 as weight from public.collection where title ilike '%". $text ."%'
+			union
+
+		select
+			list.id
+			,list.title
+			,list.modified
+			,list.key
+			,'list' as type
+			,7 as weight
+		from public.list
+		join public.list_asset_map on 
+			list_asset_map.list_id = list.id
+			and asset_id in (select id from public.asset where title ilike '". $text ."')
+
+		union 
+
+
+		select
+			list.id
+			,list.title
+			,list.modified
+			,list.key
+			,'list' as type
+			,6 as weight
+		from public.list
+		join public.list_asset_map on 
+			list_asset_map.list_id = list.id
+			and asset_id in (select id from public.asset where title ilike '%". $text ."%')
+	) as q
+	group by
+		id
+		,title
+		,modified
+		,key
+		,type
 	order by
-		modified desc
+	    weight desc
+		,modified desc
 ";
 $res = db_query($q,"Doing Search");
 

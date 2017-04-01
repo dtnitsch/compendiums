@@ -62,7 +62,7 @@ $delete_link = "";
 		
 		<div class='inputs float_left'>
 			<label for='list'><b>List</b></label><br>
-			<input type='text' name='filters[list]' id='list'>
+			<input type='text' name='filters[title]' id='list'>
 		</div>
 
 		<div class='inputs float_left' style="margin-left: 1em;">

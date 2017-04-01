@@ -8,6 +8,9 @@
 		- JSON
 	- Register Domain
 	- Private vs Public?
+	- Filter Groups (Next to Order #)
+
+	** Never edit?!  Always save a new version?
 
 - Re-write javascript 
 	- Modularize?

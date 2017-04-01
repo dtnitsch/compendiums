@@ -29,6 +29,8 @@ library("functions.php",$GLOBALS["root_path"] ."modules/lists/");
 
 library("validation.php");
 add_js("validation.js");
+add_js("markdown.min.js");
+
 
 $info = array();
 if(!empty($_POST)) {
@@ -38,6 +40,16 @@ if(!empty($_POST)) {
 	$info = db_fetch("select * from public.list where key='". $id ."'",'Getting List');
 	$info['filter_labels'] = json_decode($info['filter_labels'],true);
 	$info['filter_orders'] = json_decode($info['filter_orders'],true);
+
+	$q = "
+		select markdown
+		from public.list_markdown
+		where
+			active
+			and list_id = '". $info['id'] ."'
+	";
+	$tmp = db_fetch($q,'Getting Markdown');
+	$info['markdown'] = $tmp['markdown'];
 
 	$q = "
 		select
@@ -58,37 +70,49 @@ if(!empty($_POST)) {
 	$filters = [];
 	while($row = db_fetch_row($assets)) {
 		$tmp = json_decode($row['filters'],true);
-		$asset_body .= $row['title'] .";". $row['percentage'] .";". implode(',',$tmp) ."\n";
+		$perc = !empty($row['percentage']) ?? '';
+		$asset_body .= $row['title'] .";". $perc .";". implode(',',$tmp) ."\n";
 	}
 }
-
-
 
 ##################################################
 #	Content
 ##################################################
 ?>
-	<h2 class='lists'>Edit List: <?php echo $info['title']; ?></h2>
-  
- 	<div id="messages">
-		<?php echo dump_messages(); ?>
-	</div>
-	<form id="addform" method="post" action="" onsubmit="return true;">
-
-		<div class="float_left" style="width: 49%;">
-			<label class="form_label" for="title">List Name <span>*</span></label>
-			<div class="form_data">
-				<input type="text" name="title" id="title" value="<?php echo $info['title'] ?? ""; ?>">
+	<form id="addform" method="post" action="">
+		<h2 class='lists'>Edit List: <?php echo $info['title']; ?></h2>
+	  
+	 	<div id="messages">
+			<?php echo dump_messages(); ?>
+		</div>
+		
+		<div id="compendium_buttons" class="w3-bar w3-black mt">
+			<button type="button" class="w3-bar-item w3-button tablink w3-red" onclick="open_tabs(this,'default')">
+				Default
+			</button>
+			<button type="button" class="w3-bar-item w3-button tablink" onclick="open_tabs(this,'md')">Markdown</button>
+			<div class="float_right">
+				<button class="w3-bar-item w3-button tablink" style="background: green;">Save List</button>
 			</div>
+		</div>
+		<div id="compendium_bodies" style='padding: 1em; border: 1px solid #ccc;'>
 
-			<!--label class="form_label">Visibility</label>
-			<div class="form_data">
-				<label for="public"><input type="radio" name="visibility" id="public" value="public"> Public</label>
-				<label for="private"><input type="radio" name="visibility" id="private" value="private"> Private</label>
-			</div-->
+			<div id="default" class="w3-container w3-border tabs">
 
-			<label class="form_label" for="title">Inputs</label>
-			<div class="form_data">
+				<div class="float_left" style="width: 59%;">
+					<label class="form_label" for="title">List Name <span>*</span></label>
+					<div class="form_data">
+						<input type="text" name="title" id="title" class="xl" value="<?php echo $info['title'] ?? ""; ?>">
+					</div>
+
+					<!--label class="form_label">Visibility</label>
+					<div class="form_data">
+						<label for="public"><input type="radio" name="visibility" id="public" value="public"> Public</label>
+						<label for="private"><input type="radio" name="visibility" id="private" value="private"> Private</label>
+					</div-->
+
+					<label class="form_label" for="title">Inputs</label>
+					<div class="form_data">
 				<!--textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">Chicken; 30; Poor,Middle Class,Rich,Lunch,Dinner
 Beef; 5; Middle Class,Rich, Lunch, Dinner
 Oysters; 5; Poor,Rich, Dinner
@@ -117,7 +141,10 @@ Apples; 10; Poor,Middle Class,Rich, snack</textarea-->
 
 			<!--input type="button" value="Add List" onclick="addform()"-->
 			</div>
-		<div class="float_left" style="width: 49% padding: 1em;">
+		<div class="float_left" style="width: 39% padding: 1em;">
+<?php
+if(!empty($info['filter_orders']) && $info['filter_orders']) {
+?>
 			<table cellspacing="0" id="filters_table" class="tbl">
 				<thead>
 					<tr>
@@ -129,10 +156,10 @@ Apples; 10; Poor,Middle Class,Rich, snack</textarea-->
 				</thead>
 				<tbody id="filters_table_tbody">
 <?php
-asort($info['filter_orders']);
-$output = '';
-foreach($info['filter_orders'] as $slug => $order) {
-	$output .= '
+	asort($info['filter_orders']);
+	$output = '';
+	foreach($info['filter_orders'] as $slug => $order) {
+		$output .= '
 				<tr data-key="'. $slug .'">
 					<td>
 						<label for="filter_0">
@@ -144,15 +171,34 @@ foreach($info['filter_orders'] as $slug => $order) {
 					<td><input type="text" name="filter_order['. $slug .']" value="'. $order .'" class="s"></td>
 				</tr>
 	';
-}
-echo $output;
+	}
+	echo $output;
 ?>
 				</tbody>
 			</table>
+<?php
+}
+?>
 			<div id="example"></div>
 		</div>
-		<div class="clear"></div>
-		<input type="submit" value="Add List">
+	</div>
+
+
+<style type="text/css">
+	code { border: 1px solid #ccc; padding: 1em; background: #ddd; margin: 1em; }
+	.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
+		margin: 0; padding: 0;
+	}
+</style>
+			<div id="md" class="w3-container w3-border tabs" style="display: none;">
+				<textarea name="markdown" id="markdown" class="float_left" style="width: 47%; height: 200px;" onkeyup="parse_markdown()"><?php echo $info['markdown']; ?></textarea>
+				<article id="preview" class="markdown-body float_left" style="width: 47%; border: 1px solid #ccc; margin-left: 1em; padding: 1em"></article>
+				<div class="clear mt"></div>
+			</div>
+		</div>
+
+		<div class="clear mt"></div>
+		<input type="submit" value="Save List">
 	</form>
 
 <?php
@@ -401,6 +447,29 @@ ob_start();
 			}
 		}
 		
+	}
+
+
+	function parse_markdown() {
+		var markdown = document.getElementById('markdown').value;
+		var preview = document.getElementById('preview');
+
+		preview.innerHTML = micromarkdown.parse(markdown);
+	}
+	parse_markdown();
+
+	function open_tabs(evt, tabname) {
+		var i, x, tablinks;
+		x = document.getElementsByClassName("tabs");
+		for (i = 0; i < x.length; i++) {
+			x[i].style.display = "none";
+		}
+		tablinks = document.getElementsByClassName("tablink");
+		for (i = 0; i < x.length; i++) {
+			tablinks[i].className = tablinks[i].className.replace(" w3-red", ""); 
+		}
+		document.getElementById(tabname).style.display = "block";
+		evt.className += " w3-red";
 	}
 
 </script>
