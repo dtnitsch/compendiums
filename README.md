@@ -16,6 +16,7 @@
 	- Sub categories
 	- Filterable list page
 	- Delete?
+	** Update URL with filters to allow people to search specific things
 
 - Collections
 	- Better UI for multi?

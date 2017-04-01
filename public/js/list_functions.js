@@ -166,21 +166,43 @@ function parse_random(s) {
 	var m, pieces, total;
 	var s2 = s;
 
-	do {
-	    m = re.exec(s2);
-	    if (m) {
-	        pieces = m[1].toLowerCase().split("d");
+	m = s.split(/(\[\d*[D|d]\d+\])/);
+	for(var i=0,len=m.length; i<len; i++) {
+		if(m[i][0] == "[") {
+			s2 = m[i].substring(1,m[i].length - 1)
+			pieces = s2.toLowerCase().split("d");
+			min = (!parseInt(pieces[0]) ? 1 : parseInt(pieces[0]));
+			max = parseInt(pieces[1]);
+			total = 0;
+			while(min--) {
+				total += rand(max);
+			}
+			m[i] += ":"+ total;
+		}
+		if(m[i][0] == ":" && is_numeric(m[i][1])) {
+			m[i] = m[i].replace(/\:\d+/,'');
+		}
 
-	        min = (!parseInt(pieces[0]) ? 1 : parseInt(pieces[0]));
-	        max = parseInt(pieces[1]);
-	        total = 0;
-	        while(min--) {
-	        	total += rand(max);
-	        }
-	        s = s.replace(m[0],'['+ m[1]+"]:"+total);
-	    }
-	} while (m);
-	return s
+		// s = s.replace(m[i],'['+ m[i]+"]:"+total);
+		// s = s.replace(m[0],'['+ m[1]+"]:"+total);
+	}
+	// do {
+	//     m = re.exec(s2);
+	//     console.log(m)
+
+	//     if (m) {
+	//         pieces = m[1].toLowerCase().split("d");
+
+	//         min = (!parseInt(pieces[0]) ? 1 : parseInt(pieces[0]));
+	//         max = parseInt(pieces[1]);
+	//         total = 0;
+	//         while(min--) {
+	//         	total += rand(max);
+	//         }
+	//         s = s.replace(m[0],'['+ m[1]+"]:"+total);
+	//     }
+	// } while (m);
+	return m.join("");
 }
 
 

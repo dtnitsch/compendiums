@@ -22,11 +22,11 @@ html, body { font-size: 0.9em; }
 .show { display: inherit; }
 .hide { display: none; }
 
-.xs { width: 2em; }
-.s { width: 4em; }
-.m { width: 6em; }
-.l { width: 8em; }
-.xl { width: 10em; }
+.xs { width: 4em; }
+.s { width: 8em; }
+.m { width: 12em; }
+.l { width: 16em; }
+.xl { width: 20em; }
 
 /*** Display Settings for the overall Template ***/
 /* 2, 3, and multi column tables */

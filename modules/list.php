@@ -77,7 +77,12 @@ while($row = db_fetch_row($res)) {
 <div class='clearfix'>
 	<h2 class='lists'>Lists: <?php echo $info['title']; ?></h2>
   
-	<div class="mb">
+  <div class="filters" onclick="show_hide('filter_details')">
+	Filters (<span class="filter_count" id="filter_count">0 applied</span>)
+</div>
+<div class="filter_details" id="filter_details" style="display: none;">
+
+	<form id="form_filters" method="" action="" onsubmit="return false;">
 		<label for="limit">
 			Limit Display: <input type="input" name="limit" id="limit_<?php echo $info['key']; ?>" value="20" class='xs'> 
 		</label>
@@ -88,7 +93,8 @@ while($row = db_fetch_row($res)) {
 		<label for="percentages">
 			<input type="checkbox" name="options" id="percentages_<?php echo $info['key']; ?>" value="percentages"> Use Percentages
 		</label>
-	</div>
+    </form>
+
 
 <?php
 asort($info['filter_orders']);
@@ -99,7 +105,7 @@ asort($info['filter_orders']);
 		$output = '
 			<div id="custom_filters_'. $info['key'] .'" class="mb">
 				<div>
-					<strong>Filters</strong>
+					<div><strong>Filters</strong></div>
 					<label for="filter_and">
 						<input type="radio" id="filter_and" name="and_or" value="and" /> And
 					</label> &nbsp; 
@@ -116,9 +122,9 @@ asort($info['filter_orders']);
 			}
 			// $slug = convert_to_alias($v);
 			$output .= '
-			<label for="filter_'. $cnt .'">
+			<label for="filter_'. $cnt .'" style="width: 200px; float: left; margin-right: 2em;">
 				<input type="checkbox" id="filter_'. $cnt .'" name="filters['. $slug .']" onclick="build_all_lists(\''. $info['key'] .'\')" value="'. $slug .'"> '. $v .'
-			</label> &nbsp; 
+			</label> 
 			';
 			$cnt += 1;
 		}
@@ -126,14 +132,24 @@ asort($info['filter_orders']);
 		echo $output;
 	}
 ?>
+	<div class="clear"></div>
+		<div class="mb">
+			<button type="button" onclick="build_all_lists('<?php echo $info['key']; ?>')">Update</button>
+		</div>
 
-	<div class="mb">
-		<button onclick="build_all_lists('<?php echo $info['key']; ?>')">Update</button>
-	</div>
+	<form id="export_csv" method="post" action="/export/csv/" style='display: none;'>
+		<!--label>&nbsp;</label><br>
+		<input type="submit" value="Export CSV">
+		<input type="hidden" name="query_csv" id="query_csv" value=""-->
+	</form>
+
+</div>
 
 
 
-		<div class='listcounter' id="listcounter" style='display:;'>
+
+
+		<div class='listcounter mt' id="listcounter" style='display:;'>
 <?php
 foreach($assets as $k => $list) {
 	$l = $list['display_limit'];
@@ -232,6 +248,8 @@ ob_start();
 
 // console.log(thresholds)
 // console.log(total)
+
+/*
 function random_by_weight(arr,total) {
 	var used_keys = {};
 	var used_keys_total = 0;
@@ -262,6 +280,7 @@ function random_by_weight(arr,total) {
 	
 	return new_arr;
 }
+*/
 
 function build_keys(arr) {
 	var output = "";

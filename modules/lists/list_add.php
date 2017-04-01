@@ -25,77 +25,116 @@ $info = (!empty($_POST) ? $_POST : array());
 
 library("validation.php");
 add_js("validation.js");
+add_js("markdown.min.js");
 
 ##################################################
 #	Content
 ##################################################
 ?>
-	<h2 class='lists'>Add List</h2>
+	<form id="addform" method="post" action="">
+		<h2 class='lists'>Add List</h2>
   
-  	<div id="messages">
-		<?php echo dump_messages(); ?>
-	</div>
-	<form id="addform" method="post" action="" onsubmit="return true;">
-
-		<div class="float_left" style="width: 49%;">
-			<label class="form_label" for="title">List Name <span>*</span></label>
-			<div class="form_data">
-				<input type="text" name="title" id="title" value="<?php echo $info['title'] ?? ""; ?>">
-			</div>
-
-			<!--label class="form_label">Visibility</label>
-			<div class="form_data">
-				<label for="public"><input type="radio" name="visibility" id="public" value="public"> Public</label>
-				<label for="private"><input type="radio" name="visibility" id="private" value="private"> Private</label>
-			</div-->
-
-			<label class="form_label" for="title">Inputs</label>
-			<div class="form_data">
-				<!--textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">Chicken; 30; Poor,Middle Class,Rich,Lunch,Dinner
-Beef; 5; Middle Class,Rich, Lunch, Dinner
-Oysters; 5; Poor,Rich, Dinner
-Eggs; 10; Poor,Middle Class,Rich,breakfast
-Soup; 20; Poor,Middle Class, Lunch, Dinner
-Bread; 20; Poor,Middle Class,Rich, breakfast, Lunch, Dinner
-Apples; 10; Poor,Middle Class,Rich, snack</textarea-->
-				<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 90%; height: 250px;"><?php echo $info['inputs'] ?? ""; ?></textarea>
-				<div style="font-size: 80%;">*Notes: Tab Deliminated List - Name &nbsp; Percentage &nbsp; Tags</div>
-			</div>
-
-			<!--label class="form_label" for="title">Input Options</label>
-			<div class="form_data">
-				<label for="percentages">
-					<input type="checkbox" name="options" id="percentages" value="percentages"> Percentages
-				</label>
-				&nbsp;
-				<label for="tags">
-					<input type="checkbox" name="options" id="tags" value="tags"> Tags
-				</label>
-			</div->
-			
-
-				<!--input checked type="radio" name="multipart" value="yes"> Individual
-				<input type="radio" name="multipart" value="no"> Multi-Part -->
-
-			<!--input type="button" value="Add List" onclick="addform()"-->
-			</div>
-		<div class="float_left" style="width: 49% padding: 1em;">
-			<table cellspacing="0" id="filters_table" class="tbl" style='display: none;'>
-				<thead>
-					<tr>
-						<th>&nbsp;</th>
-						<th>Filter label</th>
-						<th>Filter Value</th>
-						<th>Order</th>
-					</tr>
-				</thead>
-				<tbody id="filters_table_tbody">
-				</tbody>
-			</table>
-			<div id="example"></div>
+  		<div id="messages">
+			<?php echo dump_messages(); ?>
 		</div>
-		<div class="clear"></div>
-		<input type="submit" value="Add List">
+
+		<div id="compendium_buttons" class="w3-bar w3-black mt">
+			<button type="button" class="w3-bar-item w3-button tablink w3-red" onclick="open_tabs(this,'default')">Default</button>
+			<button type="button" class="w3-bar-item w3-button tablink" onclick="open_tabs(this,'md')">Markdown</button>
+			<div class="float_right">
+				<button class="w3-bar-item w3-button tablink" style="background: green;">Save List</button>
+			</div>
+		</div>
+		<div id="compendium_bodies" style='padding: 1em; border: 1px solid #ccc;'>
+
+			<div id="default" class="w3-container w3-border tabs">
+
+				<div class="float_left" style="width: 59%;">
+					<label class="form_label" for="title">List Name <span>*</span></label>
+					<div class="form_data">
+						<input type="text" name="title" id="title" class="xl" value="<?php echo $info['title'] ?? ""; ?>">
+					</div>
+
+					<!--label class="form_label">Visibility</label>
+					<div class="form_data">
+						<label for="public"><input type="radio" name="visibility" id="public" value="public"> Public</label>
+						<label for="private"><input type="radio" name="visibility" id="private" value="private"> Private</label>
+					</div-->
+
+					<label class="form_label" for="title">Inputs</label>
+					<div class="form_data">
+						<!--textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 400px; height: 150px;">Chicken; 30; Poor,Middle Class,Rich,Lunch,Dinner
+		Beef; 5; Middle Class,Rich, Lunch, Dinner
+		Oysters; 5; Poor,Rich, Dinner
+		Eggs; 10; Poor,Middle Class,Rich,breakfast
+		Soup; 20; Poor,Middle Class, Lunch, Dinner
+		Bread; 20; Poor,Middle Class,Rich, breakfast, Lunch, Dinner
+		Apples; 10; Poor,Middle Class,Rich, snack</textarea-->
+						<textarea name="inputs" id="inputs" onchange="show_example()" onkeyup="show_example()" style="width: 90%; height: 250px;"><?php echo $info['inputs'] ?? ""; ?></textarea>
+						<div style="font-size: 80%;">*Notes: Tab Deliminated List - Name &nbsp; Percentage &nbsp; Tags</div>
+					</div>
+
+					<!--label class="form_label" for="title">Input Options</label>
+					<div class="form_data">
+						<label for="percentages">
+							<input type="checkbox" name="options" id="percentages" value="percentages"> Percentages
+						</label>
+						&nbsp;
+						<label for="tags">
+							<input type="checkbox" name="options" id="tags" value="tags"> Tags
+						</label>
+					</div->
+					
+
+						<!--input checked type="radio" name="multipart" value="yes"> Individual
+						<input type="radio" name="multipart" value="no"> Multi-Part -->
+
+					<!--input type="button" value="Add List" onclick="addform()"-->
+					</div>
+				<div class="float_left" style="width: 39% padding: 1em;">
+					<table cellspacing="0" id="filters_table" class="tbl" style='display: none;'>
+						<thead>
+							<tr>
+								<th>&nbsp;</th>
+								<th>Filter label</th>
+								<th>Filter Value</th>
+								<th>Order</th>
+							</tr>
+						</thead>
+						<tbody id="filters_table_tbody">
+						</tbody>
+					</table>
+					<div id="example"></div>
+				</div>
+
+
+			</div>
+
+<style type="text/css">
+	code { border: 1px solid #ccc; padding: 1em; background: #ddd; margin: 1em; }
+	.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
+		margin: 0; padding: 0;
+	}
+</style>
+			<div id="md" class="w3-container w3-border tabs" style="display: none">
+				<textarea name="markdown" id="markdown" class="float_left" style="width: 47%; height: 200px;" onkeyup="parse_markdown()">
+** Markdown List Preview ** 
+
+Some useful information about setting up previews here...
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+</textarea>
+				<article id="preview" class="markdown-body float_left" style="width: 47%; border: 1px solid #ccc; margin-left: 1em; padding: 1em"></article>
+				<div class="clear mt"></div>
+			</div>
+		</div>
+
+		<div class="clear mt"></div>
+		<input type="submit" value="Save List">
 	</form>
 	
 <?php
@@ -175,13 +214,14 @@ ob_start();
 			var output = '<div id="filter_examples">';
 			// output += "<br>"+ build_filters_table();
 
-			output += (is_table ? '<table cellspacing="0" cellpadding="0" class="list_table"><thead>' : '<ol class="mt">');
+			output += (is_table ? '<table cellspacing="0" cellpadding="0" class="tbl"><thead>' : '<ol class="mt">');
 			output += html;
 			output += (is_table ? "</tbody></table>" : "</ol>");
 			output += '</div>';
-			build_filters_table();
 			$id('example').innerHTML = output;
-			$id('filters_table').style.display = "";
+			if(build_filters_table()) {							
+				$id('filters_table').style.display = "";
+			}
 		}
 	}
 	show_example();
@@ -248,6 +288,9 @@ ob_start();
 		var rem_tags = filters_table_tbody_values();
 		var cnt = Object.keys(tags).length;
 		var tr;
+		if(cnt == 0) {
+			return false;
+		}
 
 		// console.log(existing_tag)
 		// console.log(rem_tags)
@@ -280,6 +323,7 @@ ob_start();
 		if(Object.keys(rem_tags).length) {
 			delete_filters_table_tbody_values(rem_tags);
 		}
+		return true;
 	}
 
 
@@ -342,6 +386,27 @@ ob_start();
 		
 	}
 
+	function parse_markdown() {
+		var markdown = document.getElementById('markdown').value;
+		var preview = document.getElementById('preview');
+
+		preview.innerHTML = micromarkdown.parse(markdown);
+	}
+	parse_markdown();
+
+	function open_tabs(evt, tabname) {
+		var i, x, tablinks;
+		x = document.getElementsByClassName("tabs");
+		for (i = 0; i < x.length; i++) {
+			x[i].style.display = "none";
+		}
+		tablinks = document.getElementsByClassName("tablink");
+		for (i = 0; i < x.length; i++) {
+			tablinks[i].className = tablinks[i].className.replace(" w3-red", ""); 
+		}
+		document.getElementById(tabname).style.display = "block";
+		evt.className += " w3-red";
+	}
 </script>
 
 <?php

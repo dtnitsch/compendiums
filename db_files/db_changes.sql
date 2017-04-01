@@ -22,8 +22,8 @@ drop table if exists public.asset;
 create table public.asset (
 	id serial primary key
 	,active boolean default true
-	,title varchar(200) not null default ''
-	,alias varchar(200) not null default ''
+	,title text not null default ''
+	,alias text not null default ''
 	,description text default ''
 	,created timestamp default '0001-01-01 00:00:00'
 	,modified timestamp default '0001-01-01 00:00:00'
@@ -190,4 +190,40 @@ alter table public.list add column filter_orders json default '{}'::json;
 alter table public.collection_list_map add column list_order smallint default 0;
 
 alter table public.list_asset_map add column filters json default '{}'::json;
+
+
+alter table public.asset alter column title type text;
+alter table public.asset alter column alias type text;
+
+
+drop table if exists public.list_markdown;
+create table public.list_markdown (
+	id serial primary key
+	,active boolean default true
+	,list_id int not null default 0
+	,markdown text default ''
+	,created timestamp default '0001-01-01 00:00:00'
+	,modified timestamp default '0001-01-01 00:00:00'
+);
+
+drop table if exists public.collection_markdown;
+create table public.collection_markdown (
+	id serial primary key
+	,active boolean default true
+	,collection_id int not null default 0
+	,markdown text default ''
+	,created timestamp default '0001-01-01 00:00:00'
+	,modified timestamp default '0001-01-01 00:00:00'
+);
+
+drop table if exists public.compendium_markdown;
+create table public.compendium_markdown (
+	id serial primary key
+	,active boolean default true
+	,compendium_id int not null default 0
+	,section varchar(100) default ''
+	,markdown text default ''
+	,created timestamp default '0001-01-01 00:00:00'
+	,modified timestamp default '0001-01-01 00:00:00'
+);
 
