@@ -18,20 +18,36 @@ if(!empty($_POST['filters'])) {
 		$where .= " and public.list.". $k ." ilike '%". $v ."%' ";
 	}
 }
+if(!empty($_POST['u'])) {
+	start_session();
+	$where .= " and public.list.user_id='". $_SESSION['user']['id'] ."' ";
+}
 
 $q = "
 	select
-		id
-		,title
-		,alias
-		,key
-		,to_char(modified, 'MM/DD/YYYY') as modified
+		list.id
+		,list.title
+		,list.alias
+		,list.key
+		,users.username
+		,count(list_asset_map.id) as asset_count
+		,to_char(list.modified, 'MM/DD/YYYY') as modified
 	from public.list
+	join public.list_asset_map on
+		list_asset_map.list_id = list.id
+		and list_asset_map.active
+	join system.users on users.id=public.list.user_id
 	where
 		public.list.active 
 		". $where ."
-		". $order ."
-		". $limit ."
+	group by
+		list.id
+		,list.title
+		,list.alias
+		,list.key
+		,users.username
+	". $order ."
+	". $limit ."
 ";
 $res = pagination_ajax_query($q,"Getting Pagi Path");
 $query = get_pagination_ajax_query();

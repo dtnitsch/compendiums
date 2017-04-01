@@ -113,12 +113,14 @@ function output_csv_from_array($data,$column_names='',$column_models='',$filenam
 	fclose($fp);
 }
 
-function output_csv_from_query() {
+function output_csv_from_query($q="") {
 	global $database, $db_store;
 
-	$filename = (!empty($_POST['filename']) ? $_POST['filename'] : 'csv_export_'.date("Y-m-d_H-i",time()).'.csv');
+	if(empty($q)) {
+		$filename = (!empty($_POST['filename']) ? $_POST['filename'] : 'csv_export_'.date("Y-m-d_H-i",time()).'.csv');
 
-	$q = get_clean_query();
+		$q = get_clean_query();		
+	}
 
 	$q = preg_replace('/limit \d+/i','',$q);
 	$q = preg_replace('/offset \d+/i','',$q);

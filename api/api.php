@@ -75,6 +75,7 @@ if(!empty($routes[$request_method]['static'][$url])) {
 		$route_path = str_replace('/','\/',$path_pieces[0]);
 		if(preg_match("/^$route_path.+/",$url)) {
 			$values = str_replace($path_pieces[0],'',$url);
+			$values = trim(trim($values,'/'));
 			// echo "<p>Dynamic: ". $function ."(". $values .")";
 			// echo $_SERVER['DOCUMENT_ROOT'];
 			if(is_file('functions/'. $function .".php")) {

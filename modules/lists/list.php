@@ -13,6 +13,9 @@ _error_debug("MODULE: ". basename(__FILE__)); 	# Debugger
 #   Validation
 ##################################################
 
+$path = get_requested_path();
+$user_path = (substr($path,0,3) == '/u/' ? true : false);
+
 ##################################################
 #   DB Queries
 ##################################################
@@ -90,7 +93,8 @@ $delete_link = "";
 		<thead>
 		<tr>
 			<th data-col="title">List</th>
-			<th data-col="alias">Alias</th>
+			<th data-col="username">Username</th>
+			<th data-col="asset_count">Asset Count</th>
 			<th data-col="modified">Date Modified</th>
 			<th class='options' style='width: 1%;'>&#9881;</th>
 		</tr>
@@ -98,7 +102,8 @@ $delete_link = "";
 		<tbody style='display: none;'>
 		<tr<?= $edit_onclick ?>>
 			<td>{{title}}</td>
-			<td>{{alias}}</td>
+			<td>{{username}}</td>
+			<td>{{asset_count}}</td>
 			<td>{{modified}}</td>
 			<td rel='nolink' class='options'><?= $delete_link ?></td>
 		</tr>
@@ -118,7 +123,7 @@ ob_start();
 	asl_sort = sortlist().remote;
 	asl_sort.init('/ajax.php',{
 		id:'asl_sort'
-		,data: 'apid=06a0fc087756944595785e90f79ecad4'
+		,data: 'apid=06a0fc087756944595785e90f79ecad4&u=<?php echo $user_path; ?>'
 		,filters: 'form_filters'
 		,type: "pagination"
         ,column: "modified"

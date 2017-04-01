@@ -22,7 +22,7 @@ if(!empty($_POST) && !error_message()) {
 		$is_table = (strstr($_POST['inputs'],"|") !== false ? 't' : 'f');
 
 		$q = "
-			'2'
+			'". db_prep_sql($_SESSION['user']['id']) ."'
 			,'". $key ."'
 			,'". db_prep_sql($title) ."'
 			,'". db_prep_sql($alias) ."'

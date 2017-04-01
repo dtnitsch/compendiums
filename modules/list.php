@@ -15,7 +15,6 @@ _error_debug("MODULE: ". basename(__FILE__)); 	# Debugger
 $pieces = explode('/',$GLOBALS['project_info']['path_data']['path']);
 $key = trim($pieces[2]);
 
-
 ##################################################
 #   DB Queries
 ##################################################
@@ -70,11 +69,18 @@ while($row = db_fetch_row($res)) {
 	$assets[$info['id']]['percentages'][] = $row['percentage'];
 }
 
+$csv_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lists/'. $key ."/";
+$raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lists/raw/'. $key ."/";
+
 ##################################################
 #   Content
 ##################################################
 ?>
 <div class='clearfix'>
+	<div class="float_right">
+		<input type="button" onclick="window.location.href='<?php echo $csv_url; ?>'" value="Export to CSV">
+		<input type="button" onclick="window.location.href='<?php echo $raw_url; ?>'" value="Export Raw">
+	</div>
 	<h2 class='lists'>Lists: <?php echo $info['title']; ?></h2>
   
   <div class="filters" onclick="show_hide('filter_details')">
@@ -90,21 +96,23 @@ while($row = db_fetch_row($res)) {
 		<label for="randomize">
 			<input checked type="checkbox" name="options" id="randomize_<?php echo $info['key']; ?>" value="randomize"> Randomize
 		</label>
-		<label for="percentages">
+		<!--label for="percentages">
 			<input type="checkbox" name="options" id="percentages_<?php echo $info['key']; ?>" value="percentages"> Use Percentages
-		</label>
+		</label-->
     </form>
 
 
 <?php
-asort($info['filter_orders']);
+if(!empty($info['filter_orders'])) {
+	asort($info['filter_orders']);	
+}
 // echo "<pre>";
 // print_r($info);
 // echo "<pre>";
 	if(!empty($info['filter_orders'])) {
 		$output = '
 			<div id="custom_filters_'. $info['key'] .'" class="mb">
-				<div>
+				<div class="mtb">
 					<div><strong>Filters</strong></div>
 					<label for="filter_and">
 						<input type="radio" id="filter_and" name="and_or" value="and" /> And

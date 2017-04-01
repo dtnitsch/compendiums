@@ -81,7 +81,7 @@ function build_list(id,key,list_key) {
 
 	var limit = ($id(id).dataset && $id(id).dataset.limit ? parseInt($id(id).dataset.limit) : $id('limit_'+ list_key).value);
 	var randomize = ($id(id).dataset && $id(id).dataset.randomize ? parseInt($id(id).dataset.randomize) : $id('randomize_'+ list_key).checked);
-
+	var filter_count = 0;
 	var checked;
 	var and_or, r, display;
 
@@ -96,12 +96,14 @@ function build_list(id,key,list_key) {
 	}
 
 	checked = get_filters(list_key);
-	if(checked.length) {
+	filter_count = checked.length;
+	if(filter_count) {
 		and_or = ($id('filter_or').checked ? "or" : "and");
 		// if(and_or == "or") {
 		// 	r = new RegExp('(^|\\s)('+ checked.join("|") +')(\\s|$)');
 		// }
 	}
+	$id('filter_count').innerHTML = filter_count +" applied";
 	
 	cnt = 0;
 	for(var i=0; i<list_rows.length; i++) {

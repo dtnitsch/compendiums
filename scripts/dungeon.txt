@@ -1,0 +1,51 @@
+D100|The Dungeon is|That was/is now|By/For
+01-02|a bank|a hatchery for|advertising executives
+03-04|a boudoir|a holy place for|angels
+05-06|a brewery|a home for|animals
+07-08|a burrow|a library for|assassins
+09-10|a cathedral|a museum for|bards
+11-12|a cellar|a zoo containing|cannibals
+13-14|a corpse|a zoo to amuse|criminals
+15-16|a court|abandoned by|dead gods
+17-18|a fetus|all in the imagination of|degenerates
+19-20|a forge|belongs to|devils
+21-22|a habit trail|bought by|dinosaurs
+23-24|a hell|built by|dragons
+25-26|a hunting grounds|built for|dwarves
+27-28|a laboratory|can be found on a treasure map|elder gods
+29-30|a lower plane|claimed falsely by|elementals
+31-32|a market|collateral for|elves
+33-34|a mating ground|created for|ettins
+35-36|a memorial|desecrated by|eunuchs
+37-38|a mine|forgotten by|faerie
+39-40|a mode of transportation|has baffled all attempts of explanation is commonly blamed on|ghosts
+41-42|a monastery|in the shape of|giant insects
+43-44|a mortuary|is claimed by|giants
+45-46|a natural cave|is the holy land of|gnomes
+47-48|a natural formation|lost in a dice game to|goblins/orcs/etc.
+49-50|a palace|meant to lure|gods
+51-52|a pantry|merely a map leading to (roll again)|halflings
+53-54|a paradise|neutral ground for (roll 2)|humankind
+55-56|a parking garage|protection for|illusionists
+57-58|a pocket dimension|protection from|living statues
+59-60|a posh hotel|recently remembered by|lycanthropes
+61-62|a prison|redesigned by|mages
+63-64|a sanatorium|shelter for|medusae
+65-66|a sewer|shelter from|monks
+67-68|a ship|sold to|mushroom men
+69-70|a skeleton|taken from|ninjas
+71-72|a slave pit|the ancestral homeland of|people with animal heads
+73-74|a small annex to (roll again)|the basis for the stories of the|pirates
+75-76|a small box|the boudoir of|sadness elementals
+77-78|a spawning place|the city of|sandworms
+79-80|a stable|the command center of|sentient objects
+81-82|a theater|the garden of|serpents
+83-84|a training ground|the home of|snake men
+85-86|a trap|the nest of|space aliens
+87-88|a university|the nursery of|spiders
+89-90|an abattoir|the resting place of|spooky children with psionics
+91-92|an arena|used to entertain|the religious
+93-94|an execution grounds|used to train young|titans
+95-96|an imaginary place|vacated by|troglodytes
+97-98|ruins|where can be found the common ancestor of (roll 2 in column 3)|undead
+99-00|the homeland|won in a dice game by|vampires
