@@ -265,7 +265,12 @@ ob_start();
 		console.log(micromarkdown.parse(markdown.innerHTML.trim()))
 		markdown.innerHTML = micromarkdown.parse(markdown.innerHTML.trim());
 	}
-	parse_markdown();
+<?php
+	if(!empty($info['markdown'])) {
+		echo 'parse_markdown();';
+	}
+?>
+
 
 	function collection_open_tabs(evt, tabname) {
 		

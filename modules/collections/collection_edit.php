@@ -27,11 +27,27 @@ $q = "
 	select
 		collection_list_map.*
 		,list.key
+		,q.key_agg
 	from public.collection_list_map
 	join public.list on
 		list.id = collection_list_map.list_id
+	join (
+		select string_agg(key,',') as key_agg, connected
+		from public.collection_list_map
+		join public.list on
+			list.id = collection_list_map.list_id
+		where
+			collection_list_map.collection_id = '". $info['id'] ."'
+		group by
+			connected
+	) as q on
+		q.connected = collection_list_map.connected
+
 	where
 		collection_list_map.collection_id = '". $info['id'] ."'
+	order by
+		collection_list_map.connected
+		,collection_list_map.id
 ";
 $lists = db_query($q,"Getting Lists");
 
@@ -44,6 +60,8 @@ if(!empty($_POST)) {
 }
 
 // add_js('sortlist.new.js');
+add_js("list_functions.js",10);
+add_js("markdown.min.js");
 
 ##################################################
 #	Content
@@ -75,14 +93,19 @@ if(!empty($_POST)) {
 <?php
 	$output = "";
 	$list_count = 0;
+	$connected = '';
 	while($row = db_fetch_row($lists)) {
+		if($connected == $row['connected']) {
+			continue;
+		}
+		$connected = $row['connected'];
 		$list_count += 1;
 		$randomize = ($row['randomize'] == 't' ? " checked ": '');
 		$output .= '
 		<tr>
 			<td>'. $list_count .'</td>
 			<td>
-				<input type="input" id="key'. $list_count .'" name="list_keys['. $list_count .']" placeholder="List Key" value="'. $row['key'] .'">
+				<input type="input" id="key'. $list_count .'" name="list_keys['. $list_count .']" placeholder="List Key" value="'. $row['key_agg'] .'">
 			</td>
 			<td>
 				<input type="input" id="label'. $list_count .'" name="list_labels['. $list_count .']" placeholder="List Label" value="'. $row['label'] .'">
