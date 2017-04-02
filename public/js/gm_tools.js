@@ -1,12 +1,34 @@
-function messages(msgs) {
-	output = [];
-	for(i in msgs) {
-		for(var j=0,len=msgs[i].length; j<len; j++) {
-			output[output.length] = '<div class="'+ i +'_message">'+ msgs[i][j] +'</div>';
-		}
-	}
-	$id("messages").innerHTML = output.join("");
+var error_messages = [];
+function error_message(msg) {
+    var msg = msg || "";
+    if(msg == "") {
+    	return error_messages.length;
+    }
+    error_messages[error_messages.length] = msg;
 }
+
+function show_messages() {
+	var output = '';
+	var err = '';
+	for(var i=0, len=error_messages.length; i<len; i++) {
+		err = error_messages[i];
+		output += '<div class="error_message"><div class="float_right">[<a href="javascript:void(0);" title="Remove This" onclick="remove_this(this);" class="remove">X</a>]</div>'+ err +'</div>';
+	}
+	$id('messages').innerHTML = output;
+	error_messages = [];
+	window.location.href='#messages';
+}
+
+
+// function messages(msgs) {
+// 	output = [];
+// 	for(i in msgs) {
+// 		for(var j=0,len=msgs[i].length; j<len; j++) {
+// 			output[output.length] = '<div class="'+ i +'_message">'+ msgs[i][j] +'</div>';
+// 		}
+// 	}
+// 	$id("messages").innerHTML = output.join("");
+// }
 
 function rand(i,j) {
 	var max,min;

@@ -136,10 +136,21 @@ if(!empty($_POST) && !error_message()) {
 			// $q = "insert into collection_list_map (collection_id,asset_id,created,modified) values ". implode(',',$map_ids);
 			// db_query($q,"Inserting collection asset map");
 		
+			$markdown = trim(strip_tags($_POST['markdown']));
+			$q = "
+				update public.list_markdown set
+					markdown = '". db_prep_sql($markdown) ."'
+					,modified = now()
+				where
+					list_id = '". db_prep_sql($pub['id']) ."'
+			";
+			$res = db_query($q, "Updating markdown"); 
 
-			$redirection_path = '/collections/edit/?key='. $key;
-			set_post_message("You have successfully updated a record");
-			set_safe_redirect($redirection_path);
+			if(!error_message()) {			
+				// $redirection_path = '/collections/edit/?key='. $key;
+				// set_post_message("You have successfully updated a record");
+				// set_safe_redirect($redirection_path);
+			}
 
 			// error_message("An error has occurred while trying to create a new record");
 		}

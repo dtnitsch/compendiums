@@ -7,6 +7,7 @@ create table public.list (
 	,percentages boolean default true
 	,uses_other_lists boolean default false
 	,user_id int default 0
+	,version int default 1
 	,key varchar(10) not null default ''
 	,title varchar(200) not null default ''
 	,alias varchar(200) not null default ''
@@ -51,6 +52,7 @@ create table public.collection (
 	,active boolean default true
 	,public boolean default true
 	,user_id int default 0
+	,version int default 1
 	,key varchar(10) not null default ''
 	,title varchar(200) not null default ''
 	,alias varchar(200) not null default ''

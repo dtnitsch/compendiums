@@ -138,6 +138,7 @@ function show_hide_display(elem,show_hide_obj,show_text,hide_text) {
 	}
     show_hide_obj.innerHTML = (elem.style.display == "none" ? show_text : hide_text);
 }
+function remove_this(obj) { obj.parentNode.parentNode.style.display='none'; }
 
 function build_http_query(params) {
 	var t = typeof params, output = "";
@@ -209,3 +210,4 @@ function serialize (form) {
     }
     return build_http_query(q);
 }
+

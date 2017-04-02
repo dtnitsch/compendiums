@@ -22,16 +22,18 @@ post_queue($module_name,'modules/lists/post_files/');
 ##################################################
 $info = (!empty($_POST) ? $_POST : array());
 
+
+library("validation.php");
+add_js("validation.js");
 add_js("markdown.min.js");
 
 ##################################################
 #	Content
 ##################################################
 ?>
-	<form id="addform" method="post" action="" onsubmit="return validate();">
+	<form id="addform" method="post" action="">
 		<h2 class='lists'>Add List</h2>
   
-  		<a href="#messages"></a>
   		<div id="messages">
 			<?php echo dump_messages(); ?>
 		</div>
@@ -142,6 +144,12 @@ proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 ob_start();
 ?>
 <script type="text/javascript">
+	var j = <?php echo validation_create_json_string(validation_load_file(__DIR__."/validation.json"),"js"); ?>;
+	// name of variable should be sent in the validation function
+	var v = new validation("v"); 
+	v.load_json(j);
+	v.custom("percentage",calc_percentages,"Percentages don't add up to 100")
+
 	function show_example() {
 		var pieces = $id('inputs').value.trim().split("\n");
 		var len = pieces.length;
@@ -398,23 +406,6 @@ ob_start();
 		}
 		document.getElementById(tabname).style.display = "block";
 		evt.className += " w3-red";
-	}
-
-
-	function validate() {
-		var required = {'title':'List Name','inputs':'Inputs'};
-		var val;
-		for(i in required) {
-			val = $id(i).value.trim();
-			if(val == "") {
-				error_message("'"+ required[i] +"' is a required field");
-			}
-		}
-		if(error_message()) {
-			show_messages();
-			return false;
-		}
-		return true;
 	}
 </script>
 

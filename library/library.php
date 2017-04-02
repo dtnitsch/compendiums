@@ -215,7 +215,7 @@ function dump_messages() {
 	return $output;
 }
 function show_message($type,$text) {
-	return '<div class="'. $type .'_message"><div class="float_right"><a href="javascript:void(0);" title="Remove This" onclick="remove_this(this);" class="remove"></a></div>'. $text .'</div>';
+	return '<div class="'. $type .'_message"><div class="float_right">[<a href="javascript:void(0);" title="Remove This" onclick="remove_this(this);" class="remove">X</a>]</div>'. $text .'</div>';
 }
 function debug_message($msg="") {
 	if(is_array($msg)) { array_messages($msg,__FUNCTION__); }

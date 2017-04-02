@@ -23,6 +23,18 @@ if(empty($id)) {
 ##################################################
 $info = array();
 $info = db_fetch("select * from public.collection where key='". $id ."'",'Getting Collection');
+
+$q = "
+	select markdown
+	from public.collection_markdown
+	where
+		active
+		and collection_id = '". $info['id'] ."'
+";
+$tmp = db_fetch($q,'Getting Markdown');
+$info['markdown'] = $tmp['markdown'];
+
+
 $q = "
 	select
 		collection_list_map.*
@@ -72,6 +84,16 @@ add_js("markdown.min.js");
   
   	<?php echo dump_messages(); ?>
 	<form id="addform" method="post" action="" onsubmit="">
+
+	<div id="collection_buttons" class="w3-bar w3-black mt">
+		<button type="button" class="w3-bar-item w3-button tablink w3-red" onclick="collection_open_tabs(this,'collection_default')">Default</button>
+		<button type="button" class="w3-bar-item w3-button tablink" onclick="collection_open_tabs(this,'collection_md')">Markdown</button>
+		<div class="float_right">
+			<button class="w3-bar-item w3-button tablink" style="background: green;">Save List</button>
+		</div>
+	</div>
+	<div id="collection_bodies" style='padding: 1em; border: 1px solid #ccc;'>
+		<div id="collection_default" class="w3-container w3-border tabs">
 
 		<label class="form_label" for="title">Collection Name <span>*</span></label>
 		<div class="form_data">
@@ -133,6 +155,15 @@ add_js("markdown.min.js");
 		<p>
 			<input type="submit" value="Edit Collection">
 		</p>
+		</div>
+		<div id="collection_md" class="w3-container w3-border tabs" style="display: none">
+			<form id="addform" method="post" action="" onsubmit="">
+			<textarea name="markdown" id="markdown" class="float_left" style="width: 47%; height: 200px;" onkeyup="parse_markdown()"><?php echo $info['markdown']; ?></textarea>
+			</form>
+			<article id="preview" class="markdown-body float_left" style="width: 47%; border: 1px solid #ccc; margin-left: 1em; padding: 1em"></article>
+			<div class="clear mt"></div>
+		</div>
+	</div>
 	</form>
 
 <?php echo run_module("modal_list"); ?>
@@ -220,7 +251,7 @@ modal_init("simple_modal");
 
 		preview.innerHTML = micromarkdown.parse(markdown);
 	}
-	// parse_markdown();
+	parse_markdown();
 
 	function collection_open_tabs(evt, tabname) {
 		var i, x, tablinks;
