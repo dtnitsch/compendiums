@@ -1,17 +1,19 @@
 <?php
 if(!empty($_POST) && !error_message()) {
 	library('uuid.php');
-	library('validation.php');
+	// library('validation.php');
 	library("slug.php");
 
-	$percentages = calc_percentages();
+	error_message("adidng one");
 
-	$json = validation_create_json_string(validation_load_file(__DIR__ ."/../validation.json"),"php");
-	if(!empty($percentages)) {
-		validation_custom("percentage","validate_percentages","Percentages do not add up to 100");
-	}
-	validate_from_json($json);
-	error_message(get_all_validation_errors());
+	// $percentages = calc_percentages();
+
+	// $json = validation_create_json_string(validation_load_file(__DIR__ ."/../validation.json"),"php");
+	// if(!empty($percentages)) {
+	// 	validation_custom("percentage","validate_percentages","Percentages do not add up to 100");
+	// }
+	// validate_from_json($json);
+	// error_message(get_all_validation_errors());
 
 	if(!error_message()) {
 

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Weighted Sort</title>
+
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<link href="/css/styles.css" type="text/css" rel="stylesheet" media="screen" />
+</head>
+<body>
+
+<h1>Weighted Sort</h1>
+
+<script type="text/javascript">
+var list = [
+	['Absolute Zero',1]
+	,['Acid Green',1]
+	,['Aero',4]
+	,['Aero Blue',1]
+	,['African Violet',1]
+	,['Air Force Blue (RAF)',1]
+	,['Air Force Blue (USAF)',1]
+	,['Air Superiority Blue',1]
+	,['Alabama Crimson',1]
+	,['Alabaster',1]
+	,['Alice Blue',1]
+	,['Alien Armpit',1]
+	,['Alizarin Crimson',1]
+	,['Alloy Orange',1]
+	,['Almond',5]
+	,['Amaranth',1]
+	,['Amaranth Deep Purple',1]
+	,['Amaranth Pink',1]
+	,['Amaranth Purple',1]
+	,['Amaranth Red',1]
+	,['Amazon Store',1]
+	,['Amazonite',1]
+	,['Amber',1]
+	,['Amber (SAE/ECE)',1]
+	,['American Rose',1]
+	,['Amethyst',1]
+	,['Android Green',1]
+	,['Anti-Flash White',1]
+	,['Antique Brass',1]
+	,['Antique Bronze',1]
+	,['Antique Fuchsia',1]
+	,['Antique Ruby',1]
+	,['Antique White',1]
+	,['Ao (English)',1]
+	,['Apple Green',1]
+	,['Apricot',1]
+	,['Aqua',2]
+	,['Aquamarine',1]
+	,['Arctic Lime',1]
+	,['Army Green',1]
+	,['Arsenic',1]
+	,['Artichoke',1]
+	,['Arylide Yellow',1]
+	,['Ash Gray',5]
+	,['Asparagus',1]
+	,['Atomic Tangerine',1]
+	,['Auburn',1]
+	,['Aureolin',1]
+	,['AuroMetalSaurus',1]
+	,['Avocado',1]
+	,['Awesome',2]
+	,['Aztec Gold',1]
+	,['Azure',3]
+	,['Azure (Web Color)',1]
+	,['Azure Mist',1]
+	,['Azureish White',1]
+];
+
+var weight_counts = {};
+var weight_totals = 0;
+var new_list = {};
+for(i in list) {
+	if(weight_counts[list[i][1]] == undefined) {
+		weight_counts[list[i][1]] = 0;
+		weight_totals += list[i][1];
+		new_list[list[i][1]] = [];
+	}
+	weight_counts[list[i][1]] += 1;
+	new_list[list[i][1]].push(list[i][0]);
+}
+console.log(weight_counts)
+// console.log(weight_totals)
+// console.log(new_list)
+// sort(weight_counts)
+for(i in new_list) {
+	if(new_list[i].length > 1) {
+		shuffle(new_list[i])
+	}
+}
+// console.log(new_list)
+
+
+
+
+function rand(i,j) {
+	var max,min;
+	if(typeof j != "undefined") {
+		max = j;
+		min = i;
+	} else if(typeof i != "undefined") {
+		max = i;
+		min = 1;
+	}
+	return Math.floor((Math.random() * ((max + 1) - min)) + min);
+}
+function shuffle(arr,num,skip_first) {
+	var len = arr.length, idx = len, tmp, random;
+	var num = num || 0;
+	if(num) {
+		idx = num;
+	}
+	low = (skip_first ? 1 : 0);
+	// While there remain elements to shuffle...
+	while (low < idx) {
+		// Pick a remaining element...
+		if(skip_first) {
+			random = Math.floor(Math.random() * (len - 1)) + 1;
+		} else {
+			random = Math.floor(Math.random() * len);
+		}
+		idx -= 1;
+
+		// And swap it with the current element.
+		tmp = arr[idx];
+		arr[idx] = arr[random];
+		arr[random] = tmp;
+	}
+	if(num) {
+		return arr.slice(0,num);
+	}
+	return arr;
+}
+
+
+</script>
+</body>
+</html>

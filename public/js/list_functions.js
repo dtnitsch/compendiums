@@ -1,3 +1,200 @@
+function example(e,force) {
+	var force = force || false;
+	// 13 = enter, 8 = backspace
+	if(!force && (e.keyCode != 13 && e.keyCode != 8)) {
+		return;
+	}
+	var pieces = $id('inputs').value.trim().split("\n");
+	var filters, inner, elem, inner;
+	var is_table = (pieces[0].indexOf('|') != -1 ? true : false);
+	var html = '';
+
+	for(var i=0,len=pieces.length; i<len; i++) {
+		if(pieces[i].trim() == '') {
+			continue;
+		}
+		inner = '';
+		inner_pieces = pieces[i].split(';');
+
+		if(is_table) {
+			table_pieces = inner_pieces[0].split('|');
+			elem = (i == 0 ? 'th' : 'td');
+			for(var j=0,jlen=table_pieces.length; j<jlen; j++) {
+				inner += '<'+ elem +'>'+ table_pieces[j].trim() +'</'+ elem +'>';
+			}
+			if(i == 0) {
+				inner += '</thead><tbody>';
+			}
+		}
+
+		filters = '';
+		if(inner_pieces[1] != undefined) {
+			tags = inner_pieces[1].split(',');
+			for(var j=0,jlen=tags.length; j<jlen; j++) {
+				tag = tags[j].trim();
+				filters += slug(tag,'_') +' ';
+			}
+			if(filters != '') {
+				filters = ' data-filters="'+ filters.trim() +'"';
+			}
+		}
+
+		html += (is_table ? '<tr'+ filters +'>'+ inner.trim() +'</tr>' : '<li'+ filters +'>'+ inner_pieces[0].trim() +'</li>');
+	}
+
+	if(html.trim() != '') {
+		var output = '<div id="filter_examples">';
+
+		output += (is_table ? '<table cellspacing="0" cellpadding="0" class="tbl"><thead>' : '<ol class="mt">');
+		output += html;
+		output += (is_table ? '</tbody></table>' : '</ol>');
+		output += '</div>';
+		$id('example').innerHTML = output;
+		if(build_filters_table()) {							
+			$id('filters_table').style.display = '';
+		}
+	}
+}
+
+
+function unique_tags() {
+	var pieces = $id('inputs').value.trim().split("\n");
+	var inner_pieces, tags, tag;
+	var output = {};
+	for(var i=0,len=pieces.length; i<len; i++) {
+		inner_pieces = pieces[i].split(';');
+		if(inner_pieces[1] != undefined) {
+			tags = inner_pieces[1].split(",");
+			for(var j=0,jlen=tags.length; j<jlen; j++) {
+				tag = slug(tags[j],'_');
+				output[tag] = tags[j];
+			}
+			} else {
+			continue;
+		}
+	}
+	return output;
+}  
+
+
+function build_filters_table() {
+	var tags = unique_tags();
+	var existing_tag = filters_table_tbody_values();
+	var rem_tags = filters_table_tbody_values();
+	var cnt = Object.keys(tags).length;
+	var tr;
+	if(cnt == 0) {
+		return false;
+	}
+
+	var cnt = 0;
+	for(key in tags) {
+		key = key.trim();
+		if(!key) { continue; }
+		alias = slug(key,'_');
+		// console.log(alias)
+		if(existing_tag[alias] == undefined) {
+			tr = document.createElement('tr');
+			tr.setAttribute('data-key',alias);
+			tr.innerHTML = `
+				<td>
+					<label for="filter_`+ cnt +`">
+					<input type="checkbox" id="filter_`+ cnt +`" name="filters[`+ alias +`]" onclick="filter_list('`+ alias +`')" value="`+ alias +`">
+					</label>
+				</td>
+				<td><input type="text" name="filter_labels[`+ key +`]" value="`+ tags[key] +`"></td>
+				<td>`+ key +`</td>
+				<td><input type="text" name="filter_order[`+ key +`]" value="`+ cnt +`" class="xs"></td>
+			`;
+			$id('filters_table_tbody').appendChild(tr);
+		} else {
+			delete rem_tags[alias];
+		}
+		cnt += 5;
+	}
+
+	if(Object.keys(rem_tags).length) {
+		delete_filters_table_tbody_values(rem_tags);
+	}
+	return true;
+}
+
+
+function filters_table_tbody_values() {
+	var trs = $id('filters_table_tbody').getElementsByTagName('tr');
+	var filters = {};
+
+	for(var i=0,len=trs.length; i<len; i++) {
+		if(trs[i].dataset.key) {
+			filters[trs[i].dataset.key] = 1;
+		}
+	}
+	return filters;
+}
+
+
+function delete_filters_table_tbody_values(tags) {
+	var trs = $id('filters_table_tbody').getElementsByTagName('tr');
+
+	for(var i=0,len=trs.length; i<len; i++) {
+		if(trs[i] != undefined && tags[trs[i].dataset.key] != undefined) {
+			trs[i].parentNode.removeChild(trs[i]);
+		}
+	}
+}
+
+
+
+function filter_list(key) {
+	var filters = $query('#filters_table input[type=checkbox]');
+	var filters_length = filters.length;
+	var checked = [];
+	for(var i=0,len=filters.length; i<len; i++) {
+		if(filters[i].checked) {
+			checked[checked.length] = filters[i].value;
+		}
+	}
+	elems = $query('#filter_examples [data-filters]')
+
+	var show;
+	var checked_length = checked.length;
+	for(var i=0,len=elems.length; i<len; i++) {
+		show = (checked_length == 0 ? true : false);
+		for(j in checked) {
+			r = new RegExp('(^|\\s)'+ checked[j] + '(\\s|$)');
+			if(r.test(elems[i].dataset.filters)) {
+				show = true;
+				break;
+			}
+		}				
+		elems[i].style.display = (show ? "" : "none");
+	}
+}
+
+
+function open_tabs(evt, tabname, type) {
+	parse_markdown();
+	var i, x, tablinks;
+	var type = type || 'list';
+	x = document.getElementById(type +'_bodies').getElementsByClassName("tabs");
+	for (i = 0; i < x.length; i++) {
+		x[i].style.display = "none";
+	}
+	tablinks = document.getElementById(type +'_buttons').getElementsByClassName("tablink");
+	for (i = 0; i < x.length; i++) {
+		tablinks[i].className = tablinks[i].className.replace(" active", ""); 
+	}
+	document.getElementById(tabname).style.display = "block";
+	evt.className += " active";
+}
+
+function parse_markdown() {
+	var markdown = document.getElementById('markdown').value;
+	var preview = document.getElementById('preview');
+
+	preview.innerHTML = micromarkdown.parse(markdown);
+}
+
 function double_shuffle(id) {
 	id = id || 'list_body';
 	shuffle_all_rows();

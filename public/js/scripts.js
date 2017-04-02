@@ -211,3 +211,17 @@ function serialize (form) {
     return build_http_query(q);
 }
 
+function validate(required) {
+    var val;
+    for(i in required) {
+        val = $id(i).value.trim();
+        if(val == "") {
+            error_message("'"+ required[i] +"' is a required field");
+        }
+    }
+    if(error_message()) {
+        show_messages();
+        return false;
+    }
+    return true;
+}

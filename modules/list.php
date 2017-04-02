@@ -371,20 +371,6 @@ if($id("randomize").checked) {
 	}
 	parse_markdown();
 
-	function list_open_tabs(evt, tabname) {
-		parse_markdown();
-		var i, x, tablinks;
-		x = document.getElementById('list_bodies').getElementsByClassName("tabs");
-		for (i = 0; i < x.length; i++) {
-			x[i].style.display = "none";
-		}
-		tablinks = document.getElementById('list_buttons').getElementsByClassName("tablink");
-		for (i = 0; i < x.length; i++) {
-			tablinks[i].className = tablinks[i].className.replace(" w3-red", ""); 
-		}
-		document.getElementById(tabname).style.display = "block";
-		evt.className += " w3-red";
-	}
 
 
 </script>

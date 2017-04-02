@@ -84,7 +84,7 @@ input[type=submit]:hover, input[type=button]:hover {
 .list_ordered li { margin: 0; padding: 0; }*/
 
 
-.w3-bar{width:100%;overflow:hidden}.w3-center .w3-bar{display:inline-block;width:auto}
+/*.w3-bar{width:100%;overflow:hidden}.w3-center .w3-bar{display:inline-block;width:auto}
 .w3-bar .w3-bar-item{padding:8px 16px;float:left;width:auto;border:none;outline:none;display:block}
 .w3-bar .w3-dropdown-hover,.w3-bar .w3-dropdown-click{position:static;float:left}
 .w3-bar .w3-button{white-space:normal}
@@ -103,5 +103,13 @@ color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-sp
 .w3-container:after,.w3-container:before,.w3-panel:after,.w3-panel:before,.w3-row:after,.w3-row:before,.w3-row-padding:after,.w3-row-padding:before,
 .w3-cell-row:before,.w3-cell-row:after,.w3-clear:after,.w3-clear:before,.w3-bar:before,.w3-bar:after
 {content:"";display:table;clear:both}
-.w3-container{padding:0.01em 0px}
+.w3-container{padding:0.01em 0px}*/
 
+.tabbar{width:100%;overflow:hidden;margin: 1em 0;background:#000;}
+.tabbar .active,.tabbar .tablink:hover{color:#fff!important;background-color:#f44336!important}
+.tabbar .tablink{border:none;display:inline-block;outline:0;padding:8px 16px;margin:0;vertical-align:middle;overflow:hidden;text-decoration:none;cursor:pointer;background:inherit;color:#fff;}
+.tabbar .save{background:#4caf50}
+.tabbody {padding: 1em; border: 1px solid #ccc;}
+
+.markdown {width: 47%; height: 200px; float:left;}
+.markdown_body {width: 47%; border: 1px solid #ccc; margin-left: 1em; padding: 1em; float: left;}
