@@ -45,19 +45,15 @@ add_js("list_functions.js");
 			</div>
 		</div>
 		<div id="list_bodies" class="tabbody">
-
 			<div id="default" class="tabs">
 
 				<div class="float_left" style="width: 59%;">
-
 
 					<label class="form_label" for="title">List Name <span>*</span></label>
 					<div class="form_data">
 						<input type="text" name="title" id="title" class="xl" value="<?php echo $info['title'] ?? ""; ?>">
 					</div>
-
-
-					<!--
+<!--
 one;odd
 two;even
 three;odd
@@ -73,6 +69,7 @@ six;even
 
 				</div>
 				<div class="float_left" style="width: 39% padding: 1em;">
+
 					<table cellspacing="0" id="filters_table" class="tbl" style='display: none; margin-bottom: 1em;'>
 						<thead>
 							<tr>
@@ -86,16 +83,19 @@ six;even
 						</tbody>
 					</table>
 					<div id="example"></div>
+
 				</div>
 
 
 			</div>
 			<div id="md" class="tabs" style="display: none">
+
 				<textarea name="markdown" id="markdown" class="markdown" onkeyup="parse_markdown()"><?php echo $info['markdown'] ?? ''; ?></textarea>
 				<article id="preview" class="markdown_body"></article>
 				
 				<div class="clear mt"></div>
 				<button type="button" onclick="example_markdown()">Generate Example Markdown</button>
+
 			</div>
 
 			<div class="clear"></div>
