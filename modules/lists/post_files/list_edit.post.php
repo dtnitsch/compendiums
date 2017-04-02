@@ -33,7 +33,7 @@ if(!empty($_POST) && !error_message()) {
 		}
 
 		asort($_POST['filter_order']);
-		echo $q = "
+		$q = "
 			update public.list set
 				title = '". db_prep_sql($title) ."'
 				,alias = '". db_prep_sql($alias) ."'
@@ -44,7 +44,7 @@ if(!empty($_POST) && !error_message()) {
 				,filter_orders = '". db_prep_sql(json_encode($_POST['filter_order'])) ."'
 				,modified = now()
 			where
-				key = '". db_prep_sql($key) ."'
+				id = '". db_prep_sql($pub['id']) ."'
 		";
 
 		$res = db_query($q, "Updating List"); 
@@ -95,19 +95,20 @@ if(!empty($_POST) && !error_message()) {
 				$existing[$row['alias']] = $row['id'];
 				$alias_list[$row['alias']]['id'] = $row['id'];
 			}
-			
+
 			$q = '';
 			foreach($alias_list as $k => $v) {
-				if(empty($existing[$k])) {
-					$q = "
+				if(empty($v['id'])) {
+					$q .= "
 						(
-							'". db_prep_sql($asset) ."'
-							,'". db_prep_sql($alias) ."'
+							'". db_prep_sql($v['asset']) ."'
+							,'". db_prep_sql(convert_to_alias($v['asset'])) ."'
 							,now()
 							,now()
 					),";
 				}
 			}
+
 			if(!empty($q)) {
 				$q = "
 					insert into public.asset (
@@ -187,7 +188,18 @@ if(!empty($_POST) && !error_message()) {
 
 			// $q = "insert into list_asset_map (list_id,asset_id,created,modified) values ". implode(',',$map_ids);
 			// db_query($q,"Inserting list asset map");
-		
+
+
+			$markdown = trim(strip_tags($_POST['markdown']));
+			$q = "
+				update public.list_markdown set
+					markdown = '". db_prep_sql($markdown) ."'
+					,modified = now()
+				where
+					list_id = '". db_prep_sql($pub['id']) ."'
+			";
+			$res = db_query($q, "Updating markdown"); 
+
 			if(!error_message()) {
 				$redirection_path = '/lists/';
 				set_post_message("You have successfully updated a record");

@@ -28,14 +28,16 @@ add_js('sortlist.new.js');
 
 $add_button = '<input type="button" value="Add New List" class="add" onclick="window.location.href=\'/lists/add/\'">';
 
-$edit_onclick = "";
+$onclick = "";
 // if(!empty($security_list['lists_edit'])) {
-    $edit_onclick = " onclick='window.location=\"/lists/edit/?key={{key}}\"'";
+    $onclick = " onclick='window.location=\"/list/{{key}}/\"'";
 // }
+
+$edit_link = '<a href="/lists/edit/?key={{key}}" title="Edit: {{path}}">Edit</a>';
 
 $delete_link = "";
 // if(!empty($security_list['lists_delete'])) {
-    $delete_link = '<a href="/lists/delete/?id={{id}}" title="Delete: {{path}}" class="delete"></a>';
+    // $delete_link = '<a href="/lists/delete/?id={{id}}" title="Delete: {{path}}" class="delete">DEL</a>';
 // }
 
 ##################################################
@@ -100,12 +102,12 @@ $delete_link = "";
 		</tr>
 		</thead>
 		<tbody style='display: none;'>
-		<tr<?= $edit_onclick ?>>
+		<tr<?= $onclick ?>>
 			<td>{{title}}</td>
 			<td>{{username}}</td>
 			<td>{{asset_count}}</td>
 			<td>{{modified}}</td>
-			<td rel='nolink' class='options'><?= $delete_link ?></td>
+			<td rel='nolink' class='options'><?= $edit_link ?></td>
 		</tr>
 		</tbody>
 	</table>

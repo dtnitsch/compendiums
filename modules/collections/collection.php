@@ -54,7 +54,7 @@ if(!empty($security_collection['collections_delete'])) {
 		
 		<div class='inputs float_left'>
 			<label for='list'><b>List</b></label><br>
-			<input type='text' name='filters[list]' id='list'>
+			<input type='text' name='filters[title]' id='list'>
 		</div>
 
 		<div class='inputs float_left' style="margin-left: 1em;">
@@ -106,7 +106,7 @@ ob_start();
 
 <script type="text/javascript">
 
-	asl_sort = sortlist.remote;
+	asl_sort = sortlist().remote;
 	asl_sort.init('/ajax.php',{
 		id:'asl_sort'
 		,data: 'apid=db6d9b451b818ccc9a449383f2f0c450'
