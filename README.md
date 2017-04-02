@@ -29,6 +29,7 @@
 	- Filterable list page
 	- Delete?
 	- Ensure order of multi-parts (bug)
+	- Filters saved from list
 	
 	* - ?? Triggers ?? - If option from list is of tag X, randomize from list Y?
 	

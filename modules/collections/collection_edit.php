@@ -86,7 +86,6 @@ add_js("markdown.min.js");
 					<th>Label</th>
 					<th>Randomize</th>
 					<th>Display Limit</th>
-					<th>Search</th>
 				</tr>
 			</thead>
 			<tbody id="list_body">
@@ -118,9 +117,7 @@ add_js("markdown.min.js");
 			<td>
 				<input type="input" name="display_limit['. $list_count .']" value="'. $row['display_limit'] .'" style="width: 40px;">
 			</td>
-			<td>
-				<input type="button" value="Search for List" onclick="search_for_list('. $list_count .')">
-			</td>
+
 		';
 	}
 	echo $output;
@@ -130,7 +127,7 @@ add_js("markdown.min.js");
 		</table>
 
 		<p>
-			<input type="button" value="Add Lists" onclick="add_list()">
+			<input type="button" value="Add Lists" onclick="search_for_list()">
 		</p>
 
 		<p>
@@ -149,53 +146,97 @@ ob_start();
 <script type="text/javascript">
 
 var list_count = <?php echo $list_count; ?>;
-function add_list() {
+
+function add_list(info,limit,randomize,multi) {
 	var list_body = $id('list_body');
 	var output = '';
-	var cnt = 5 - (list_count % 5);
-	var tr;
+	var tr, i, len;
+	var checked = (randomize ? " checked" : "");
+	var title = '';
+	var key = '';
+	var is_multi = 0;
 
-	while(cnt--) {
-		list_count += 1;
-		tr = document.createElement("tr");
-		output = `
-			<td>`+ list_count +`</td>
-			<td>
-				<input type="input" id="key`+ list_count +`" name="list_keys[`+ list_count +`]" placeholder="List Key">
-			</td>
-			<td>
-				<input type="input" id="label`+ list_count +`" name="list_labels[`+ list_count +`]" placeholder="List Label">
-			</td>
-			<td>
-				<label for="randomize`+ list_count +`">
-					<input checked type="checkbox" name="randomize[`+ list_count +`]" id="randomize`+ list_count +`" value="1"> Randomize
-				</label>
-			</td>
-			<td>
-				<input type="input" name="display_limit[`+ list_count +`]" value="0" style="width: 40px;">
-			</td>
-			<td>
-				<input type="button" value="Search for List" onclick="search_for_list(`+ list_count +`)">
-			</td>
-		`;
-		tr.innerHTML = output;
-		lists.appendChild(tr);
+	list_count += 1;
+	tr = document.createElement("tr");
+
+	if(typeof info.title == "undefined" && info.length) {
+		is_multi = 1;
+		for(i = 0,len=info.length; i<len; i++) {
+			title += info[i].returned_info.title +",";
+			key += info[i].returned_info.key +",";
+		}
+		title = title.substring(0,title.length - 1);
+		key = key.substring(0,key.length - 1);
+	} else {
+		title = info.title;
+		key = info.key;
 	}
+
+
+	output = `
+		<td>`+ list_count +`</td>
+		<td>
+			<input type="input" id="label`+ list_count +`" name="list_labels[`+ list_count +`]" placeholder="List Label" value="`+ title +`">
+		</td>
+		<td>
+			<input type="input" id="key`+ list_count +`" name="list_keys[`+ list_count +`]" placeholder="List Key" value="`+ key +`">
+		</td>
+		<td>
+			<label for="randomize`+ list_count +`">
+				<input`+ checked +` type="checkbox" name="randomize[`+ list_count +`]" id="randomize`+ list_count +`" value="1"> Randomize
+			</label>
+			<input type="hidden" name="is_multi" value="`+ is_multi +`" />
+		</td>
+		<td>
+			<input type="input" name="display_limit[`+ list_count +`]" value="`+ limit +`" style="width: 40px;">
+		</td>
+	`;
+	tr.innerHTML = output;
+	lists.appendChild(tr);
 }
 
-// add_list();
-
-var modal_id = 0;
-function search_for_list(id) {
-	modal_id = id;
+// var modal_id = 0;
+// var multi = 0;
+function search_for_list() {
+	// multi = multi || 0;
+	// console.log("Multi: "+ multi)
+	// modal_id = id;
+	if(typeof reset_modal == "function") {
+		reset_modal();
+	}
 	$id("simple_modal").style.display = "block";
 	$id('modal_search').focus();
 }
+modal_init("simple_modal");
 
-function set_key(val) {
-	$id('key'+modal_id).value = val;
-	modal_clear();
-}
+// function set_key(val) {
+// 	$id('key'+modal_id).value = val;
+// 	modal_clear();
+// }
+
+	function parse_markdown() {
+		var markdown = document.getElementById('markdown').value;
+		var preview = document.getElementById('preview');
+
+		preview.innerHTML = micromarkdown.parse(markdown);
+	}
+	// parse_markdown();
+
+	function collection_open_tabs(evt, tabname) {
+		var i, x, tablinks;
+
+		x = document.getElementById('collection_bodies').getElementsByClassName("tabs");
+		for (i = 0; i < x.length; i++) {
+			x[i].style.display = "none";
+		}
+		tablinks = document.getElementById('collection_buttons').getElementsByClassName("tablink");
+		for (i = 0; i < x.length; i++) {
+			tablinks[i].className = tablinks[i].className.replace(" w3-red", ""); 
+		}
+		document.getElementById(tabname).style.display = "block";
+		evt.className += " w3-red";
+	}
+
 </script>
 <?php
 $js = trim(ob_get_clean());
