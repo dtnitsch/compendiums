@@ -223,7 +223,7 @@ function generate_all_lists() {
 function generate_lists(id,key) {
 	var obj;
 	var output = '';
-	var length, a, t, i, is_table;
+	var length, a, t, i, is_table, f_body;
 	var used = {};
 	var data = [];
 
@@ -258,16 +258,18 @@ function generate_lists(id,key) {
 			}
 			data[limit] += parse_random(a) +' ';
 
+			f_body = (Object.keys(t).length ? t.join(" ") : '')
 			if(is_table) {
 				a = a.split("|").join("</td><td>")
+
 				output += `
-					<tr data-filters="`+ t.join(" ") +`">
+					<tr data-filters="`+ f_body +`">
 						<td>{{`+ limit +`}}</td>
 					</tr>
 				`;
 			} else {
 				output += `
-					<li data-filters="`+ t.join(" ") +`">
+					<li data-filters="`+ f_body +`">
 						{{`+ limit +`}}
 					</li>
 				`;				

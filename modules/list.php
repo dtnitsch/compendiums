@@ -24,6 +24,9 @@ $info = db_fetch($q,"Getting list information");
 $info['filter_labels'] = json_decode($info['filter_labels'],true);
 $info['filter_orders'] = json_decode($info['filter_orders'],true);
 
+$tmp = db_fetch("select markdown from public.list_markdown where list_id = '". $info['id'] ."'","Getting Markdown");
+$info['markdown'] = $tmp['markdown'] ?? '';
+
 $q = "
 	select
 		public.asset.*
@@ -46,6 +49,7 @@ $res = db_query($q,"Getting list assets");
 // add_js('sortlist.new.js');
 add_js("list_functions.js",10);
 library("slug.php");
+add_js("markdown.min.js");
 
 $assets[$info['id']] = [];
 while($row = db_fetch_row($res)) {
@@ -77,29 +81,41 @@ $raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lis
 ##################################################
 ?>
 <div class='clearfix'>
-	<div class="float_right">
-		<input type="button" onclick="window.location.href='<?php echo $csv_url; ?>'" value="Export to CSV">
-		<input type="button" onclick="window.location.href='<?php echo $raw_url; ?>'" value="Export Raw">
-	</div>
-	<h2 class='lists'>Lists: <?php echo $info['title']; ?></h2>
-  
-  <div class="filters" onclick="show_hide('filter_details')">
-	Filters (<span class="filter_count" id="filter_count">0 applied</span>)
+<div class="float_right">
+	<input type="button" onclick="window.location.href='<?php echo $csv_url; ?>'" value="Export to CSV">
+	<input type="button" onclick="window.location.href='<?php echo $raw_url; ?>'" value="Export Raw">
 </div>
-<div class="filter_details" id="filter_details" style="display: none;">
+<h2 class='lists'>Lists: <?php echo $info['title']; ?></h2>
 
-	<form id="form_filters" method="" action="" onsubmit="return false;">
-		<label for="limit">
-			Limit Display: <input type="input" name="limit" id="limit_<?php echo $info['key']; ?>" value="20" class='xs'> 
-		</label>
+<?php
+	if(!empty($info['markdown'])) {
+?>
+<div id="list_buttons" class="w3-bar w3-black mt">
+	<button type="button" class="w3-bar-item w3-button tablink w3-red" onclick="list_open_tabs(this,'default')">Default</button>
+	<button type="button" class="w3-bar-item w3-button tablink" onclick="list_open_tabs(this,'md')">Information</button>
+</div>
+<div id="list_bodies" style='padding: 1em; border: 1px solid #ccc;'>
+<div id="default" class="w3-container w3-border tabs">
+<?php
+	} // Markdown Check
+?>
+	<div class="filters" onclick="show_hide('filter_details')">
+		Filters (<span class="filter_count" id="filter_count">0 applied</span>)
+	</div>
+	<div class="filter_details" id="filter_details" style="display: none;">
 
-		<label for="randomize">
-			<input checked type="checkbox" name="options" id="randomize_<?php echo $info['key']; ?>" value="randomize"> Randomize
-		</label>
-		<!--label for="percentages">
-			<input type="checkbox" name="options" id="percentages_<?php echo $info['key']; ?>" value="percentages"> Use Percentages
-		</label-->
-    </form>
+		<form id="form_filters" method="" action="" onsubmit="return false;">
+			<label for="limit">
+				Limit Display: <input type="input" name="limit" id="limit_<?php echo $info['key']; ?>" value="20" class='xs'> 
+			</label>
+
+			<label for="randomize">
+				<input checked type="checkbox" name="options" id="randomize_<?php echo $info['key']; ?>" value="randomize"> Randomize
+			</label>
+			<!--label for="percentages">
+				<input type="checkbox" name="options" id="percentages_<?php echo $info['key']; ?>" value="percentages"> Use Percentages
+			</label-->
+	    </form>
 
 
 <?php
@@ -215,6 +231,19 @@ foreach($assets as $k => $list) {
 }
 ?>
 	</div>
+
+<?php
+	if(!empty($info['markdown'])) {
+?>
+	</div>
+	<div id="md" class="w3-container w3-border tabs" style="display: none">
+		<article id="markdown" class="markdown-body" style="padding: 1em">
+			<?php echo $info['markdown']; ?>
+		</article>
+	</div>
+<?php
+	} // Markdown Check
+?>
 
 	<div class="clear"></div>
 </div>
@@ -334,6 +363,29 @@ if($id("randomize").checked) {
 	build_all_lists();
 	
 }
+
+
+	function parse_markdown() {
+		var markdown = document.getElementById('markdown');
+		markdown.innerHTML = micromarkdown.parse(markdown.innerHTML.trim());
+	}
+	parse_markdown();
+
+	function list_open_tabs(evt, tabname) {
+		parse_markdown();
+		var i, x, tablinks;
+		x = document.getElementById('list_bodies').getElementsByClassName("tabs");
+		for (i = 0; i < x.length; i++) {
+			x[i].style.display = "none";
+		}
+		tablinks = document.getElementById('list_buttons').getElementsByClassName("tablink");
+		for (i = 0; i < x.length; i++) {
+			tablinks[i].className = tablinks[i].className.replace(" w3-red", ""); 
+		}
+		document.getElementById(tabname).style.display = "block";
+		evt.className += " w3-red";
+	}
+
 
 </script>
 <?php

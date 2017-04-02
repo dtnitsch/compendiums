@@ -78,8 +78,8 @@ function display_modal_list_page(res) {
 }
 
 function add_new_list(id) {
-	var limit = $id("limit").value;
-	var checked = $id("randomize").checked;
+	var limit = $query("[id^=limit_]")[0].value;
+	var checked = $query("[id^=randomize_]")[0].checked;
 	if(returned_info_multi.length) {
 		add_list(returned_info_multi,limit,checked);	
 	} else {

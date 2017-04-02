@@ -22,6 +22,10 @@ $key = trim($pieces[2]);
 $q = "select * from public.collection where key='". db_prep_sql($key) ."'";
 $info = db_fetch($q,"Getting collection information");
 
+$tmp = db_fetch("select markdown from public.collection_markdown where collection_id = '". $info['id'] ."'","Getting Markdown");
+$info['markdown'] = $tmp['markdown'] ?? '';
+
+
 $q = "
 	select
 		public.asset.id
@@ -75,15 +79,14 @@ while($row = db_fetch_row($assets_res)) {
 	$assets[$id]['assets'][$row['list_id']][] = $row['asset'];
 	$assets[$id]['tags'][$row['list_id']][] = $row['tags'];
 }
-// echo "<pre>";
-// print_r($assets);
-// die();
+
 ##################################################
 #   Pre-Content
 ##################################################
 // add_css('pagination.css');
 // add_js('sortlist.new.js');
 add_js("list_functions.js",10);
+add_js("markdown.min.js");
 $split_on_count = 3;
 
 ##################################################
@@ -93,6 +96,20 @@ $split_on_count = 3;
 <div class='clearfix'>
 	<h2 class='lists'>Lists: <?php echo $info['title']; ?></h2>
   
+  <?php
+	if(!empty($info['markdown'])) {
+?>
+<div id="list_buttons" class="w3-bar w3-black mt">
+	<button type="button" class="w3-bar-item w3-button tablink w3-red" onclick="collection_open_tabs(this,'default')">Default</button>
+	<button type="button" class="w3-bar-item w3-button tablink" onclick="collection_open_tabs(this,'md')">Information</button>
+</div>
+<div id="list_bodies" style='padding: 1em; border: 1px solid #ccc;'>
+<div id="default" class="w3-container w3-border tabs">
+<?php
+	} // Markdown Check
+?>
+
+
 	<!--div class="mb">
 		<label for="limit">
 			Expand at: <input type="input" name="split_on_count" id="split_on_count" value="<?php echo $split_on_count; ?>"> 
@@ -191,6 +208,18 @@ foreach($assets as $k => $list) {
 }
 ?>
 	</div>
+<?php
+	if(!empty($info['markdown'])) {
+?>
+	</div>
+	<div id="md" class="w3-container w3-border tabs" style="display: none">
+		<article id="markdown" class="markdown-body" style="padding: 1em">
+			<?php echo $info['markdown']; ?>
+		</article>
+	</div>
+<?php
+	} // Markdown Check
+?>
 
 	<div class="clear"></div>
 </div>
@@ -230,7 +259,32 @@ ob_start();
 	}
 ?>
 
+
+	function parse_markdown() {
+		var markdown = document.getElementById('markdown');
+		console.log(micromarkdown.parse(markdown.innerHTML.trim()))
+		markdown.innerHTML = micromarkdown.parse(markdown.innerHTML.trim());
+	}
+	parse_markdown();
+
+	function collection_open_tabs(evt, tabname) {
+		
+		var i, x, tablinks;
+		x = document.getElementById('list_bodies').getElementsByClassName("tabs");
+		for (i = 0; i < x.length; i++) {
+			x[i].style.display = "none";
+		}
+		tablinks = document.getElementById('list_buttons').getElementsByClassName("tablink");
+		for (i = 0; i < x.length; i++) {
+			tablinks[i].className = tablinks[i].className.replace(" w3-red", ""); 
+		}
+		document.getElementById(tabname).style.display = "block";
+		evt.className += " w3-red";
+	}
+
+
 	set_original_rows();
+	generate_all_lists();
 </script>
 <?php
 $js = trim(ob_get_clean());
