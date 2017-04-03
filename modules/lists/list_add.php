@@ -39,7 +39,7 @@ add_js("list_functions.js");
 
 		<div id="list_buttons" class="tabbar">
 			<button type="button" class="tablink active" onclick="open_tabs(this,'default','list')">Default</button>
-			<button type="button" class="tablink" onclick="open_tabs(this,'md','list')">Markdown</button>
+			<button type="button" class="tablink" onclick="open_tabs(this,'md','list')">Information</button>
 			<div class="float_right">
 				<button class="tablink save">Save List</button>
 			</div>
@@ -60,6 +60,14 @@ three;odd
 four;even
 five;odd
 six;even
+
+Word|Number
+one|1|Lorem;odd
+two|2|Lorem;even
+three|3|Lorem;odd
+four|4|Lorem;even
+five|5|Lorem;odd
+six|6|Lorem;even
 -->
 					<label class="form_label" for="title">Inputs</label>
 					<div class="form_data">
@@ -79,8 +87,7 @@ six;even
 								<th>Order</th>
 							</tr>
 						</thead>
-						<tbody id="filters_table_tbody">
-						</tbody>
+						<tbody id="filters_table_tbody"></tbody>
 					</table>
 					<div id="example"></div>
 

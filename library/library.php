@@ -555,3 +555,13 @@ function select_builder($res,$name,$options) {
 	}
 	return $output;
 }
+
+
+function validate($required) {
+    foreach($required as $k => $v) {
+        $k = trim($_POST[$k]);
+        if($k == "") {
+            error_message("'". $v ."' is a required field");
+        }
+    }
+}

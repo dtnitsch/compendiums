@@ -90,12 +90,12 @@ $raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lis
 <?php
 	if(!empty($info['markdown'])) {
 ?>
-<div id="list_buttons" class="w3-bar w3-black mt">
-	<button type="button" class="w3-bar-item w3-button tablink w3-red" onclick="list_open_tabs(this,'default')">Default</button>
-	<button type="button" class="w3-bar-item w3-button tablink" onclick="list_open_tabs(this,'md')">Information</button>
+<div id="list_buttons" class="tabbar">
+	<button type="button" class="tablink active" onclick="open_tabs(this,'default','list')">Default</button>
+	<button type="button" class="tablink" onclick="open_tabs(this,'md','list')">Information</button>
 </div>
-<div id="list_bodies" style='padding: 1em; border: 1px solid #ccc;'>
-<div id="default" class="w3-container w3-border tabs">
+<div id="list_bodies" class="tabbody">
+	<div id="default" class="tabs">
 <?php
 	} // Markdown Check
 ?>
@@ -236,9 +236,10 @@ foreach($assets as $k => $list) {
 	if(!empty($info['markdown'])) {
 ?>
 	</div>
-	<div id="md" class="w3-container w3-border tabs" style="display: none">
-		<article id="markdown" class="markdown-body" style="padding: 1em">
+	<div id="md" class="tabs" style="display: none">
+		<article id="markdown" class="markdown" style="padding: 1em">
 			<?php echo $info['markdown']; ?>
+			<div class="clear"></div>!!
 		</article>
 	</div>
 <?php
@@ -260,118 +261,9 @@ ob_start();
 	set_original_rows();
 
 
-
-
-// ------------------------------------
-// Testing Percentages
-// ------------------------------------
-
-// var choices = ['apple', 'banana', 'peach', 'pear', 'orange'];
-// var weights = [ 1, 4,  1, 3, 1];
-
-// var tmp = [], thresholds = [], weight;
-// var total = 0;
-// for(i = 0, len = choices.length; i<len; i++) {
-// 	tmp[tmp.length] = [choices[i],weights[i]];
-// }
-// thresholds = tmp.sort(function(a, b) {
-//     return a[1] - b[1];
-// }).reverse();
-// // console.log(thresholds)
-// for(i in thresholds) {
-// 	total += thresholds[i][1];
-// 	thresholds[i][2] = total;
-// }
-
-// console.log(thresholds)
-// console.log(total)
-
-/*
-function random_by_weight(arr,total) {
-	var used_keys = {};
-	var used_keys_total = 0;
-	var num_keys = Object.keys(arr).length;
-	// var total = total_array(arr);
-	var r;
-	var new_arr = [];
-	// console.log(num_keys)
-	// console.log(total)
-	// console.log(arr);
-	// return;
-	x = 0;
-	while(used_keys_total < num_keys) {
-		r = rand(1,total);
-		// console.log(r)
-		// console.log(used_keys)
-		for(var i = 0; i < arr.length; i++) {
-			// console.log("i: "+ typeof used_keys[arr[i][0]] + " -- "+ arr[i][1] +" ("+ r +")")
-			if(typeof used_keys[arr[i][0]] == "undefined" && r <= arr[i][2]) {
-				// console.log("???")
-				used_keys[arr[i][0]] = 1;
-				used_keys_total += 1;
-				new_arr[new_arr.length] = arr[i];
-				break;
-			}
-		}
+	if($id("randomize").checked) {
+		build_all_lists();
 	}
-	
-	return new_arr;
-}
-*/
-
-function build_keys(arr) {
-	var output = "";
-	for(k in arr) {
-		output += arr[k][0]+","
-	}
-	return output;
-}
-
-
-// ------------------------------------
-// Proofs
-// ------------------------------------
-percs = []
-
-// for(i = 0; i<100000; i++) {
-// 	var z = random_by_weight(thresholds,total);
-// 	str = build_keys(z);
-// 	if(typeof percs[str] == "undefined") {
-// 		percs[str] = 0;
-// 	}
-// 	percs[str] += 1;
-// }
-// // console.log(choices);
-// // console.log(weights);
-// y = [];
-// for(k in percs) {
-// 	y[y.length] = [k,percs[k]];
-// }
-// y.sort(function(a, b) {
-//     return a[1] - b[1];
-// }).reverse();
-
-// cnt = 0;
-// for(k in y) {
-// 	if(cnt++ > 10) {
-// 		break;
-// 	}
-// 	console.log(k +": "+ y[k])
-// }
-
-if($id("randomize").checked) {
-	build_all_lists();
-	
-}
-
-
-	function parse_markdown() {
-		var markdown = document.getElementById('markdown');
-		markdown.innerHTML = micromarkdown.parse(markdown.innerHTML.trim());
-	}
-	parse_markdown();
-
-
 
 </script>
 <?php

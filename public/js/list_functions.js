@@ -189,10 +189,15 @@ function open_tabs(evt, tabname, type) {
 }
 
 function parse_markdown() {
-	var markdown = document.getElementById('markdown').value;
+	var markdown = document.getElementById('markdown');
+	if(!document.getElementById('preview')) {
+		markdown.innerHTML = micromarkdown.parse(markdown.innerHTML.trim());
+		return true;
+	}
+	var markdown = markdown.value;
 	var preview = document.getElementById('preview');
-
 	preview.innerHTML = micromarkdown.parse(markdown);
+
 }
 
 function double_shuffle(id) {

@@ -34,7 +34,7 @@ function get_raw_list_csv($key) {
 
 	while($row = db_fetch_row($res)) {
 		$filters = implode(',',json_decode($row['filters'],true));
-		echo $row['title'] .";;". $filters ."\n";
+		echo $row['title'] .";". $filters ."\n";
 	}
 
 	fclose($fp);

@@ -1,20 +1,14 @@
 <?php
 if(!empty($_POST) && !error_message()) {
 	library('uuid.php');
-	library('validation.php');
 	library("slug.php");
 
-	$percentages = calc_percentages();
-
-	$json = validation_create_json_string(validation_load_file(__DIR__ ."/../validation.json"),"php");
-	if(!empty($percentages)) {
-		validation_custom("percentage","validate_percentages","Percentages do not add up to 100");
-	}
-	validate_from_json($json);
-	error_message(get_all_validation_errors());
+	validate([
+		'title'=>'List Name'
+		,'inputs' =>'Inputs'
+	]);
 
 	if(!error_message()) {
-
 
 		$title = trim($_POST['title']);
 		$alias = convert_to_alias($title);
@@ -28,20 +22,19 @@ if(!empty($_POST) && !error_message()) {
 		foreach($_POST['filter_labels'] as $k => $v) {
 			if(trim($v) == "") {
 				unset($_POST['filter_labels'][$k]);
-				unset($_POST['filter_order'][$k]);
+				unset($_POST['filter_orders'][$k]);
 			}
 		}
+		asort($_POST['filter_orders']);
 
-		asort($_POST['filter_order']);
 		$q = "
 			update public.list set
 				title = '". db_prep_sql($title) ."'
 				,alias = '". db_prep_sql($alias) ."'
 				,tables = '". $is_table ."'
-				,percentages = '". ($percentages == 100 ? "t" : "f") ."'
 				,tags = '". db_prep_sql(json_encode(array_keys(unique_tags()))) ."'
 				,filter_labels = '". db_prep_sql(json_encode($_POST['filter_labels'])) ."'
-				,filter_orders = '". db_prep_sql(json_encode($_POST['filter_order'])) ."'
+				,filter_orders = '". db_prep_sql(json_encode($_POST['filter_orders'])) ."'
 				,modified = now()
 			where
 				id = '". db_prep_sql($pub['id']) ."'
@@ -65,12 +58,10 @@ if(!empty($_POST) && !error_message()) {
 				
 				$inner_pieces = explode(";",$v);
 				$asset = trim($inner_pieces[0]);
-				# Percentages
-				$perc = (!empty($inner_pieces[1]) ? (int)$inner_pieces[1] : 0);
 				# Filters
 				$filter_labels = [];
-				if(!empty($inner_pieces[2])) {
-					$tmp = explode(",",$inner_pieces[2]);
+				if(!empty($inner_pieces[1])) {
+					$tmp = explode(",",$inner_pieces[1]);
 					foreach($tmp as $k => $v) {
 						if(trim($k) == "" || trim($v) == "") {
 							continue;
@@ -211,26 +202,6 @@ if(!empty($_POST) && !error_message()) {
 	}
 }
 
-function calc_percentages() {
-	$pieces = explode("\n",trim($_POST['inputs']));
-	$percentages = 0;
-	for($i=0,$len=count($pieces); $i<$len; $i++) {
-		$inner_pieces = explode(";",$pieces[$i]);
-		if(!empty($inner_pieces[1])) {
-			$perc = (int)$inner_pieces[1];
-			if($perc) {
-				$percentages += $perc;
-			}			
-		} else {
-			return 0;
-		}
-	}
-	return $percentages;
-}
-function validate_percentages() {
-	$input = calc_percentages();
-	return ($input == 100 ? true : false);
-}
 
 function unique_tags() {
 	$tags = [];
@@ -239,8 +210,8 @@ function unique_tags() {
 	$output = [];
 	for($i=0,$len=count($pieces); $i<$len; $i++) {
 		$inner_pieces = explode(";",$pieces[$i]);
-		if(!empty($inner_pieces[2])) {
-			$tags = explode(',',trim($inner_pieces[2]));
+		if(!empty($inner_pieces[1])) {
+			$tags = explode(',',trim($inner_pieces[1]));
 			for($j=0,$lenj=count($tags); $j<$lenj; $j++) {
 				$output[convert_to_alias($tags[$j])] = 1;
 			}

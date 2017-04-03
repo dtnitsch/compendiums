@@ -201,12 +201,3 @@ function unique_tags() {
 	}
 	return $output;
 }
-
-function validate($required) {
-    foreach($required as $k => $v) {
-        $k = trim($_POST[$k]);
-        if($k == "") {
-            error_message("'". $v ."' is a required field");
-        }
-    }
-}
