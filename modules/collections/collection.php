@@ -112,7 +112,8 @@ ob_start();
 		,data: 'apid=db6d9b451b818ccc9a449383f2f0c450'
 		,filters: 'form_filters'
 		,type: "pagination"
-        ,column: "title"
+        ,column: "modified"
+        ,direction: "desc"
 	});
 
 	function filter_results() {

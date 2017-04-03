@@ -94,7 +94,7 @@ add_js("markdown.min.js");
 			<button type="button" class="tablink active" onclick="open_tabs(this,'collection_default','collection')">Default</button>
 			<button type="button" class="tablink" onclick="open_tabs(this,'collection_md','collection')">Information</button>
 			<div class="float_right">
-				<button class="tablink save">Save Collection</button>
+				<button class="tablink save">Update Collection</button>
 			</div>
 		</div>
 		<div id="collection_bodies" class="tabbody">

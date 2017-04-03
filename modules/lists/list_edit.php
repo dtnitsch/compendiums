@@ -89,7 +89,7 @@ if(!empty($_POST)) {
 			<button type="button" class="tablink active" onclick="open_tabs(this,'default','list')">Default</button>
 			<button type="button" class="tablink" onclick="open_tabs(this,'md','list')">Information</button>
 			<div class="float_right">
-				<button class="tablink save">Save List</button>
+				<button class="tablink save">Update List</button>
 			</div>
 		</div>
 		<div id="list_bodies" class="tabbody">
@@ -165,7 +165,7 @@ if(!empty($info['filter_orders']) && $info['filter_orders']) {
 		</div>
 
 	<div class="clear mt"></div>
-	<input type="submit" value="Save List">
+	<input type="submit" value="Update List">
 </form>
 
 

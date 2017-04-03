@@ -277,7 +277,6 @@ function build_all_lists(list_key) {
 	var id,list_rows,row,i;
 	for(key in list_keys) {
 		id = 'list_body_'+ list_keys[key];
-		console.log("ID: "+ id)
 		build_list(id,list_keys[key],list_key);
 	}
 }
