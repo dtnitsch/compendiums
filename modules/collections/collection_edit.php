@@ -85,32 +85,37 @@ add_js("markdown.min.js");
   	<?php echo dump_messages(); ?>
 	<form id="addform" method="post" action="" onsubmit="">
 
-	<div id="collection_buttons" class="w3-bar w3-black mt">
-		<button type="button" class="w3-bar-item w3-button tablink w3-red" onclick="collection_open_tabs(this,'collection_default')">Default</button>
-		<button type="button" class="w3-bar-item w3-button tablink" onclick="collection_open_tabs(this,'collection_md')">Markdown</button>
-		<div class="float_right">
-			<button class="w3-bar-item w3-button tablink" style="background: green;">Save List</button>
-		</div>
-	</div>
-	<div id="collection_bodies" style='padding: 1em; border: 1px solid #ccc;'>
-		<div id="collection_default" class="w3-container w3-border tabs">
-
-		<label class="form_label" for="title">Collection Name <span>*</span></label>
-		<div class="form_data">
-			<input type="text" name="title" id="title" value="<?php echo $info['title']; ?>">
+  		<a href="#messages"></a>
+  		<div id="messages">
+			<?php echo dump_messages(); ?>
 		</div>
 
-		<table id="lists">
-			<thead>
-				<tr>
-					<th></th>
-					<th>List Key</th>
-					<th>Label</th>
-					<th>Randomize</th>
-					<th>Display Limit</th>
-				</tr>
-			</thead>
-			<tbody id="list_body">
+		<div id="collection_buttons" class="tabbar">
+			<button type="button" class="tablink active" onclick="open_tabs(this,'collection_default','collection')">Default</button>
+			<button type="button" class="tablink" onclick="open_tabs(this,'collection_md','collection')">Information</button>
+			<div class="float_right">
+				<button class="tablink save">Save Collection</button>
+			</div>
+		</div>
+		<div id="collection_bodies" class="tabbody">
+			<div id="collection_default" class="tabs">
+
+				<label class="form_label" for="title">Collection Name <span>*</span></label>
+				<div class="form_data">
+					<input type="text" name="title" id="title" value="<?php echo $info['title']; ?>">
+				</div>
+
+				<table id="lists">
+					<thead>
+						<tr>
+							<th></th>
+							<th>List Key</th>
+							<th>Label</th>
+							<th>Randomize</th>
+							<th>Display Limit</th>
+						</tr>
+					</thead>
+					<tbody id="list_body">
 <?php
 	$output = "";
 	$list_count = 0;
@@ -145,25 +150,28 @@ add_js("markdown.min.js");
 	echo $output;
 	$output = "";
 ?>
-			</tbody>
-		</table>
+					</tbody>
+				</table>
 
-		<p>
-			<input type="button" value="Add Lists" onclick="search_for_list()">
-		</p>
+				<p>
+					<input type="button" value="Add Lists" onclick="search_for_list()">
+				</p>
+			</div>
+			<div id="collection_md" class="tabs" style="display: none">
+		
+				<textarea name="markdown" id="collection_markdown" class="markdown" onkeyup="parse_markdown('collection_markdown','collection_preview')"><?php echo $info['markdown'] ?? ''; ?></textarea>
+				<article id="collection_preview" class="markdown_body"></article>
+				
+				<div class="clear mt"></div>
+				<button type="button" onclick="example_markdown()">Generate Example Markdown</button>
 
-		<p>
-			<input type="submit" value="Edit Collection">
-		</p>
+			</div>
+
+			<div class="clear"></div>
 		</div>
-		<div id="collection_md" class="w3-container w3-border tabs" style="display: none">
-			<form id="addform" method="post" action="" onsubmit="">
-			<textarea name="markdown" id="markdown" class="float_left" style="width: 47%; height: 200px;" onkeyup="parse_markdown()"><?php echo $info['markdown']; ?></textarea>
-			</form>
-			<article id="preview" class="markdown-body float_left" style="width: 47%; border: 1px solid #ccc; margin-left: 1em; padding: 1em"></article>
-			<div class="clear mt"></div>
-		</div>
-	</div>
+
+		<div class="clear mt"></div>
+		<input type="submit" value="Update Collection">
 	</form>
 
 <?php echo run_module("modal_list"); ?>
@@ -240,34 +248,35 @@ function search_for_list() {
 }
 modal_init("simple_modal");
 
-// function set_key(val) {
-// 	$id('key'+modal_id).value = val;
-// 	modal_clear();
-// }
 
-	function parse_markdown() {
-		var markdown = document.getElementById('markdown').value;
-		var preview = document.getElementById('preview');
+function example_markdown() {
+	$id('collection_markdown').value = `#Header
 
-		preview.innerHTML = micromarkdown.parse(markdown);
-	}
-	parse_markdown();
+Paragraphs are separated by a blank line.
 
-	function collection_open_tabs(evt, tabname) {
-		var i, x, tablinks;
+2nd paragraph. *Italic*, **bold**, and \`monospace\`. Itemized lists
+look like:
 
-		x = document.getElementById('collection_bodies').getElementsByClassName("tabs");
-		for (i = 0; i < x.length; i++) {
-			x[i].style.display = "none";
-		}
-		tablinks = document.getElementById('collection_buttons').getElementsByClassName("tablink");
-		for (i = 0; i < x.length; i++) {
-			tablinks[i].className = tablinks[i].className.replace(" w3-red", ""); 
-		}
-		document.getElementById(tabname).style.display = "block";
-		evt.className += " w3-red";
-	}
+* this one
+* that one
+* the other one
 
+##Header 2
+
+Here's a numbered list:
+
+1. first item
+2. second item
+3. third item
+
+`;
+	parse_markdown('collection_markdown','collection_preview');
+}
+parse_markdown('collection_markdown','collection_preview');
+
+function validate_list() {
+	return validate({'title':'List Name'});
+}
 </script>
 <?php
 $js = trim(ob_get_clean());

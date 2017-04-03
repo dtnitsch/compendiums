@@ -173,7 +173,9 @@ function filter_list(key) {
 
 
 function open_tabs(evt, tabname, type) {
-	parse_markdown();
+	if(!document.getElementById('preview') && document.getElementById('markdown')) {
+		parse_markdown();
+	}
 	var i, x, tablinks;
 	var type = type || 'list';
 	x = document.getElementById(type +'_bodies').getElementsByClassName("tabs");
@@ -188,14 +190,15 @@ function open_tabs(evt, tabname, type) {
 	evt.className += " active";
 }
 
-function parse_markdown() {
-	var markdown = document.getElementById('markdown');
-	if(!document.getElementById('preview')) {
+function parse_markdown(id,preview) {
+	var markdown = document.getElementById(id || 'markdown');
+	var preview = preview || 'preview';
+	if(!document.getElementById(preview)) {
 		markdown.innerHTML = micromarkdown.parse(markdown.innerHTML.trim());
 		return true;
 	}
 	var markdown = markdown.value;
-	var preview = document.getElementById('preview');
+	var preview = document.getElementById(preview);
 	preview.innerHTML = micromarkdown.parse(markdown);
 
 }
@@ -274,6 +277,7 @@ function build_all_lists(list_key) {
 	var id,list_rows,row,i;
 	for(key in list_keys) {
 		id = 'list_body_'+ list_keys[key];
+		console.log("ID: "+ id)
 		build_list(id,list_keys[key],list_key);
 	}
 }

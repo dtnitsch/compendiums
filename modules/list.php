@@ -239,7 +239,6 @@ foreach($assets as $k => $list) {
 	<div id="md" class="tabs" style="display: none">
 		<article id="markdown" class="markdown" style="padding: 1em">
 			<?php echo $info['markdown']; ?>
-			<div class="clear"></div>!!
 		</article>
 	</div>
 <?php

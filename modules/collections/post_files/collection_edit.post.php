@@ -138,11 +138,11 @@ if(!empty($_POST) && !error_message()) {
 		
 			$markdown = trim(strip_tags($_POST['markdown']));
 			$q = "
-				update public.list_markdown set
+				update public.collection_markdown set
 					markdown = '". db_prep_sql($markdown) ."'
 					,modified = now()
 				where
-					list_id = '". db_prep_sql($pub['id']) ."'
+					collection_id = '". db_prep_sql($pub['id']) ."'
 			";
 			$res = db_query($q, "Updating markdown"); 
 

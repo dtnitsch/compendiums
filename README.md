@@ -30,6 +30,8 @@
 	- Delete?
 	- Ensure order of multi-parts (bug)
 	- Filters saved from list
+	- Lock next to randomized lists to stop from randomizing
+	- Individual randomize
 	
 	* - ?? Triggers ?? - If option from list is of tag X, randomize from list Y?
 	

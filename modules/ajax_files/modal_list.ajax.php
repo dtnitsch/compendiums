@@ -1,12 +1,17 @@
 <?php
 _error_debug("Starting Ajax",'',__LINE__,__FILE__);
 
+$val = str_replace(" ","%",trim($_POST['val']));
+$val = db_prep_sql($val);
 $q = "
 	select
 	    key
 	    ,title
 	from public.list
-	where title ilike '%". db_prep_sql(trim($_POST['val'])) ."%'
+	where (
+		title ilike '%". $val ."%'
+		or key ilike '%". $val ."%'
+	)
 	limit 5
 ";
 $res = db_query($q,"Getting Titles");
