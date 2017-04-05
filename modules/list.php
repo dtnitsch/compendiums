@@ -59,18 +59,24 @@ while($row = db_fetch_row($res)) {
             // ,'list_label' => $info['label']
             ,'randomize' => 1
             ,'display_limit' => 20
+            ,'filter_count' => 0
             ,'list_id' => $info['id']
             ,'tables' => $info['tables']
             ,'assets' => []
-            ,'tags' => []
-            ,'percentages' => []
+            // ,'tags' => []
+            // ,'percentages' => []
             ,'filters' => []
 		];
 	}
 	$assets[$info['id']]['assets'][] = $row['title'];
-	$assets[$info['id']]['tags'][] = $row['tags'];
+	// $assets[$info['id']]['tags'][] = $row['tags'];
+	if(!empty($row['filters'])) {
+		$assets[$info['id']]['filter_count'] += 1;
+	}
 	$assets[$info['id']]['filters'][] = $row['filters'];
-	$assets[$info['id']]['percentages'][] = $row['percentage'];
+	
+
+	// $assets[$info['id']]['percentages'][] = $row['percentage'];
 }
 
 $csv_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lists/'. $key ."/";
@@ -259,13 +265,115 @@ ob_start();
 	var original_rows = {};
 	set_original_rows();
 
-
 	if($id("randomize").checked) {
 		build_all_lists();
 	}
 
+	var assets = {};
+<?php
+	foreach($assets as $k => $v) {
+		$output = '';
+		foreach($v['assets'] as $k2 => $v2) {
+			$output .= ",['". addslashes($v2) ."','". addslashes($v['filters'][$k2]) ."']";
+		}
+
+		echo "\nassets['". $info['key'] ."'] = {
+			'tables': '". ($v['tables'] == 't' ? 1 : 0) ."'
+			,'filter_count': parseInt(". $v['filter_count'] .")
+			,'assets': [". substr($output,1) ."]
+		};";
+
+	}
+?>
+
+
+function random_keys(key) {
+	var used_keys = {};
+	var keys = [];
+	var limit = parseInt($id('limit_'+ key).value);
+	var min = assets[key].tables || 0;
+	var filters = get_filters(key)
+	var arr = build_filtered_list(key,filters);
+	var asset_length = arr.length;
+
+	console.log("Limit: "+ limit);
+	console.log("Asset Length: "+ asset_length);
+	console.log(arr)
+	console.log(filters)
+	// return
+	if(limit >= asset_length) {
+		console.log("return all");
+		while(asset_length--) {
+			// console.log("-- asset_length: "+ asset_length +" -- k: "+ arr[asset_length])
+			keys[keys.length] = arr[asset_length];
+		}
+		return shuffle_array(keys);
+	} else {
+		console.log("return partial");
+		while(keys.length < limit) {
+			k = rand(1,asset_length - 1);
+			// console.log("min: "+ min +" -- asset_length: "+ asset_length +" -- k: "+ k)
+			// console.log("min: "+ min +" -- asset_length: "+ asset_length +" -- k: "+ k)
+			if(used_keys[k] == undefined) {
+				used_keys[k] = 1;
+				keys[keys.length] = arr[k];
+			}
+		}
+		return keys;
+	}
+}
+
+function build_filtered_list(key,checked) {
+	// var checked = get_filters(key);
+	if(assets[key].filter_count == 0 || checked.length == 0) {
+		return assets[key].assets;
+	}
+
+	var filtered_arr = [];
+	var and_or = ($id('filter_or').checked ? "or" : "and");
+	var a = assets[key].assets;
+
+	for(var i=(assets[key].tables || 0),len=a.length; i<len; i++) {
+		if(filter_criteria(and_or, checked, JSON.parse(a[i][1]))) {
+			filtered_arr[filtered_arr.length] = i;
+		}
+	}
+	return filtered_arr;
+}
+
+// function filter_list(key) {
+// 	var filters = $query('#filters_table input[type=checkbox]');
+// 	var filters_length = filters.length;
+// 	var checked = [];
+// 	for(var i=0,len=filters.length; i<len; i++) {
+// 		if(filters[i].checked) {
+// 			checked[checked.length] = filters[i].value;
+// 		}
+// 	}
+// 	elems = $query('#filter_examples [data-filters]')
+
+// 	var show;
+// 	var checked_length = checked.length;
+// 	for(var i=0,len=elems.length; i<len; i++) {
+// 		show = (checked_length == 0 ? true : false);
+// 		for(j in checked) {
+// 			r = new RegExp('(^|\\s)'+ checked[j] + '(\\s|$)');
+// 			if(r.test(elems[i].dataset.filters)) {
+// 				show = true;
+// 				break;
+// 			}
+// 		}				
+// 		elems[i].style.display = (show ? "" : "none");
+// 	}
+// }
+
 </script>
 <?php
+echo "<pre>";
+print_r($info);
+print_r($assets);
+echo "<pre>";
+
 $js = trim(ob_get_clean());
 if(!empty($js)) { add_js_code($js); }
 

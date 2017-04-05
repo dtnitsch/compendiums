@@ -203,6 +203,19 @@ function parse_markdown(id,preview) {
 
 }
 
+function shuffle_array(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+    return arr;
+}
+function double_shuffle_array(arr) {
+	return shuffle_array(shuffle_array(arr))
+}
+
 function double_shuffle(id) {
 	id = id || 'list_body';
 	shuffle_all_rows();
