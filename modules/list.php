@@ -164,7 +164,7 @@ if(!empty($info['filter_orders'])) {
 ?>
 	<div class="clear"></div>
 		<div class="mb">
-			<button type="button" onclick="build_all_lists('<?php echo $info['key']; ?>')">Update</button>
+			<button type="button" onclick="build_display('<?php echo $info['key']; ?>')">Update</button>
 		</div>
 
 	<form id="export_csv" method="post" action="/export/csv/" style='display: none;'>
@@ -181,60 +181,60 @@ if(!empty($info['filter_orders'])) {
 
 		<div class='listcounter mt' id="listcounter" style='display:;'>
 <?php
-foreach($assets as $k => $list) {
-	$l = $list['display_limit'];
-	$r = $list['randomize'];
-	$title = (!empty($list['list_label']) ? $list['list_label'] : $list['list_title']);
-	$output = '
-		<ol class="list_ordered" id="list_body_'. $k .'">
-	';
-	$i = 0;
-	if($list['tables'] == "t") {
-		$i = 1;
-		$output = '
-		<table cellspacing="0" cellpadding="0" class="tbl">
-			<thead>
-				<tr>
-					<th>'. implode('</th><th>',explode("|",$list['assets'][0])) .'</th>
-				</tr>
-			</thead>
-			<tbody id="list_body_'. $k .'">
-		';
-	}
-	$cnt = 0;
-	for($len=count($list['assets']); $i<$len; $i++) {
-		$a = $list['assets'][$i];
-		$t = json_decode($list['filters'][$i],true);
-		$p = $list['percentages'][$i];
-		foreach($t as $tk => $tv) {
-			$t[$tk] = convert_to_alias($tv);
-		}
-		$t_list = (!empty($t) ? implode(' ',$t) : '');
-		// if(preg_match("/\[\d*[D|d]\d+\]/",$a,$matches)) {
-		// 	$a = str_replace($matches[0],$matches[0].":".random($matches[0]),$a);
-		// }
+// foreach($assets as $k => $list) {
+// 	$l = $list['display_limit'];
+// 	$r = $list['randomize'];
+// 	$title = (!empty($list['list_label']) ? $list['list_label'] : $list['list_title']);
+// 	$output = '
+// 		<ol class="list_ordered" id="list_body_'. $k .'">
+// 	';
+// 	$i = 0;
+// 	if($list['tables'] == "t") {
+// 		$i = 1;
+// 		$output = '
+// 		<table cellspacing="0" cellpadding="0" class="tbl">
+// 			<thead>
+// 				<tr>
+// 					<th>'. implode('</th><th>',explode("|",$list['assets'][0])) .'</th>
+// 				</tr>
+// 			</thead>
+// 			<tbody id="list_body_'. $k .'">
+// 		';
+// 	}
+// 	$cnt = 0;
+// 	for($len=count($list['assets']); $i<$len; $i++) {
+// 		$a = $list['assets'][$i];
+// 		$t = json_decode($list['filters'][$i],true);
+// 		// $p = $list['percentages'][$i];
+// 		foreach($t as $tk => $tv) {
+// 			$t[$tk] = convert_to_alias($tv);
+// 		}
+// 		$t_list = (!empty($t) ? implode(' ',$t) : '');
+// 		// if(preg_match("/\[\d*[D|d]\d+\]/",$a,$matches)) {
+// 		// 	$a = str_replace($matches[0],$matches[0].":".random($matches[0]),$a);
+// 		// }
 
-		$display = ($cnt < $list['display_limit'] ? '' : " style='display:none;'");
-		if($list['tables'] == "t") {
-			$output .= '<tr data-filters="'. $t_list .'" data-perc="'. $p .'"'. $display .'>
-				<td>'. implode("</td><td>",explode('|',$a)) .'</td>
-			</tr>';
-		} else {
-			$output .= '<li data-filters="'. implode(' ',$t) .'" data-perc="'. $p .'"'. $display .'>
-				'. $a .'
-			</li>';
-		}
-		$cnt += 1;
-	}
+// 		$display = ($cnt < $list['display_limit'] ? '' : " style='display:none;'");
+// 		if($list['tables'] == "t") {
+// 			$output .= '<tr data-filters="'. $t_list .'"'. $display .'>
+// 				<td>'. implode("</td><td>",explode('|',$a)) .'</td>
+// 			</tr>';
+// 		} else {
+// 			$output .= '<li data-filters="'. implode(' ',$t) .'" data-perc="'. $p .'"'. $display .'>
+// 				'. $a .'
+// 			</li>';
+// 		}
+// 		$cnt += 1;
+// 	}
 
-	if($list['tables'] == "t") {
-		$output .= "</tbody></table>";
-	} else {
-		$output .= "</ol>";
-	}
-	echo $output;
-	unset($output);
-}
+// 	if($list['tables'] == "t") {
+// 		$output .= "</tbody></table>";
+// 	} else {
+// 		$output .= "</ol>";
+// 	}
+// 	echo $output;
+// 	unset($output);
+// }
 ?>
 	</div>
 
@@ -296,20 +296,20 @@ function random_keys(key) {
 	var arr = build_filtered_list(key,filters);
 	var asset_length = arr.length;
 
-	console.log("Limit: "+ limit);
-	console.log("Asset Length: "+ asset_length);
-	console.log(arr)
-	console.log(filters)
+	// console.log("Limit: "+ limit);
+	// console.log("Asset Length: "+ asset_length);
+	// console.log(arr)
+	// console.log(filters)
 	// return
 	if(limit >= asset_length) {
-		console.log("return all");
+		// console.log("return all");
 		while(asset_length--) {
 			// console.log("-- asset_length: "+ asset_length +" -- k: "+ arr[asset_length])
 			keys[keys.length] = arr[asset_length];
 		}
 		return shuffle_array(keys);
 	} else {
-		console.log("return partial");
+		// console.log("return partial");
 		while(keys.length < limit) {
 			k = rand(1,asset_length - 1);
 			// console.log("min: "+ min +" -- asset_length: "+ asset_length +" -- k: "+ k)
@@ -326,7 +326,7 @@ function random_keys(key) {
 function build_filtered_list(key,checked) {
 	// var checked = get_filters(key);
 	if(assets[key].filter_count == 0 || checked.length == 0) {
-		return assets[key].assets;
+		return (assets[key].tables ? assets[key].assets.slice(1) : assets[key].assets);
 	}
 
 	var filtered_arr = [];
@@ -335,12 +335,58 @@ function build_filtered_list(key,checked) {
 
 	for(var i=(assets[key].tables || 0),len=a.length; i<len; i++) {
 		if(filter_criteria(and_or, checked, JSON.parse(a[i][1]))) {
-			filtered_arr[filtered_arr.length] = i;
+			filtered_arr[filtered_arr.length] = assets[key].assets[i];
 		}
 	}
 	return filtered_arr;
 }
 
+
+function fetch_table_assets(key) {
+	var keys = random_keys(key);
+	var output = '';
+	// console.log(keys)
+	for(var i=0,len=keys.length; i<len; i++) {
+		output += `<tr>
+			<td>`+ parse_random(keys[i][0].split("|").join("</td><td>")) +`</td>
+		</tr>`;
+	}
+	return output;
+}
+
+function fetch_list_assets(key) {
+	var keys = random_keys(key);
+	var output = '';
+	for(var i=0,len=keys.length; i<len; i++) {
+		output += '<ol>'+ (keys[i][0].split("|").join("</td><td>")) +'</ol>';
+	}
+	return output;
+}
+
+function build_display(key) {
+	var output;
+	if(assets[key].tables) {
+		output = `
+ 		<table cellspacing="0" cellpadding="0" class="tbl">
+ 			<thead>
+ 				<tr>
+ 					<th>`+ assets[key].assets[0][0].split('|').join('</th><th>') +`</th>
+ 				</tr>
+ 			</thead>
+ 			<tbody id="list_body_`+ key +`">
+ 			`+ fetch_table_assets(key) +`
+ 			</tbody>
+ 		</table>
+		`;
+	} else {
+		output = `
+			<ol class="list_ordered" id="list_body_`+ $k +`">
+				`+ fetch_list_assets(key) +`
+			</ol>
+		`;
+	}
+	$id('listcounter').innerHTML = output;
+}
 // function filter_list(key) {
 // 	var filters = $query('#filters_table input[type=checkbox]');
 // 	var filters_length = filters.length;
@@ -369,11 +415,6 @@ function build_filtered_list(key,checked) {
 
 </script>
 <?php
-echo "<pre>";
-print_r($info);
-print_r($assets);
-echo "<pre>";
-
 $js = trim(ob_get_clean());
 if(!empty($js)) { add_js_code($js); }
 
