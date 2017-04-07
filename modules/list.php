@@ -111,11 +111,11 @@ $raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lis
 	<div class="filter_details" id="filter_details" style="display: none;">
 
 		<form id="form_filters" method="" action="" onsubmit="return false;">
-			<label for="limit">
+			<label for="limit_<?php echo $info['key']; ?>">
 				Limit Display: <input type="input" name="limit" id="limit_<?php echo $info['key']; ?>" value="20" class='xs'> 
 			</label>
 
-			<label for="randomize">
+			<label for="randomize_<?php echo $info['key']; ?>">
 				<input checked type="checkbox" name="options" id="randomize_<?php echo $info['key']; ?>" value="randomize"> Randomize
 			</label>
 			<!--label for="percentages">
@@ -153,7 +153,7 @@ if(!empty($info['filter_orders'])) {
 			// $slug = convert_to_alias($v);
 			$output .= '
 			<label for="filter_'. $cnt .'" style="width: 200px; float: left; margin-right: 2em;">
-				<input type="checkbox" id="filter_'. $cnt .'" name="filters['. $slug .']" onclick="build_all_lists(\''. $info['key'] .'\')" value="'. $slug .'"> '. $v .'
+				<input type="checkbox" id="filter_'. $cnt .'" name="filters['. $slug .']" onclick="build_display(\''. $info['key'] .'\')" value="'. $slug .'"> '. $v .'
 			</label> 
 			';
 			$cnt += 1;
@@ -265,10 +265,6 @@ ob_start();
 	var original_rows = {};
 	set_original_rows();
 
-	if($id("randomize").checked) {
-		build_all_lists();
-	}
-
 	var assets = {};
 <?php
 	foreach($assets as $k => $v) {
@@ -286,6 +282,12 @@ ob_start();
 	}
 ?>
 
+function get_keys(key) {
+	if($id('randomize_'+ key).checked) {
+		return random_keys(key);
+	} 
+	return assets[key].assets.slice(1,$id('limit_'+ key).value);
+}
 
 function random_keys(key) {
 	var used_keys = {};
@@ -343,9 +345,8 @@ function build_filtered_list(key,checked) {
 
 
 function fetch_table_assets(key) {
-	var keys = random_keys(key);
+	var keys = get_keys(key);
 	var output = '';
-	// console.log(keys)
 	for(var i=0,len=keys.length; i<len; i++) {
 		output += `<tr>
 			<td>`+ parse_random(keys[i][0].split("|").join("</td><td>")) +`</td>
@@ -355,7 +356,7 @@ function fetch_table_assets(key) {
 }
 
 function fetch_list_assets(key) {
-	var keys = random_keys(key);
+	var keys = get_keys(key);
 	var output = '';
 	for(var i=0,len=keys.length; i<len; i++) {
 		output += '<ol>'+ (keys[i][0].split("|").join("</td><td>")) +'</ol>';
@@ -387,6 +388,8 @@ function build_display(key) {
 	}
 	$id('listcounter').innerHTML = output;
 }
+build_display('<?php echo $info['key']; ?>');
+
 // function filter_list(key) {
 // 	var filters = $query('#filters_table input[type=checkbox]');
 // 	var filters_length = filters.length;
