@@ -38,7 +38,7 @@ $q = "
 		,collection_list_map.label
 		,collection_list_map.randomize
 		,collection_list_map.display_limit
-		,list_asset_map.tags
+		,list_asset_map.filters
 		,list.title as list_title
 		,list.tables as tables
 	from public.asset
@@ -57,13 +57,36 @@ $q = "
 
 $assets_res = db_query($q,"Getting collection assets");
 
-$assets = array();
+// $assets = array();
+// while($row = db_fetch_row($assets_res)) {
+// 	$id = $row['list_id'] ."-". $row['collection_list_map_id'];
+// 	if($row['connected']) {
+// 		$id = 'multi_'. $row['connected'];
+// 	}
+// 	if(empty($assets[$id])) {
+// 		$assets[$id] = [
+// 			"list_title" => $row['list_title']
+// 			,"list_label" => $row['label']
+// 			,"randomize" => ($row['randomize'] == "t" ? 1 : 0)
+// 			,"display_limit" => $row['display_limit']
+// 			,"list_id" => $row['list_id']
+// 			,"tables" => $row['tables']
+// 			,"connected" => $row['connected']
+// 			,"assets" => []
+// 			,"tags" => []
+// 		];
+// 	}
+// 	$assets[$id]['assets'][$row['list_id']][] = $row['asset'];
+// 	$assets[$id]['tags'][$row['list_id']][] = $row['tags'];
+// }
+
+$assets[] = [];
 while($row = db_fetch_row($assets_res)) {
 	$id = $row['list_id'] ."-". $row['collection_list_map_id'];
 	if($row['connected']) {
 		$id = 'multi_'. $row['connected'];
 	}
-	if(empty($assets[$id])) {
+	if(empty($assets[$id]['list_title'])) {
 		$assets[$id] = [
 			"list_title" => $row['list_title']
 			,"list_label" => $row['label']
@@ -72,13 +95,25 @@ while($row = db_fetch_row($assets_res)) {
 			,"list_id" => $row['list_id']
 			,"tables" => $row['tables']
 			,"connected" => $row['connected']
-			,"assets" => []
-			,"tags" => []
+			,'filter_count' => 0
+            ,'assets' => []
+            // ,'tags' => []
+            // ,'percentages' => []
+            ,'filters' => []
 		];
 	}
 	$assets[$id]['assets'][$row['list_id']][] = $row['asset'];
-	$assets[$id]['tags'][$row['list_id']][] = $row['tags'];
+	if(!empty($row['filters'])) {
+		$assets[$id]['filter_count'] += 1;
+	}
+	$assets[$id]['filters'][$row['list_id']][] = $row['filters'];
+	
+
+	// $assets[$info['id']]['percentages'][] = $row['percentage'];
 }
+// echo "<pre>";
+// print_r($assets);
+// echo "<pre>";
 
 ##################################################
 #   Pre-Content
@@ -115,53 +150,47 @@ $raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/col
 	} // Markdown Check
 ?>
 
-
-	<!--div class="mb">
-		<label for="limit">
-			Expand at: <input type="input" name="split_on_count" id="split_on_count" value="<?php echo $split_on_count; ?>"> 
-		</label>
-	</div-->
-
 		<div class="mb">
-			<input type="button" value="Randomize List(s)" onclick="generate_all_lists()">	
+			<input type="button" value="Update List(s)" onclick="build_all_display()">	
 		</div>
 
 		<div class='listcounter' id="listcounter" style=''>
 <?php
-foreach($assets as $k => $list) {
-	$l = $list['display_limit'];
-	$r = $list['randomize'];
-	$title = (!empty($list['list_label']) ? $list['list_label'] : $list['list_title']);
+// foreach($assets as $k => $list) {
+// 	$l = $list['display_limit'];
+// 	$r = $list['randomize'];
+// 	$title = (!empty($list['list_label']) ? $list['list_label'] : $list['list_title']);
 
-	$output = '<div class="mt"><strong>'. $title .'</strong></div>';
+// 	$output = '<div class="mt"><strong>'. $title .'</strong></div>';
 
-	if($list['tables'] == "t") {
-		$output .= '
-		<table cellspacing="0" cellpadding="0" class="tbl">
-			<thead>
-				<tr>
-					<th>'. implode('</th><th>',explode("|",$list['assets'][$list['list_id']][0])) .'</th>
-				</tr>
-			</thead>
-			<tbody id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'">
-			</tbody>
-		</table>
-		';
-	} else {
-		$output .= '
-			<br><ol class="list_ordered" id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'"></ol>
-		';
-	}
-	echo $output;
-	unset($output);
-}
+// 	if($list['tables'] == "t") {
+// 		$output .= '
+// 		<table cellspacing="0" cellpadding="0" class="tbl">
+// 			<thead>
+// 				<tr>
+// 					<th>'. implode('</th><th>',explode("|",$list['assets'][$list['list_id']][0])) .'</th>
+// 				</tr>
+// 			</thead>
+// 			<tbody id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'">
+// 			</tbody>
+// 		</table>
+// 		';
+// 	} else {
+// 		$output .= '
+// 			<br><ol class="list_ordered" id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'"></ol>
+// 		';
+// 	}
+// 	echo $output;
+// 	unset($output);
+// }
 ?>
-		<div class="mb">
-			<!--button onclick="build_all_lists()">Randomize List</button-->
-			<input type="button" value="Randomize List(s)" onclick="generate_all_lists()">	
-
-		</div>
 	</div>
+
+	<div class="mb">
+		<input type="button" value="Update List(s)" onclick="build_all_display()">	
+
+	</div>
+
 <?php
 	if(!empty($info['markdown'])) {
 ?>
@@ -187,34 +216,64 @@ ob_start();
 	var original_rows = {};
 	var list_keys = ['<?php echo implode("','",array_keys($assets)); ?>'];
 	var assets = {};
-	var tags = {};
+	// var tags = {};
+// <?php
+// 	$output = '';
+// 	foreach($assets as $k => $v) {
+// 		$cnt = 0;
+// 		echo "\nassets['". $k ."'] = {}; ";
+// 		foreach($v['assets'] as $k2 => $v2) {
+
+// 			$output = "\nassets['". addslashes($k) ."']['". addslashes($k2) ."'] = [";
+// 			foreach($v2 as $v3) {
+// 				$output .= "'". addslashes($v3) ."',";
+// 			}
+// 			echo substr($output,0,-1) .'];';
+// 		}
+// 		echo "\ntags['". $k ."'] = {}; ";
+// 		foreach($v['tags'] as $k2 => $v2) {
+
+// 			$output = "\ntags['". $k ."']['". $k2 ."'] = [";
+// 			foreach($v2 as $v3) {
+// 				$output .= "'". $v3 ."',";
+// 			}
+// 			echo substr($output,0,-1) .'];';
+// 		}
+// 	}
+// ?>
+
+	var assets = {};
 <?php
-	$output = '';
 	foreach($assets as $k => $v) {
-		$cnt = 0;
-		echo "\nassets['". $k ."'] = {}; ";
+		$output = '';
+		if(empty($v['assets'])) {
+			continue;
+		}
 		foreach($v['assets'] as $k2 => $v2) {
-
-			$output = "\nassets['". addslashes($k) ."']['". addslashes($k2) ."'] = [";
-			foreach($v2 as $v3) {
-				$output .= "'". addslashes($v3) ."',";
+			$output2 = '';
+			foreach($v2 as $k3 => $v3) {
+				$output2 .= ",['". addslashes($v3) ."','". addslashes($v['filters'][$k2][$k3]) ."']";
 			}
-			echo substr($output,0,-1) .'];';
+			$output .= ",'". $k2 ."':[". substr($output2,1) ."]";
 		}
-		echo "\ntags['". $k ."'] = {}; ";
-		foreach($v['tags'] as $k2 => $v2) {
 
-			$output = "\ntags['". $k ."']['". $k2 ."'] = [";
-			foreach($v2 as $v3) {
-				$output .= "'". $v3 ."',";
-			}
-			echo substr($output,0,-1) .'];';
-		}
+		echo "\nassets['". $k ."'] = {
+			'tables': '". ($v['tables'] == 't' ? true : false) ."'
+			,'filter_count': ". $v['filter_count'] ."
+			,'display_limit': ". $v['display_limit'] ."
+			,'randomize': ". $v['randomize'] ."
+			,'connected': ". $v['connected'] ."
+			,'assets': {". substr($output,1) ."}	
+		};";
+
 	}
+// echo "<pre>";
+// print_r($assets);
+// echo "<pre>";
 ?>
 
 	set_original_rows();
-	generate_all_lists();
+	build_all_display();
 </script>
 <?php
 $js = trim(ob_get_clean());

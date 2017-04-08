@@ -359,6 +359,10 @@ function filter_criteria(and_or,list1,list2) {
 	// var pieces = list2.split(" ");
 	var matches = 0;
 
+	// console.log(and_or)
+	// console.log(list1)
+	// console.log(list2)
+
 	// No need to check, they can't be the same
 	if(and_or == "and" && list1.length > list2.length) {
 		return false;
@@ -430,78 +434,288 @@ function parse_random(s) {
 
 
 
-function generate_all_lists() {
-	var id,list_rows,row,i;
-	for(key in list_keys) {
-		id = 'list_body_'+ list_keys[key];
-		generate_lists(id,list_keys[key]);
+// function generate_all_lists() {
+// 	var id,list_rows,row,i;
+// 	for(key in list_keys) {
+// 		id = 'list_body_'+ list_keys[key];
+// 		generate_lists(id,list_keys[key]);
+// 	}
+// }
+
+// function generate_lists(id,key) {
+// 	var obj;
+// 	var output = '';
+// 	var length, a, t, i, is_table, f_body;
+// 	var used = {};
+// 	var data = [];
+
+// 	// console.log(id)
+// 	// console.log(key)
+// 	// console.log(assets)
+// 	// console.log(assets[key])
+
+// 	for(k in assets[key]) {
+// 		// console.log(assets[key])
+// 		// console.log(assets[key][k])
+// 		// console.log(assets[key][k].length)
+// 		output = '';
+// 		// data = [];
+// 		used = [];
+// 		obj = $id(id);
+// 		// console.log(obj)
+// 		// return;
+// 		limit = parseInt(assets[key][k].length < obj.dataset.limit ? assets[key][k].length : obj.dataset.limit);
+// 		length = parseInt(assets[key][k].length) - 1;
+// 		is_table = (assets[key][k][0].indexOf('|') != -1 ? true : false);
+// 		// for(var i=0,len=limit; i<len; i++) {
+// 		// tmp = parseInt(length)
+// 		min = (is_table ? 1 : 0);
+// 		xxx = 0;
+// 		len = 0;
+
+// 		// console.log(limit)
+// 		// console.log(length)
+// 		// console.log(is_table)
+
+// 		while(len < limit) {
+// 			r = rand(1,length);
+// 			t = JSON.parse(tags[key][k][r]);
+// 			a = assets[key][k][r];
+
+// 			len = Object.keys(used).length + 1;
+// 			// console.log(Object.keys(used).length)
+
+// 			// console.log(a)
+// 			// console.log(k)
+// 			// console.log(r)
+// 			// console.log(used[a])
+// 			// return;
+// 			xxx += 1
+// 			if(xxx > 20) {
+// 				console.log(limit)
+// 				console.log(used)
+// 				console.log("ENDED")
+// 				return;
+// 			}
+// 			if(typeof used[a] != "undefined") {
+// 				// limit += 1;
+// 				continue;
+// 			}
+// 			used[a] = 1;
+// 			if(typeof data[len] == "undefined") {
+// 				data[len] = "";
+// 			}
+// 			data[len] += parse_random(a) +' ';
+
+// 			f_body = (Object.keys(t).length ? t.join(" ") : '')
+// 			if(is_table) {
+// 				a = a.split("|").join("</td><td>")
+
+// 				output += `
+// 					<tr data-filters="`+ f_body +`">
+// 						<td>{{`+ len +`}}</td>
+// 					</tr>
+// 				`;
+// 			} else {
+// 				output += `
+// 					<li data-filters="`+ f_body +`">
+// 						{{`+ len +`}}
+// 					</li>
+// 				`;				
+// 			}
+
+// 		}
+// 	}
+// console.log(data)
+// console.log(data.length)
+// 	// for(var i=0, len=data.length; i<len; i++) {
+// 	for(i in data) {
+// 		if(is_table) {
+// 			data[i] = data[i].split("|").join("</td><td>")
+// 		}
+// 		output = output.replace("{{"+ i +"}}", data[i]);
+// 	}
+
+// 	$id(id).innerHTML = output;
+// }
+
+
+
+
+function get_keys(key) {
+	var limit = parseInt(assets[key].display_limit ? assets[key].display_limit : $id('limit_'+ key).value);
+	var randomize = assets[key].randomize ? assets[key].randomize : $id('randomize_'+ key).checked;
+
+	if(randomize) {
+		return random_keys(key);
+	} 
+	return serial_list(key);
+}
+
+function serial_list(key) {
+	// console.log("key")
+	var filters = get_filters(key);
+	var arr = build_filtered_list(key,filters);
+	var limit = (assets[key].display_limit ? assets[key].display_limit : $id('limit_'+ key).value);
+	// var asset_length = arr.length;
+
+	output = []
+	for(i in arr[0]) {
+		if(output.length >= limit) {
+			break;
+		}
+		output.push(arr[0][i][0])
+	}
+
+	// $id('filter_count').innerHTML = filters.length +" applied";
+	return output;
+}
+
+function random_keys(key) {
+	var used_keys = {};
+	var keys = [];
+	var limit = parseInt(assets[key].display_limit ? assets[key].display_limit : $id('limit_'+ key).value);
+	var min = assets[key].tables || 0;
+	var filters = get_filters(key);
+	var arr = build_filtered_list(key,filters);
+	var asset_length = arr[0].length;
+
+	$id('filter_count').innerHTML = filters.length +" applied";
+
+	// console.log(arr)
+	// console.log(asset_length)
+	if(limit >= asset_length) {
+		// console.log("###")
+		while(asset_length--) {
+			keys[keys.length] = arr[0][asset_length][0];
+			// console.log(asset_length)
+		}
+		return shuffle_array(keys);
+	} else {
+		// console.log("!!!")
+		while(keys.length < limit) {
+			tmp = [];
+			val = '';
+			for(i in arr) {
+				tmpk = rand(1,arr[i].length - 1);
+				tmp.push(tmpk);
+				val += arr[i][tmpk][0] +" ";
+				// console.log(arr[i][tmpk][0])
+			}
+			k = tmp.join('_');
+			// console.log(k)
+			// console.log(val.trim())
+			// console.log("-------")
+			if(used_keys[k] == undefined) {
+				used_keys[k] = 1;
+				keys[keys.length] = val.trim();
+			}
+			// console.log("KL: "+ keys.length)
+		}
+		return keys;
 	}
 }
 
-function generate_lists(id,key) {
-	var obj;
-	var output = '';
-	var length, a, t, i, is_table, f_body;
-	var used = {};
-	var data = [];
-
-	// console.log(id)
-	// console.log(key)
-	// console.log(assets)
+function build_filtered_list(key,checked) {
+	// var checked = get_filters(key);
+	// console.log('build_filtered_list')
 	// console.log(assets[key])
-
-	for(k in assets[key]) {
-		// console.log(assets[key])
-		// console.log(assets[key][k])
-		output = '';
-		// data = [];
-		used = [];
-		obj = $id(id);
-		limit = (assets[key][k].length < obj.dataset.limit ? assets[key][k].length : obj.dataset.limit);
-		length = assets[key][k].length - 1;
-		is_table = (assets[key][k][0].indexOf('|') != -1 ? true : false);
-		// for(var i=0,len=limit; i<len; i++) {
-		while(limit--) {
-			r = rand(1,length);
-			t = JSON.parse(tags[key][k][r]);
-			a = assets[key][k][r];
-
-			if(typeof used[a] != "undefined") {
-				limit += 1;
-				continue;
-			}
-			used[a] = 1;
-			if(typeof data[limit] == "undefined") {
-				data[limit] = "";
-			}
-			data[limit] += parse_random(a) +' ';
-
-			f_body = (Object.keys(t).length ? t.join(" ") : '')
-			if(is_table) {
-				a = a.split("|").join("</td><td>")
-
-				output += `
-					<tr data-filters="`+ f_body +`">
-						<td>{{`+ limit +`}}</td>
-					</tr>
-				`;
+	// console.log(assets[key].assets)
+	// console.log(checked)
+	// return;
+	var okeys = Object.keys(assets[key].assets);
+	if(assets[key].filter_count == 0 || checked.length == 0) {
+		var arr = [];
+		for(i in okeys) {
+			if(assets[key].tables) {
+				arr.push(assets[key].assets[okeys[0]].slice(1));
 			} else {
-				output += `
-					<li data-filters="`+ f_body +`">
-						{{`+ limit +`}}
-					</li>
-				`;				
+				arr.push(assets[key].assets[okeys[i]])
 			}
-
 		}
+
+		// var len = (assets[key].display_limit ? assets[key].display_limit : assets[key].filter_count);
+		return arr;
 	}
 
-	for(var i=0, len=data.length; i<len; i++) {
-		if(is_table) {
-			data[i] = data[i].split("|").join("</td><td>")
-		}
-		output = output.replace("{{"+ i +"}}", data[i]);
-	}
+	var filtered_arr = [[]];
+	var and_or = ($id('filter_or').checked ? "or" : "and");
+	var a = assets[key].assets[okeys[0]];
 
-	$id(id).innerHTML = output;
+	for(var i=(assets[key].tables ? 1 : 0),len=a.length; i<len; i++) {
+		if(filter_criteria(and_or, checked, JSON.parse(a[i][1]))) {
+			// filtered_arr[filtered_arr.length] = assets[key].assets[i];
+			// console.log("A:")
+			// console.log(i)
+			// console.log(a[i])
+			filtered_arr[0][filtered_arr[0].length] = a[i];
+		}
+	}
+	// console.log(filtered_arr)
+	return filtered_arr;
 }
+
+
+function fetch_table_assets(key) {
+	var keys = get_keys(key);
+	var output = '';
+	okeys = Object.keys(assets[key].assets);
+	// console.log('fetch_table_assets')
+	// console.log(keys)
+
+	for(var i=0,len=keys.length; i<len; i++) {
+		output += `<tr>
+			<td>`+ parse_random(keys[i].split("|").join("</td><td>")) +`</td>
+		</tr>`;
+	}
+	return output;
+}
+
+function fetch_list_assets(key) {
+	var keys = get_keys(key);
+	var output = '';
+	for(var i=0,len=keys.length; i<len; i++) {
+		// output += '<ol>'+ (keys[i][0].split("|").join("</td><td>")) +'</ol>';
+		output += '<ol>'+ keys[i] +'</ol>';
+	}
+	return output;
+}
+
+function build_display(key) {
+	var output;
+	if(assets[key].tables) {
+		okeys = Object.keys(assets[key].assets);
+		output = `
+ 		<table cellspacing="0" cellpadding="0" class="tbl mb">
+ 			<thead>
+ 				<tr>
+ 					<th>`+ assets[key].assets[okeys[0]][0][0].split('|').join('</th><th>') +`</th>
+ 				</tr>
+ 			</thead>
+ 			<tbody id="list_body_`+ key +`">
+ 			`+ fetch_table_assets(key) +`
+ 			</tbody>
+ 		</table>
+		`;
+	} else {
+		output = `
+			<ol class="list_ordered" id="list_body_`+ key +`">
+				`+ fetch_list_assets(key) +`
+			</ol>
+		`;
+	}
+	return output;
+	// $id('listcounter').innerHTML = output;
+}
+
+function build_all_display() {
+	var output = '';
+	var keys = Object.keys(assets)
+	for(k in keys) {
+		key = keys[k];
+		output += build_display(key);
+	}
+	$id('listcounter').innerHTML = output.trim();
+}
+
+
