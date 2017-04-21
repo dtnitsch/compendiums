@@ -244,6 +244,7 @@ ob_start();
 
 	var assets = {};
 <?php
+
 	foreach($assets as $k => $v) {
 		$output = '';
 		if(empty($v['assets'])) {
@@ -254,7 +255,7 @@ ob_start();
 			foreach($v2 as $k3 => $v3) {
 				$output2 .= ",['". addslashes($v3) ."','". addslashes($v['filters'][$k2][$k3]) ."']";
 			}
-			$output .= ",'". $k2 ."':[". substr($output2,1) ."]";
+			$output .= ",'x". $k2 ."':[". substr($output2,1) ."]";
 		}
 
 		echo "\nassets['". $k ."'] = {

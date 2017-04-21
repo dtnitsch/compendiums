@@ -75,6 +75,12 @@ function display_modal_list_page(res) {
 	set_original_rows();
 	$id('add_list_button').style.display = "";
 	$id('add_multi_button').style.display = "";
+	ccc(res.output.assets);
+}
+function ccc(js) {
+	assets = {};
+	eval(js)
+	build_all_display();
 }
 
 function add_new_list(id) {

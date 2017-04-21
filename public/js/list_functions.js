@@ -582,16 +582,20 @@ function random_keys(key) {
 
 	$id('filter_count').innerHTML = filters.length +" applied";
 
+	if(limit >= asset_length) {
+		limit = asset_length;
+	}
+
 	// console.log(arr)
 	// console.log(asset_length)
-	if(limit >= asset_length) {
-		// console.log("###")
-		while(asset_length--) {
-			keys[keys.length] = arr[0][asset_length][0];
-			// console.log(asset_length)
-		}
-		return shuffle_array(keys);
-	} else {
+	// if(limit >= asset_length) {
+	// 	// console.log("###")
+	// 	while(asset_length--) {
+	// 		keys[keys.length] = arr[0][asset_length][0];
+	// 		// console.log(asset_length)
+	// 	}
+	// 	return shuffle_array(keys);
+	// } else {
 		// console.log("!!!")
 		while(keys.length < limit) {
 			tmp = [];
@@ -613,7 +617,7 @@ function random_keys(key) {
 			// console.log("KL: "+ keys.length)
 		}
 		return keys;
-	}
+	// }
 }
 
 function build_filtered_list(key,checked) {
@@ -673,6 +677,7 @@ function fetch_table_assets(key) {
 
 function fetch_list_assets(key) {
 	var keys = get_keys(key);
+	
 	var output = '';
 	for(var i=0,len=keys.length; i<len; i++) {
 		// output += '<ol>'+ (keys[i][0].split("|").join("</td><td>")) +'</ol>';
@@ -685,6 +690,7 @@ function build_display(key) {
 	var output;
 	if(assets[key].tables) {
 		okeys = Object.keys(assets[key].assets);
+		
 		output = `
  		<table cellspacing="0" cellpadding="0" class="tbl mb">
  			<thead>

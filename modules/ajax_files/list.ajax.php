@@ -16,6 +16,13 @@ $q = "
 $output["info"] = db_fetch($q,"Getting info");
 
 $output["html"] = run_module('list');
+$x = strip_tags(show_js_code());
+
+$output["js"] = $x;
+$x = str_replace("\n","",$x);
+preg_match('/(assets\[.*\}\;)/im',$x,$matches);
+$matches[0] = preg_replace("/\s\s+/"," ",$matches[0]);
+$output["assets"] = $matches[0];
 
 _error_debug("Ending Ajax",'',__LINE__,__FILE__);
 echo json_encode(array(

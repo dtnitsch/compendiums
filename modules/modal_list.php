@@ -103,6 +103,7 @@ add_css('modal.css');
 ob_start();
 ?>
 <script type="text/javascript">
+	var assets = {};
 	modal_init("simple_modal");
 </script>
 
