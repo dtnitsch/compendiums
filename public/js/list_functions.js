@@ -50,7 +50,7 @@ function example(e,force) {
 		output += (is_table ? '</tbody></table>' : '</ol>');
 		output += '</div>';
 		$id('example').innerHTML = output;
-		if(build_filters_table()) {							
+		if(build_filters_table()) {
 			$id('filters_table').style.display = '';
 		}
 	}
@@ -74,7 +74,7 @@ function unique_tags() {
 		}
 	}
 	return output;
-}  
+}
 
 
 function build_filters_table() {
@@ -97,7 +97,7 @@ function build_filters_table() {
 			tr = document.createElement('tr');
 			tr.setAttribute('data-key',alias);
 			tr.innerHTML = `
-				<td>
+				<td class="onepercent">
 					<label for="filter_`+ cnt +`">
 					<input type="checkbox" id="filter_`+ cnt +`" name="filters[`+ alias +`]" onclick="filter_list('`+ alias +`')" value="`+ alias +`">
 					</label>
@@ -166,7 +166,7 @@ function filter_list(key) {
 				show = true;
 				break;
 			}
-		}				
+		}
 		elems[i].style.display = (show ? "" : "none");
 	}
 }
@@ -184,7 +184,7 @@ function open_tabs(evt, tabname, type) {
 	}
 	tablinks = document.getElementById(type +'_buttons').getElementsByClassName("tablink");
 	for (i = 0; i < x.length; i++) {
-		tablinks[i].className = tablinks[i].className.replace(" active", ""); 
+		tablinks[i].className = tablinks[i].className.replace(" active", "");
 	}
 	document.getElementById(tabname).style.display = "block";
 	evt.className += " active";
@@ -322,7 +322,7 @@ function build_list(id,key,list_key) {
 		// }
 	}
 	$id('filter_count').innerHTML = filter_count +" applied";
-	
+
 	cnt = 0;
 	for(var i=0; i<list_rows.length; i++) {
 		// No filters
@@ -521,7 +521,7 @@ function parse_random(s) {
 // 					<li data-filters="`+ f_body +`">
 // 						{{`+ len +`}}
 // 					</li>
-// 				`;				
+// 				`;
 // 			}
 
 // 		}
@@ -548,7 +548,7 @@ function get_keys(key) {
 
 	if(randomize) {
 		return random_keys(key);
-	} 
+	}
 	return serial_list(key);
 }
 
@@ -677,7 +677,7 @@ function fetch_table_assets(key) {
 
 function fetch_list_assets(key) {
 	var keys = get_keys(key);
-	
+
 	var output = '';
 	for(var i=0,len=keys.length; i<len; i++) {
 		// output += '<ol>'+ (keys[i][0].split("|").join("</td><td>")) +'</ol>';
@@ -690,7 +690,7 @@ function build_display(key) {
 	var output;
 	if(assets[key].tables) {
 		okeys = Object.keys(assets[key].assets);
-		
+
 		output = `
  		<table cellspacing="0" cellpadding="0" class="tbl mb">
  			<thead>
@@ -723,5 +723,3 @@ function build_all_display() {
 	}
 	$id('listcounter').innerHTML = output.trim();
 }
-
-

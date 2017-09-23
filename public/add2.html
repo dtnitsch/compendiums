@@ -1,0 +1,330 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Add List - GM Tools</title>
+
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<link href="/css/styles.css" type="text/css" rel="stylesheet" media="screen" />
+	<link href="/css/gm_tools.css" type="text/css" rel="stylesheet" media="screen" />
+	<link href="/css/error_handler.css" type="text/css" rel="stylesheet" media="screen" />
+
+</head>
+<body>
+
+	<div class="header">
+		<div class="logo">
+			<a href="/">ADD 2</a>
+		</div>
+
+		<div class="nav">
+			<a href="/lists/">Lists</a>
+			<a href="/collections/">Collections</a>
+			<a href="/compendiums/">Compendiums</a>
+		</div>
+
+		<div class="user">
+<a href="/login/">Login</a>		</div>
+
+		<div class="search">
+			<form method="get" action="/search/">
+				<input type="text" name="search" placeholder="Search"> <input type="button" value="Go" />
+			</form>
+		</div>
+		<div class="clear"></div>
+	</div>
+
+<!--Start Body Content-->
+<div class="body_content">
+		<form id="addform" method="post" action="" onsubmit="return validate_list();">
+			<div class="float_right">
+				<button type="button" class="tablink active" onclick="open_tabs(this,'default','list')">Default</button>
+				<button type="button" class="tablink" onclick="open_tabs(this,'md','list')">Information</button>
+			</div>
+		<h2 class='lists'>Add List</h2>
+
+		<a href="#messages"></a>
+		<div id="messages"></div>
+
+
+		<div style="float:left;padding: 5px;width: 30%;background:ccc;border:1px solid #666;">
+			Step 1 - Inputs
+		</div>
+		<div style="float:left;padding: 5px;width: 30%;background:ccc;border:1px solid #666;">
+			Step 2 - Preview
+		</div>
+		<div style="float:left;padding: 5px;width: 30%;background:ccc;border:1px solid #666;">
+			Step 3 - Additional Information
+		</div>
+
+		<div class="clear"></div>
+
+		<label class="form_label" for="title">List Name <span>*</span></label>
+		<div class="form_data">
+			<input type="text" name="title" id="title" class="xl" value="">
+		</div>
+
+		<div class="form_data">
+			<label class="form_label" for="simple">
+				<input checked type="radio" name="list_type" id="simple" value="simple"> Simple List
+			</label>
+			&nbsp;&nbsp;&nbsp;
+			<label class="form_label" for="table">
+				<input type="radio" name="list_type" id="table" value="table"> Table View
+			</label>
+		</div>
+<!--
+one;odd
+two;even
+three;odd,three
+four;even,four
+five;odd
+six;even,three
+seven;odd
+eight;even,four
+nine;odd,three
+
+Word|Number
+one|1|Lorem;odd
+two|2|Lorem;even
+three|3|Lorem;odd
+four|4|Lorem;even
+five|5|Lorem;odd
+six|6|Lorem;even
+-->
+					<label class="form_label" for="title">Inputs</label>
+					<div class="form_data">
+						<!--textarea name="inputs" id="inputs" onchange="example(event,true)" onkeyup="example(event)" style="width: 90%; height: 250px;"></textarea-->
+						<textarea name="inputs" id="inputs" style="width: 90%; height: 250px;"></textarea>
+						<div style="font-size: 80%;">*Notes: Semicolon ";" Deliminated List - Name; Optional Percentage; Optional Filters</div>
+					</div>
+
+
+
+					<table cellspacing="0" id="filters_table" class="tbl" style='margin-bottom: 1em;'>
+						<thead>
+							<tr>
+								<th>&nbsp;</th>
+								<th>Label</th>
+								<th>Slug</th>
+								<th>Order</th>
+							</tr>
+						</thead>
+						<tbody id="filters_table_tbody"></tbody>
+					</table>
+					<div id="example"></div>
+
+			</div>
+			<div id="md" class="tabs" style="display: none">
+
+				<textarea name="markdown" id="markdown" class="markdown" onkeyup="parse_markdown()"></textarea>
+				<article id="preview" class="markdown_body"></article>
+
+				<div class="clear mt"></div>
+				<button type="button" onclick="example_markdown()">Generate Example Markdown</button>
+
+			</div>
+
+			<div class="clear"></div>
+
+
+		<div class="clear mt"></div>
+		<!--input type="submit" value="Save List"-->
+	</form>
+
+</div>
+<!--End Body Content-->
+
+<!-- DEBUG -->
+	<div class='error_debug_box'>
+	<div class='error_debug_title' onclick='_showhide_debug();'>
+		<strong>Debug Information</strong>: (D:15)
+		-- <strong>Page Load Time</strong>: 0.0283		 -- <strong>Query Load Times</strong> (3 queries)  0.0230		 -- <strong>Total Memory Usage</strong>: 174.33KB</div>
+	<table id='debuginfo' class='error_debug_table'>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_0'></td>
+   	 	<td class='error_details'><span class='undln'>start_session()</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/public/index.php - <strong>Line</strong>: 50</span></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_1'></td>
+   	 	<td class='error_details'><span class='undln'>get_requested_path()</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/public/index.php - <strong>Line</strong>: 57</span></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_2'></td>
+   	 	<td class='error_details'><span class='undln'>Audit: page_hits()</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/public/index.php - <strong>Line</strong>: 57</span></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_3'></td>
+   	 	<td class='error_details'><span class='undln'>Connecting to DB: default</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/library/audit_functions.php - <strong>Line</strong>: 27</span></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_4'><a href='javascript:_showhide_context(4)'>Show More</a></td>
+   	 	<td class='error_details'><span class='undln'>PostgreSQL (1 rows, 0.0004 sec): getting last value</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/library/audit_functions.php - <strong>Line</strong>: 27</span></td>
+	</tr>
+
+	<tr>
+		<td id='display_context_4' class='hide_context' colspan='3'><div>1: <strong>PostgreSQL Query</strong>: <pre>string(16) "select lastval()"
+</pre></div></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_5'><a href='javascript:_showhide_context(5)'>Show More</a></td>
+   	 	<td class='error_details'><span class='undln'>PostgreSQL (0 rows, 0.0057 sec): audit: page hit</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/library/audit_functions.php - <strong>Line</strong>: 27</span></td>
+	</tr>
+
+	<tr>
+		<td id='display_context_5' class='hide_context' colspan='3'><div>1: <strong>PostgreSQL Query</strong>: <pre>string(142) "insert into "audits".page_hits (user_id,path,session_id,params,created) values ('0','/lists/add/','265e1f88ce204f25807afcbc5664a611','',now())"
+</pre></div></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_6'><a href='javascript:_showhide_context(6)'>Show More</a></td>
+   	 	<td class='error_details'><span class='undln'>PostgreSQL (2 rows, 0.0169 sec): Load Path Information</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/library/library.php - <strong>Line</strong>: 146</span></td>
+	</tr>
+
+	<tr>
+		<td id='display_context_6' class='hide_context' colspan='3'><div>1: <strong>PostgreSQL Query</strong>: <pre>string(103) "select *,regexp_matches('/lists/add/',path)::text from system.paths where '/lists/add/' similar to path"
+</pre></div></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_7'><a href='javascript:_showhide_context(7)'>Show More</a></td>
+   	 	<td class='error_details'><span class='undln'>Path Details</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/public/index.php - <strong>Line</strong>: 79</span></td>
+	</tr>
+
+	<tr>
+		<td id='display_context_7' class='hide_context' colspan='3'><div>1: <strong>id</strong>: 8</div><div>2: <strong>active</strong>: t</div><div>3: <strong>redirect</strong>: f</div><div>4: <strong>is_dynamic</strong>: f</div><div>5: <strong>dynamic_content_id</strong>: </div><div>6: <strong>path_redirect</strong>: </div><div>7: <strong>path</strong>: /lists/add/</div><div>8: <strong>module_name</strong>: list_add</div><div>9: <strong>template</strong>: default</div><div>10: <strong>title</strong>: Add List</div><div>11: <strong>alias</strong>: list_add</div><div>12: <strong>folder</strong>: modules/lists/</div><div>13: <strong>description</strong>: </div><div>14: <strong>dynamic_variables</strong>: []</div><div>15: <strong>created</strong>: 2017-08-25 21:00:43.935024</div><div>16: <strong>modified</strong>: 2017-08-25 21:00:43.935024</div><div>17: <strong>regexp_matches</strong>: {/lists/add/}</div></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_8'></td>
+   	 	<td class='error_details'><span class='undln'>check_session_timeout()</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/public/index.php - <strong>Line</strong>: 94</span></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_9'></td>
+   	 	<td class='error_details'><span class='undln'>run_module(): list_add</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/public/index.php - <strong>Line</strong>: 116</span></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_10'></td>
+   	 	<td class='error_details'><span class='undln'>MODULE: list_add.php</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/modules/lists/list_add.php - <strong>Line</strong>: 5</span></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_11'></td>
+   	 	<td class='error_details'><span class='undln'>dump_messages()</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/modules/lists/list_add.php - <strong>Line</strong>: 37</span></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_12'><a href='javascript:_showhide_context(12)'>Show More</a></td>
+   	 	<td class='error_details'><span class='undln'>Sessions</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/library/error_handler.php - <strong>Line</strong>: 345</span></td>
+	</tr>
+
+	<tr>
+		<td id='display_context_12' class='hide_context' colspan='3'><div>1: <strong>last_access_time</strong>: 1503774557</div><div>2: <strong>post_information</strong>: <pre>Array
+(
+)
+</pre></div><div>3: <strong>error_message</strong>: <pre>Array
+(
+)
+</pre></div><div>4: <strong>post_modules</strong>: {"modules\/lists\/post_files\/list_add.post.php":1}</div></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_13'><a href='javascript:_showhide_context(13)'>Show More</a></td>
+   	 	<td class='error_details'><span class='undln'>Server</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/library/error_handler.php - <strong>Line</strong>: 348</span></td>
+	</tr>
+
+	<tr>
+		<td id='display_context_13' class='hide_context' colspan='3'><div>1: <strong>SCRIPT_URL</strong>: /lists/add/</div><div>2: <strong>SCRIPT_URI</strong>: http://gm.local/lists/add/</div><div>3: <strong>HTTP_HOST</strong>: gm.local</div><div>4: <strong>HTTP_CONNECTION</strong>: keep-alive</div><div>5: <strong>HTTP_USER_AGENT</strong>: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36</div><div>6: <strong>HTTP_UPGRADE_INSECURE_REQUESTS</strong>: 1</div><div>7: <strong>HTTP_ACCEPT</strong>: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8</div><div>8: <strong>HTTP_REFERER</strong>: http://gm.local/lists/aadd2.html</div><div>9: <strong>HTTP_ACCEPT_ENCODING</strong>: gzip, deflate</div><div>10: <strong>HTTP_ACCEPT_LANGUAGE</strong>: en-US,en;q=0.8</div><div>11: <strong>HTTP_COOKIE</strong>: gm_tools=265e1f88ce204f25807afcbc5664a611</div><div>12: <strong>PATH</strong>: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</div><div>13: <strong>SERVER_SIGNATURE</strong>: </div><div>14: <strong>SERVER_SOFTWARE</strong>: Apache/2.4.25 (Unix) PHP/5.6.30</div><div>15: <strong>SERVER_NAME</strong>: gm.local</div><div>16: <strong>SERVER_ADDR</strong>: 127.0.0.1</div><div>17: <strong>SERVER_PORT</strong>: 80</div><div>18: <strong>REMOTE_ADDR</strong>: 127.0.0.1</div><div>19: <strong>DOCUMENT_ROOT</strong>: /var/www/gm_tools/public/</div><div>20: <strong>REQUEST_SCHEME</strong>: http</div><div>21: <strong>CONTEXT_PREFIX</strong>: </div><div>22: <strong>CONTEXT_DOCUMENT_ROOT</strong>: /var/www/gm_tools/public/</div><div>23: <strong>SERVER_ADMIN</strong>: info@gm.local</div><div>24: <strong>SCRIPT_FILENAME</strong>: /var/www/gm_tools/public/index.php</div><div>25: <strong>REMOTE_PORT</strong>: 61812</div><div>26: <strong>GATEWAY_INTERFACE</strong>: CGI/1.1</div><div>27: <strong>SERVER_PROTOCOL</strong>: HTTP/1.1</div><div>28: <strong>REQUEST_METHOD</strong>: GET</div><div>29: <strong>QUERY_STRING</strong>: </div><div>30: <strong>REQUEST_URI</strong>: /lists/add/</div><div>31: <strong>SCRIPT_NAME</strong>: /lists/add/</div><div>32: <strong>PHP_SELF</strong>: /lists/add/</div><div>33: <strong>REQUEST_TIME_FLOAT</strong>: 1503774557.393</div><div>34: <strong>REQUEST_TIME</strong>: 1503774557</div><div>35: <strong>argv</strong>: <pre>Array
+(
+)
+</pre></div><div>36: <strong>argc</strong>: 0</div></td>
+	</tr>
+
+	<tr>
+    	<td class='error_type error_debug_gray'>DEBUG</td>
+
+    	<td class='show_more' id='show_more_14'><a href='javascript:_showhide_context(14)'>Show More</a></td>
+   	 	<td class='error_details'><span class='undln'>Cookies</span><span class='page_line'><strong>File</strong>: /private/var/www/gm_tools/library/error_handler.php - <strong>Line</strong>: 349</span></td>
+	</tr>
+
+	<tr>
+		<td id='display_context_14' class='hide_context' colspan='3'><div>1: <strong>gm_tools</strong>: 265e1f88ce204f25807afcbc5664a611</div></td>
+	</tr>
+		</table>
+	</div>
+<div class="clear"></div>
+
+	<script src="/js/scripts.js" type="text/javascript"></script>
+	<script src="/js/gm_tools.js" type="text/javascript"></script>
+	<script src="/js/list_functions.js" type="text/javascript"></script>
+	<script src="/js/markdown.min.js" type="text/javascript"></script>
+	<script src="/js/error_handler.js" type="text/javascript"></script>
+<script type="text/javascript">
+	function example_markdown() {
+		$id('markdown').value = `#Header
+
+Paragraphs are separated by a blank line.
+
+2nd paragraph. *Italic*, **bold**, and \`monospace\`. Itemized lists
+look like:
+
+* this one
+* that one
+* the other one
+
+##Header 2
+
+Here's a numbered list:
+
+1. first item
+2. second item
+3. third item
+
+`;
+		parse_markdown();
+	}
+
+	function validate_list() {
+		return validate({'title':'List Name','inputs':'Inputs'});
+	}
+</script>
+</body>
+</html>

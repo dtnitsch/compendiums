@@ -385,14 +385,13 @@ function addform_return(res) {
 }
 
 function slug(str,type) {
-	type = type || '-';
 	return str
 		.toString()
 		.trim()
 		.toLowerCase()
-		.replace(/\s+/g, type)
+		.replace(/\s+/g, '-')
 		.replace(/[^\w\-]+/g, '')
-		.replace(/\-\-+/g, type)
+		.replace(/\-\-+/g, '-')
 		.replace(/^-+/, '')
 		.replace(/-+$/, '');
 }

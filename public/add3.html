@@ -1,0 +1,253 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Add List - GM Tools</title>
+
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<link href="/css/styles.css" type="text/css" rel="stylesheet" media="screen" />
+	<link href="/css/gm_tools.css" type="text/css" rel="stylesheet" media="screen" />
+	<link href="/css/error_handler.css" type="text/css" rel="stylesheet" media="screen" />
+
+</head>
+<body>
+
+	<div class="header">
+		<div class="logo">
+			<a href="/">ADD 3</a>
+		</div>
+
+		<div class="nav">
+			<a href="/lists/">Lists</a>
+			<a href="/collections/">Collections</a>
+			<a href="/compendiums/">Compendiums</a>
+		</div>
+
+		<div class="user">
+<a href="/login/">Login</a>		</div>
+
+		<div class="search">
+			<form method="get" action="/search/">
+				<input type="text" name="search" placeholder="Search"> <input type="button" value="Go" />
+			</form>
+		</div>
+		<div class="clear"></div>
+	</div>
+
+<!--Start Body Content-->
+<div class="body_content">
+		<form id="addform" method="post" action="" onsubmit="return validate_list();">
+
+		<div style="background: #ccd6ef; margin: 0px -15px 10px; padding: 15px; border-bottom: 1px solid #666;">
+			<div class="float_right">
+				<input type="button" value="Add List">
+			</div>
+
+				<div style="font-size: 140%;">Add List</div>
+		</div>
+		<div class="clear"></div>
+
+		<a href="#messages"></a>
+		<div id="messages"></div>
+
+		<div id="inputs_box">
+
+		<label class="form_label" for="title">List Name <span>*</span></label>
+		<div class="form_data">
+			<input type="text" name="title" id="title" class="xl" value="">
+		</div>
+
+		<!-- <div class="form_data">
+			<label class="form_label" for="simple">
+				<input checked type="radio" name="list_type" id="simple" value="simple"> Simple List
+			</label>
+			&nbsp;&nbsp;&nbsp;
+			<label class="form_label" for="table">
+				<input type="radio" name="list_type" id="table" value="table"> Table View
+			</label>
+		</div> -->
+<!--
+one;odd
+two;even
+three;odd,three
+four;even,four
+five;odd
+six;even,three
+seven;odd
+eight;even,four
+nine;odd,three
+
+Word|Number
+one|1|Lorem;odd
+two|2|Lorem;even
+three|3|Lorem;odd
+four|4|Lorem;even
+five|5|Lorem;odd
+six|6|Lorem;even
+-->
+<div class="float_right" style="font-size: 80%;">
+	<input type="button" value="Simple List Example" onclick="show_simple_example()">
+	<input type="button" value="Table List Example" onclick="show_table_example()" style="margin-top:2px">
+	<input type="button" value="Show Preview" onclick="show_preview()">
+</div>
+
+					<label class="form_label" for="title">Inputs</label>
+					<div class="form_data">
+						<!--textarea name="inputs" id="inputs" onchange="example(event,true)" onkeyup="example(event)" style="width: 90%; height: 250px;"></textarea-->
+						<textarea name="inputs" id="inputs" style="width: 100%; height: 150px;"></textarea>
+						<div style="font-size: 80%;">
+							* ";" Semicolon seperator for filters<br>
+							* "|" Pipe between values for "Tables"
+
+
+						</div>
+					</div>
+				</div>
+
+
+				<div id="preview_box" style="display: none;">
+					<div class="float_right">
+						<input type="button" value="Show Inputs" onclick="show_inputs()">
+					</div>
+					<div>
+						<b>Preview</b>: <span id="preview_title"></span>
+					</div>
+
+					<table cellspacing="0" id="filters_table" class="tbl" style='margin-bottom: 1em;'>
+						<thead>
+							<tr>
+								<th>&nbsp;</th>
+								<th>Label</th>
+								<th>Slug</th>
+								<th>Order</th>
+							</tr>
+						</thead>
+						<tbody id="filters_table_tbody"></tbody>
+					</table>
+					<div id="example"></div>
+				</div>
+
+				<div class='hr' style='margin: 20px; border-bottom: 1px solid #ccc;'></div>
+
+				<div id="md">
+
+					<div class="float_right" style="font-size: 80%;">
+						<input type="button" value="Generate Example Markdown" onclick="example_markdown()">
+						<input type="button" value="Show Markdown preview" onclick="show_markdown_preview()">
+					</div>
+
+					<label class="form_label" for="markdown">Markdown Description</label>
+					<textarea name="markdown" id="markdown" class="" style="width: 100%; height: 100px;" onkeyup="parse_markdown()"></textarea>
+					<div style="font-size: 80%;">
+
+					</div>
+				</div>
+
+				<div id="md_preview" style="display: none;">
+
+					<div class="float_right">
+						<input type="button" value="Edit Markdown" onclick="show_markdown()">
+					</div>
+					<div class="clear"></div>
+					<article id="preview" class="" style="border: 1px solid #333; padding: 10px"></article>
+
+				</div>
+
+
+
+				<div class="mt">
+					<input type="button" value="Add List">
+				</div>
+			</div>
+
+
+		<div class="clear mt"></div>
+		<!--input type="submit" value="Save List"-->
+	</form>
+
+</div>
+<!--End Body Content-->
+
+	<script src="/js/scripts.js" type="text/javascript"></script>
+	<script src="/js/gm_tools.js" type="text/javascript"></script>
+	<script src="/js/list_functions.js" type="text/javascript"></script>
+	<script src="/js/markdown.min.js" type="text/javascript"></script>
+	<script src="/js/error_handler.js" type="text/javascript"></script>
+<script type="text/javascript">
+	function show_preview() {
+		example(event,true);
+		title = $id('title').value || "<em>None Given</em>";
+		$id('preview_title').innerHTML = title;
+		$id('inputs_box').style.display = "none";
+		$id('preview_box').style.display = "";
+
+	}
+	function show_inputs() {
+		$id('preview_box').style.display = "none";
+		$id('inputs_box').style.display = "";
+	}
+
+	function show_markdown_preview() {
+		$id('md').style.display = "none";
+		$id('md_preview').style.display = "";
+	}
+	function show_markdown() {
+		$id('md_preview').style.display = "none";
+		$id('md').style.display = "";
+	}
+
+	function example_markdown() {
+		$id('markdown').value = `#Header
+
+Paragraphs are separated by a blank line.
+
+2nd paragraph. *Italic*, **bold**, and \`monospace\`. Itemized lists
+look like:
+
+* this one
+* that one
+* the other one
+
+##Header 2
+
+Here's a numbered list:
+
+1. first item
+2. second item
+3. third item
+
+`;
+		parse_markdown();
+	}
+
+	function validate_list() {
+		return validate({'title':'List Name','inputs':'Inputs'});
+	}
+	function show_simple_example() {
+		$id('inputs').value = `Apple;Fruit
+Banana;Fruit
+Tomato;Fruit,Vegetable
+Potato;Vegetable
+Pineapple;Fruit
+Carrot;Vegetable
+Cucumber;Vegetable
+Cheese;Dairy
+Milk;Dairy`;
+	}
+	function show_table_example() {
+		$id('inputs').value = `Name|Cost|Color
+Apple|$1.29|Red, Green, or Yellow;Fruit,Red,Green,Yellow
+Banana|$0.85|Yellow;Fruit,Yellow
+Tomato|$0.44|Red;Fruit,Vegetable,Red
+Potato|$0.16|Brown;Vegetable
+Pineapple|$2.02|Brown with Green Leaves;Fruit, Brown, Green
+Carrot|$0.02|Orange;Vegetable, Orange
+Cucumber|$0.09|Green;Vegetable, Green
+Cheese|$3.41|Cream Color;Dairy, Cream, White, Yellow
+Milk|$2.95|White;Dairy,White`;
+	}
+</script>
+</body>
+</html>

@@ -21,7 +21,7 @@ include("../library/library.php");
 // 	library("error_handler.php");
 // 	error_handler_setup($GLOBALS["debug_options"]["enabled"]);
 
-// 	add_css("error_handler.css",1000); 
+// 	add_css("error_handler.css",1000);
 // 	add_js("error_handler.js",1000);
 
 // } else {
@@ -31,7 +31,7 @@ include("../library/library.php");
 library("error_handler.php");
 error_handler_setup($GLOBALS["debug_options"]["enabled"]);
 if($GLOBALS["debug_options"]["enabled"]) {
-	add_css("error_handler.css",1000); 
+	add_css("error_handler.css",1000);
 	add_js("error_handler.js",1000);
 }
 
@@ -74,7 +74,7 @@ if($custom) {
 	);
 	$GLOBALS['project_info']['path_data'] = $path_data;
 } else {
-	$path_data = load_path_data($path);	
+	$path_data = load_path_data($path);
 }
 _error_debug("Path Details",$path_data);
 

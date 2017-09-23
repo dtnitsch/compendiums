@@ -1,4 +1,4 @@
-.header { padding: 0.8em; background: #333; color: white; border-bottom: 1px solid #999; } 
+.header { padding: 0.8em; background: #333; color: white; border-bottom: 1px solid #999; }
 .header a:link,.header a:visited,.header a:hover { color: #cdebf4; text-decoration: none; }
 .header a:hover { text-decoration: underline; }
 .header .logo { float: left; font-size: 165%; }
@@ -17,6 +17,14 @@
 .title { font-weight: bold; }
 
 .body_content { padding: 0 1em; }
+
+.subheader { background: #fff; margin: 0px -15px 10px; padding: 15px; border-bottom: 1px solid #ccc; }
+.subheader .title { font-size: 140%; font-weight: normal; }
+.small { font-size: 80%; }
+
+/* .fakeref { color: #cdebf4; } */
+.fakeref { color: #19C0E6; }
+.fakeref:hover { color: #19C0E6; text-decoration: underline; }
 
 input[type=text], select, textarea {
     padding: 0.3em 0.6em;
@@ -57,7 +65,7 @@ input[type=submit]:hover, input[type=button]:hover {
 .asl_sort .options span { font-size: 150%; }
 .asl_sort .options span:hover { color: red; }
 
-.filters { cursor: pointer; border-bottom: 1px solid #ccc; padding: 0.3em; font-size: 120%; }
+.filters { cursor: pointer; background: #fff;  border: 1px solid #ccc; padding: 0.3em; font-size: 120%; }
 .filter_count { font-size: 80%; }
 .filter_details { background: #fff; border: 1px solid #ccc; border-top: none; padding: 0.3em; }
 
@@ -68,6 +76,7 @@ input[type=submit]:hover, input[type=button]:hover {
 .tbl tr:nth-child(even) { background: #fff; }
 .tbl tbody tr:hover { background: #cdebf4; }
 .tbl th span { color: #999; }
+.tbl .onepercent { width: 1px; }
 
 .basic_table { width: 100%; }
 .basic_table td, .basic_table td { text-align: left; vertical-align: top; }
@@ -95,7 +104,7 @@ input[type=submit]:hover, input[type=button]:hover {
 .w3-btn,.w3-button{border:none;display:inline-block;outline:0;padding:8px 16px;vertical-align:middle;overflow:hidden;text-decoration:none;
 color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap}
 .w3-btn:hover{box-shadow:0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)}
-.w3-btn,.w3-button{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}   
+.w3-btn,.w3-button{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
 .w3-disabled,.w3-btn:disabled,.w3-button:disabled{cursor:not-allowed;opacity:0.3}.w3-disabled *,:disabled *{pointer-events:none}
 .w3-bar-item, .w3-button { border-right: 1px solid #ccc; }
 
@@ -111,5 +120,5 @@ color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-sp
 .tabbar .save{background:#4caf50}
 .tabbody {padding: 1em; border: 1px solid #ccc;}
 
-.markdown {width: 47%; height: 200px; float:left;}
+.markdown {width: 47%; float:left;}
 .markdown_body {width: 47%; border: 1px solid #ccc; margin-left: 1em; padding: 1em; float: left;}

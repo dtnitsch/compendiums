@@ -48,7 +48,7 @@ $res = db_query($q,"Getting list assets");
 ##################################################
 // add_css('pagination.css');
 // add_js('sortlist.new.js');
-add_js("list_functions.js",10);
+add_js("lists.js",10);
 library("slug.php");
 add_js("markdown.min.js");
 
@@ -89,25 +89,20 @@ $raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lis
 ?>
 <div class='clearfix'>
 <div class="float_right">
-	<input type="button" onclick="window.location.href='<?php echo $csv_url; ?>'" value="Export to CSV">
-	<input type="button" onclick="window.location.href='<?php echo $raw_url; ?>'" value="Export Raw">
+	
 </div>
-<h2 class='lists'>Lists: <?php echo $info['title']; ?></h2>
 
-<?php
-	if(!empty($info['markdown'])) {
-?>
-<div id="list_buttons" class="tabbar">
-	<button type="button" class="tablink active" onclick="open_tabs(this,'default','list')">Default</button>
-	<button type="button" class="tablink" onclick="open_tabs(this,'md','list')">Information</button>
+<div class="subheader">
+	<div class="float_right">
+		<input type="button" onclick="window.location.href='<?php echo $csv_url; ?>'" value="Export to CSV">
+		<input type="button" onclick="window.location.href='<?php echo $raw_url; ?>'" value="Export Raw">
+	</div>
+
+	<div class="title">List: <?php echo $info['title']; ?></div>
 </div>
-<div id="list_bodies" class="tabbody">
-	<div id="default" class="tabs">
-<?php
-	} // Markdown Check
-?>
+
 	<div class="filters" onclick="show_hide('filter_details')">
-		Filters (<span class="filter_count" id="filter_count">0 applied</span>)
+		Filters (<span class="filter_count" id="filter_count">0 applied</span>) <span class="small">(<span class="fakeref">show/hide</span>)</span>
 	</div>
 	<div class="filter_details" id="filter_details" style="display: none;">
 
@@ -171,18 +166,19 @@ $raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lis
 
 
 
+<div class='listcounter mt' id="listcounter"></div>
 
-	<div class='listcounter mt' id="listcounter"></div>
+<div class="filters mt" onclick="show_hide('markdown_details')">
+	List Details <span class="small">(<span class="fakeref">show/hide</span>)</span>
+</div>
+<div class="filter_details" id="markdown_details" style="display: none;">
 
 <?php
 	if(!empty($info['markdown'])) {
 ?>
-	</div>
-	<div id="md" class="tabs" style="display: none">
-		<article id="markdown" class="markdown" style="padding: 1em">
-			<?php echo $info['markdown']; ?>
-		</article>
-	</div>
+	<div id="markdown" class="markdown" style="padding: 1em; display: block;">
+		<div class="clear"></div>
+	</div>		
 <?php
 	} // Markdown Check
 ?>
@@ -198,8 +194,6 @@ ob_start();
 <script type="text/javascript">
 	var is_table = <?php echo ($info['tables'] == 't' ? 'true' : 'false'); ?>;
 	var list_keys = [<?php echo implode(',',array_keys($assets)); ?>];
-	var original_rows = {};
-	set_original_rows();
 
 	var assets = {};
 <?php
@@ -228,6 +222,7 @@ ob_start();
 	// build_display('<?php echo $info['key']; ?>');
 	build_all_display();
 
+	parse_markdown_html('markdown',<?php echo json_encode($info['markdown']); ?>);
 </script>
 <?php
 $js = trim(ob_get_clean());
@@ -236,13 +231,7 @@ if(!empty($js)) { add_js_code($js); }
 ##################################################
 #   Additional PHP Functions
 ##################################################
-// function random($str) {
-// 	$str = str_replace(["[","]"],"",$str);
-// 	$pieces = explode("d",strtolower($str));
-// 	$min = (!(int)$pieces[0] ? 1 : (int)$pieces[0]);
-// 	$max = (int)$pieces[1];
-// 	return mt_rand($min,$max);
-// }
+
 ##################################################
 #   EOF
 ##################################################

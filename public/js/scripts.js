@@ -11,7 +11,9 @@ function $class(x) { return document.querySelector(set_class_dot(x)) || false; }
 function $classes(x) { return document.querySelectorAll(set_class_dot(x)) || false; }
 function $query(x) { return document.querySelectorAll(x) || false; }
 
-function $error(msg) { console.log("Error: "+ msg); return false; }
+function $error(msg) { return log("error", msg); }
+function $info(msg) { return log("info", msg); }
+function log(type,msg) { console.log(type +": "+ msg); return false; }
 
 function set_class_dot(x) { return (x[0] != "." ? "."+x : x); }
 function isfunction(x) { return typeof x == "function"; }

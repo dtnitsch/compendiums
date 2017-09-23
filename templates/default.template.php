@@ -13,7 +13,7 @@
 	echo show_css_code();
 
 	add_js("scripts.js", 1);
-	add_js("gm_tools.js", 2);
+	add_js("tools.js", 2);
 ?>
 
 </head>
@@ -34,7 +34,7 @@
 <?php
 	$output = '<a href="/login/">Login</a>';
 	if(!empty($_SESSION['user'])) {
-		$output = '<a href="javascript:void(0);" onclick="show_hide(\'header_details\');">'. $_SESSION['user']['username'] .'</a>';	
+		$output = '<a href="javascript:void(0);" onclick="show_hide(\'header_details\');">'. $_SESSION['user']['username'] .'</a>';
 	}
 	echo $output;
 ?>
@@ -56,14 +56,14 @@ if(!empty($_SESSION['user'])) {
 			<a href="/u/<?php echo $username; ?>/">My Profile</a>
 			<a href="?logout=1">Logout</a>
 		</div>
-		
+
 		<a href="/u/<?php echo $username; ?>/lists/">My Lists</a>
 		<a href="/u/<?php echo $username; ?>/collections/">My Collections</a>
 		<a href="/u/<?php echo $username; ?>/compendiums/">My Compendiums</a>
 		<a href="/u/<?php echo $username; ?>/reports/">My Reports</a>
 	</div>
 
-<?php	
+<?php
 }
 ?>
 

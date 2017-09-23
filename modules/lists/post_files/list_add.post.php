@@ -29,7 +29,7 @@ if(!empty($_POST) && !error_message()) {
 				,created
 				,modified
 			) values (
-				'". db_prep_sql($_SESSION['user']['id'] ?? 1) ."'
+				'". db_prep_sql($_SESSION['user']['id'] ? $_SESSION['user']['id'] : 1) ."'
 				,'". $key ."'
 				,'". db_prep_sql($title) ."'
 				,'". db_prep_sql($alias) ."'
@@ -41,11 +41,11 @@ if(!empty($_POST) && !error_message()) {
 				,now()
 			) returning id
 		";
-		$res = db_fetch($q, "Inserting List Name"); 
+		$res = db_fetch($q, "Inserting List Name");
 		if(empty($res['id'])) {
 			error_message("List insert failed");
 		}
-		
+
 		if(!error_message()) {
 			$list_id = $res['id'];
 
@@ -63,11 +63,11 @@ if(!empty($_POST) && !error_message()) {
 					,now()
 				) returning id
 			";
-			$res = db_fetch($q, "Inserting List Name"); 
+			$res = db_fetch($q, "Inserting List Name");
 			if(empty($res['id'])) {
 				error_message("List insert failed");
 			}
-			
+
 			if(!error_message()) {
 
 
@@ -81,7 +81,7 @@ if(!empty($_POST) && !error_message()) {
 					if($v == "") {
 						continue;
 					}
-					
+
 					$inner_pieces = explode(";",$v);
 					$asset = trim($inner_pieces[0]);
 					# Filters
@@ -156,7 +156,7 @@ if(!empty($_POST) && !error_message()) {
 							,'". db_prep_sql($v['filter_labels']) ."'::json
 							,now()
 							,now()
-						)";					
+						)";
 					}
 				}
 
