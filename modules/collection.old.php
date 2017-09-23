@@ -120,7 +120,7 @@ while($row = db_fetch_row($assets_res)) {
 ##################################################
 // add_css('pagination.css');
 // add_js('sortlist.new.js');
-add_js("lists.js",10);
+add_js("list_functions.js",10);
 add_js("markdown.min.js");
 $split_on_count = 3;
 
@@ -131,38 +131,79 @@ $raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/col
 #   Content
 ##################################################
 ?>
-<div class="subheader">
 <div class="float_right">
 	<input type="button" onclick="window.location.href='<?php echo $csv_url; ?>'" value="Export to CSV">
 	<input type="button" onclick="window.location.href='<?php echo $raw_url; ?>'" value="Export Raw">
 </div>
+<h2 class='lists'>Collection: <?php echo $info['title']; ?></h2>
 
-<div class="title">Collection: <?php echo $info['title']; ?></div>
+<?php
+	if(!empty($info['markdown'])) {
+?>
+<div id="list_buttons" class="tabbar">
+	<button type="button" class="tablink active" onclick="open_tabs(this,'default','list')">Default</button>
+	<button type="button" class="tablink" onclick="open_tabs(this,'md','list')">Information</button>
 </div>
+<div id="list_bodies" class="tabbody">
+	<div id="default" class="tabs">
+<?php
+	} // Markdown Check
+?>
 
+		<div class="mb">
+			<input type="button" value="Update List(s)" onclick="build_all_display()">	
+		</div>
+
+		<div class='listcounter' id="listcounter" style=''>
+<?php
+// foreach($assets as $k => $list) {
+// 	$l = $list['display_limit'];
+// 	$r = $list['randomize'];
+// 	$title = (!empty($list['list_label']) ? $list['list_label'] : $list['list_title']);
+
+// 	$output = '<div class="mt"><strong>'. $title .'</strong></div>';
+
+// 	if($list['tables'] == "t") {
+// 		$output .= '
+// 		<table cellspacing="0" cellpadding="0" class="tbl">
+// 			<thead>
+// 				<tr>
+// 					<th>'. implode('</th><th>',explode("|",$list['assets'][$list['list_id']][0])) .'</th>
+// 				</tr>
+// 			</thead>
+// 			<tbody id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'">
+// 			</tbody>
+// 		</table>
+// 		';
+// 	} else {
+// 		$output .= '
+// 			<br><ol class="list_ordered" id="list_body_'. $k .'" data-limit="'. $l .'" data-randomize="'. $r .'"></ol>
+// 		';
+// 	}
+// 	echo $output;
+// 	unset($output);
+// }
+?>
+	</div>
 
 	<div class="mb">
-		<input type="button" value="Update List(s)" onclick="build_all_display({'show_labels':true})">	
-	</div>
-
-	<div class='listcounter' id="listcounter" style=''></div>
-
-	<div class="mt">
-		<input type="button" value="Update List(s)" onclick="build_all_display({'show_labels':true})">	
+		<input type="button" value="Update List(s)" onclick="build_all_display()">	
 
 	</div>
 
-<div class="filters mt" onclick="show_hide('markdown_details')">
-	Collection Details <span class="small">(<span class="fakeref">show/hide</span>)</span>
-</div>
-<div class="filter_details" id="markdown_details" style="display: none;">
+<?php
+	if(!empty($info['markdown'])) {
+?>
+	</div>
+	<div id="md" class="tabs" style="display: none">
+		<article id="markdown" class="markdown" style="padding: 1em">
+			<?php echo $info['markdown']; ?>
+		</article>
+	</div>
+<?php
+	} // Markdown Check
+?>
 
-	<div id="markdown" class="markdown" style="padding: 1em; display: block;">
-		<div class="clear"></div>
-	</div>		
-
-	<div class="clear"></div>
-</div>
 	<div class="clear"></div>
 </div>
 <?php
@@ -176,6 +217,30 @@ ob_start();
 	var list_keys = ['<?php echo implode("','",array_keys($assets)); ?>'];
 	var assets = {};
 	// var tags = {};
+// <?php
+// 	$output = '';
+// 	foreach($assets as $k => $v) {
+// 		$cnt = 0;
+// 		echo "\nassets['". $k ."'] = {}; ";
+// 		foreach($v['assets'] as $k2 => $v2) {
+
+// 			$output = "\nassets['". addslashes($k) ."']['". addslashes($k2) ."'] = [";
+// 			foreach($v2 as $v3) {
+// 				$output .= "'". addslashes($v3) ."',";
+// 			}
+// 			echo substr($output,0,-1) .'];';
+// 		}
+// 		echo "\ntags['". $k ."'] = {}; ";
+// 		foreach($v['tags'] as $k2 => $v2) {
+
+// 			$output = "\ntags['". $k ."']['". $k2 ."'] = [";
+// 			foreach($v2 as $v3) {
+// 				$output .= "'". $v3 ."',";
+// 			}
+// 			echo substr($output,0,-1) .'];';
+// 		}
+// 	}
+// ?>
 
 	var assets = {};
 <?php
@@ -188,14 +253,13 @@ ob_start();
 		foreach($v['assets'] as $k2 => $v2) {
 			$output2 = '';
 			foreach($v2 as $k3 => $v3) {
-				$output2 .= ",['". addslashes($v3) ."','". $v['filters'][$k2][$k3] ."']";
+				$output2 .= ",['". addslashes($v3) ."','". addslashes($v['filters'][$k2][$k3]) ."']";
 			}
 			$output .= ",'x". $k2 ."':[". substr($output2,1) ."]";
 		}
 
 		echo "\nassets['". $k ."'] = {
 			'tables': '". ($v['tables'] == 't' ? true : false) ."'
-			,'list_label': '". htmlentities($v['list_label']) ."'
 			,'filter_count': ". $v['filter_count'] ."
 			,'display_limit': ". $v['display_limit'] ."
 			,'randomize': ". $v['randomize'] ."
@@ -204,12 +268,13 @@ ob_start();
 		};";
 
 	}
-
+// echo "<pre>";
+// print_r($assets);
+// echo "<pre>";
 ?>
 
-	// set_original_rows();
-	build_all_display({'show_labels':true});
-	parse_markdown_html('markdown',<?php echo json_encode($info['markdown']); ?>);
+	set_original_rows();
+	build_all_display();
 </script>
 <?php
 $js = trim(ob_get_clean());

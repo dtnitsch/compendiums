@@ -15,7 +15,7 @@ $q = "
 ";
 $output["info"] = db_fetch($q,"Getting info");
 
-$output["html"] = run_module('list');
+$output["html"] = run_module('list_simple');
 $x = strip_tags(show_js_code());
 
 $output["js"] = $x;

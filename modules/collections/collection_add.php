@@ -23,7 +23,7 @@ post_queue($module_name,'modules/collections/post_files/');
 $info = (!empty($_POST) ? $_POST : array());
 
 // add_js('sortlist.new.js');
-add_js("list_functions.js",10);
+add_js("lists.js",10);
 add_js("markdown.min.js");
 
 ##################################################
@@ -32,22 +32,17 @@ add_js("markdown.min.js");
 ?>
 	<form id="addform" method="post" action="" onsubmit="return validate_list();">
 
-		<h2 class='collections'>Add Collection</h2>
+<div class="subheader">
+	<div class="float_right">
+		<input type="submit" value="Add Collection">
+	</div>
 
+	<div class="title">Add Collection</div>
+</div>
   		<a href="#messages"></a>
   		<div id="messages">
 			<?php echo dump_messages(); ?>
 		</div>
-
-		<div id="collection_buttons" class="tabbar">
-			<button type="button" class="tablink active" onclick="open_tabs(this,'collection_default','collection')">Default</button>
-			<button type="button" class="tablink" onclick="open_tabs(this,'collection_md','collection')">Information</button>
-			<div class="float_right">
-				<button class="tablink save">Save Collection</button>
-			</div>
-		</div>
-		<div id="collection_bodies" class="tabbody">
-			<div id="collection_default" class="tabs">
 
 				<label class="form_label" for="title">Collection Name <span>*</span></label>
 				<div class="form_data">
@@ -73,20 +68,34 @@ add_js("markdown.min.js");
 					<input type="button" value="Add Lists" onclick="search_for_list()">
 				</p>
 
-			</div>
-			<div id="collection_md" class="tabs" style="display: none">
-		
-				<textarea name="markdown" id="collection_markdown" class="markdown" onkeyup="parse_markdown('collection_markdown','collection_preview')"><?php echo $info['markdown'] ?? ''; ?></textarea>
-				<article id="collection_preview" class="markdown_body"></article>
-				
-				<div class="clear mt"></div>
-				<button type="button" onclick="example_markdown()">Generate Example Markdown</button>
-
-			</div>
-
-			<div class="clear"></div>
+			<div class='hr' style='margin: 20px; border-bottom: 1px solid #ccc;'></div>
+			
+					<div id="md">
+			
+						<div class="float_right small">
+							<input type="button" value="Generate Example Markdown" onclick="example_markdown()">
+							<input type="button" value="Show Markdown preview" onclick="show_markdown_preview()">
+						</div>
+			
+						<label class="form_label" for="markdown">Markdown Description</label>
+						<textarea name="markdown" id="markdown" class="" style="width: 100%; height: 100px;"></textarea>
+						<div class="small">
+			
+						</div>
+					</div>
+			
+					<div id="md_preview" style="display: none;">
+			
+						<div class="float_right">
+							<input type="button" value="Edit Markdown" onclick="show_markdown()">
+						</div>
+						<div class="clear"></div>
+						<article id="preview" class="" style="border: 1px solid #333; padding: 10px"></article>
+			
+					</div>
 		</div>
 
+			
 		<div class="clear mt"></div>
 		<input type="submit" value="Add Collection">
 	</form>
@@ -165,9 +174,18 @@ function search_for_list() {
 }
 modal_init("simple_modal");
 
+function show_markdown_preview() {
+	parse_markdown();
+	$id('md').style.display = "none";
+	$id('md_preview').style.display = "";
+}
+function show_markdown() {
+	$id('md_preview').style.display = "none";
+	$id('md').style.display = "";
+}
 
 function example_markdown() {
-	$id('collection_markdown').value = `#Header
+	$id('markdown').value = `#Header
 
 Paragraphs are separated by a blank line.
 
@@ -187,11 +205,11 @@ Here's a numbered list:
 3. third item
 
 `;
-	parse_markdown('collection_markdown','collection_preview');
 }
 
+
 function validate_list() {
-	return validate({'title':'List Name'});
+	return validate({'title':'Collection Name'});
 }
 </script>
 <?php

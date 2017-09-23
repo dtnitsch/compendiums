@@ -47,7 +47,7 @@ function parse_modal_search(data,cached) {
 	output = "<ul style='border-top: 1px solid #ccc; margin: 0; padding: 0; list-style-type: none;'>";
 	for(var i=0,len=data.output.length; i<len; i++) {
 		info = data.output[i]
-		output += `<li style='border: 1px solid #ccc; border-top: none; padding: 2px 4px; background: #fff;'><a href="javascript:void(0);" onclick="modal_list_page('`+ info.key +`');">`+ info.title +`</a></li>`;
+		output += `<li style='border: 1px solid #ccc; border-top: none; padding: 2px 4px; background: #fff;'><a href="javascript:void(0);" onclick="modal_show_preview('`+ info.key +`');">`+ info.title +`</a></li>`;
 	}
 	output += "</ul>";
 	$id('modal_search_results').innerHTML = output;
@@ -69,10 +69,14 @@ function modal_list_page(val) {
 	});
 }
 function display_modal_list_page(res) {
-	$id('modal_list_page').innerHTML = res.output.html;
+	$id('modal_preview_box').innerHTML = res.output.html;
 	list_keys = [res.output.info.id];
 	returned_info = res.output.info;
-	set_original_rows();
+
+	console.log(res)
+	// set_original_rows();
+
+
 	$id('add_list_button').style.display = "";
 	$id('add_multi_button').style.display = "";
 	ccc(res.output.assets);

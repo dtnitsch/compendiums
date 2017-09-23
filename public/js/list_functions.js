@@ -580,6 +580,7 @@ function random_keys(key) {
 	var arr = build_filtered_list(key,filters);
 	var asset_length = arr[0].length;
 
+
 	$id('filter_count').innerHTML = filters.length +" applied";
 
 	if(limit >= asset_length) {
@@ -677,11 +678,13 @@ function fetch_table_assets(key) {
 
 function fetch_list_assets(key) {
 	var keys = get_keys(key);
+	console.log("fetch_list_assets: "+ key)
+	console.log(keys)
 
 	var output = '';
 	for(var i=0,len=keys.length; i<len; i++) {
 		// output += '<ol>'+ (keys[i][0].split("|").join("</td><td>")) +'</ol>';
-		output += '<ol>'+ keys[i] +'</ol>';
+		output += '!!<ol>'+ keys[i] +'</ol>';
 	}
 	return output;
 }

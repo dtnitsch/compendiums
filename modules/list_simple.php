@@ -50,7 +50,6 @@ $res = db_query($q,"Getting list assets");
 // add_js('sortlist.new.js');
 add_js("lists.js",10);
 library("slug.php");
-add_js("markdown.min.js");
 
 $assets[$info['id']] = [];
 while($row = db_fetch_row($res)) {
@@ -80,9 +79,6 @@ while($row = db_fetch_row($res)) {
 	// $assets[$info['id']]['percentages'][] = $row['percentage'];
 }
 
-$csv_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lists/'. $key ."/";
-$raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lists/raw/'. $key ."/";
-
 ##################################################
 #   Content
 ##################################################
@@ -92,14 +88,7 @@ $raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lis
 	
 </div>
 
-<div class="subheader">
-	<div class="float_right">
-		<input type="button" onclick="window.location.href='<?php echo $csv_url; ?>'" value="Export to CSV">
-		<input type="button" onclick="window.location.href='<?php echo $raw_url; ?>'" value="Export Raw">
-	</div>
-
 	<div class="title">List: <?php echo $info['title']; ?></div>
-</div>
 
 	<div class="filters" onclick="show_hide('filter_details')">
 		Filters (<span class="filter_count" id="filter_count">0 applied</span>) <span class="small">(<span class="fakeref">show/hide</span>)</span>
@@ -114,26 +103,9 @@ $raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lis
 			<label for="randomize_<?php echo $info['key']; ?>">
 				<input checked type="checkbox" name="options" id="randomize_<?php echo $info['key']; ?>" value="randomize"> Randomize
 			</label>
-
-			<div id="filters_dynamic" class="mtb">
-<?php
-	$info['tags'] = json_decode($info['tags']);
-	if(!empty($info['tags'])) {
-		$output = '<div class="mb">';
-		$cnt = 0;
-		foreach($info['tags'] as $v) {
-			$output .= '
-			<label for="filter_'. $cnt .'">
-				<input type="checkbox" id="filter_'. $cnt .'" name="filters['. $v .']" onclick="filter_list(\'filters_dynamic\',\'listcounter\')" value="'. $v .'"> '. $v .'
-			</label> &nbsp; 
-			';
-			$cnt += 1;
-		}
-		$output .= '</div>';
-		echo $output;
-	}
-?>
-	</div>
+			<!--label for="percentages">
+				<input type="checkbox" name="options" id="percentages_<?php echo $info['key']; ?>" value="percentages"> Use Percentages
+			</label-->
 	    </form>
 
 
@@ -180,22 +152,8 @@ $raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lis
 	<input type="button" value="Update List" onclick="build_all_display()">
 </div>
 
-
-
-
 <div class='listcounter mt' id="listcounter"></div>
 
-<div class="filters mt" onclick="show_hide('markdown_details')">
-	List Details <span class="small">(<span class="fakeref">show/hide</span>)</span>
-</div>
-<div class="filter_details" id="markdown_details" style="display: none;">
-
-	<div id="markdown" class="markdown" style="padding: 1em; display: block;">
-		<div class="clear"></div>
-	</div>		
-
-	<div class="clear"></div>
-</div>
 <?php
 ##################################################
 #   Javascript Functions
@@ -216,7 +174,7 @@ ob_start();
 		foreach($v['assets'] as $k2 => $v2) {
 			$output2 = '';
 			foreach($v2 as $k3 => $v3) {
-				$output2 .= ",['". addslashes($v3) ."',". $v['filters'][$k2][$k3] ."]\n";
+				$output2 .= ",['". addslashes($v3) ."','". $v['filters'][$k2][$k3] ."']";
 			}
 			$output .= ",'". $k2 ."':[". substr($output2,1) ."]";
 		}
@@ -233,7 +191,6 @@ ob_start();
 	// build_display('<?php echo $info['key']; ?>');
 	build_all_display();
 
-	parse_markdown_html('markdown',<?php echo json_encode($info['markdown']); ?>);
 </script>
 <?php
 $js = trim(ob_get_clean());

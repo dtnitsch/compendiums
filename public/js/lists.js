@@ -235,24 +235,38 @@ function get_checked_filters(key) {
 
 
 
-function build_all_display() {
+function build_all_display(options) {
 	var output = '';
 	var keys = Object.keys(assets)
 	for(k in keys) {
 		key = keys[k];
-		output += build_display(key);
+		output += build_display(key,options);
 	}
 	$id('listcounter').innerHTML = output.trim();
 }
 
-
-function build_display(key) {
-	var output;
+function asset_display(key,val) {
+	if(typeof assets[key] == "undefined") { return; }
+	if(typeof assets[key][val] != "undefined") {
+		return assets[key][val];
+	}
+	return;
+}
+function build_display(key,options) {
+	var output = '<div>';
+	if(typeof options != "undefined" && typeof options.show_labels != "undefined") {
+		let filters = '';
+		filters += (filters ? ', ' : '') + "Display Limit: "+ asset_display(key,'display_limit');
+		filters += (filters ? ', ' : '') + "Randomize: "+ (asset_display(key,'randomize') ? 'Yes' : 'No');
+		filters = '<div class="float_right small">'+ filters +'</div>';
+		output = `<div class="mt" style="border: 1px solid #ccc; background: #fff; padding: 3px 5px; cursor: pointer;" onclick="show_hide('collection_`+ key +`')">`+ filters + assets[key]['list_label'] +`</div><div id="collection_`+ key +`">`;
+	}
 
 	if(assets[key].tables) {
 		okeys = Object.keys(assets[key].assets);
-
-		output = `
+		
+		
+		output += `
  		<table cellspacing="0" cellpadding="0" class="tbl mb">
  			<thead>
  				<tr>
@@ -266,22 +280,23 @@ function build_display(key) {
 		`;
 	} else {
 
-		output = `
+		output += `
 			<ol class="list_ordered" id="list_body_`+ key +`">
 				`+ fetch_list_assets(key) +`
 			</ol>
 		`;
 	}
+	output += '</div>';
 	return output;
 	// $id('listcounter').innerHTML = output;
 }
 
 function fetch_list_assets(key) {
 	var keys = get_keys(key);
+
 	var output = '';
 	for(var i=0,len=keys.length; i<len; i++) {
-		// output += '<ol>'+ (keys[i][0].split("|").join("</td><td>")) +'</ol>';
-		output += '<ol>'+ keys[i] +'</ol>';
+		output += '<li data-filters="'+ keys[i][1] +'">'+ keys[i][0] +'</li>';
 	}
 	return output;
 }
@@ -308,7 +323,7 @@ function serial_list(key) {
 		if(output.length >= limit) {
 			break;
 		}
-		output.push(arr[0][i][0])
+		output.push([arr[0][i][0],arr[0][i][1]])
 	}
 
 	// $id('filter_count').innerHTML = filters.length +" applied";
@@ -375,11 +390,24 @@ function random_keys(key) {
 		limit = asset_length;
 	}
 
-	var new_array = shuffle(arr[0].slice(0));
-
+	var shuffled_array = [];
+	for(let i=0,len=arr.length; i<len; i++) {
+		shuffled_array[i] = shuffle(arr[i].slice(0));
+	}
+	console.log(assets)
+	console.log(shuffled_array)
 	keys = [];
 	for(var i=0; i<limit; i++) {
-		keys[keys.length] = new_array[i][0];
+		// There could be mulitple lists added together... check if there are
+		// This is possible in the collections
+		let labels = '';
+		let filters = '';
+		for(let j=0,len=arr.length; j<len; j++) {
+			labels += shuffled_array[j][i % shuffled_array[j].length][0]+" ";
+			filters += eval(shuffled_array[j][i % shuffled_array[j].length][1]).join(' ') +" ";
+		}
+
+		keys[keys.length] = [labels.trim(),filters.trim()];
 	}
 	return keys;
 }
@@ -390,8 +418,8 @@ function fetch_table_assets(key) {
 	okeys = Object.keys(assets[key].assets);
 
 	for(var i=0,len=keys.length; i<len; i++) {
-		output += `<tr>
-			<td>`+ parse_random(keys[i].split("|").join("</td><td>")) +`</td>
+		output += `<tr data-filters="`+ keys[i][1] +`">
+			<td>`+ parse_random(keys[i][0].split("|").join("</td><td>")) +`</td>
 		</tr>`;
 	}
 	return output;
@@ -441,6 +469,9 @@ function parse_markdown(id,preview) {
 }
 
 function parse_markdown_html(id,html) {
+	if(html == "") {
+		html = "No Description Available";
+	}
 	var markdown = document.getElementById(id || 'markdown');
 	markdown.innerHTML = micromarkdown.parse(html);
 }

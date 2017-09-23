@@ -50,3 +50,7 @@ INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder,
 INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder, description, dynamic_variables) VALUES 
 	('/u/(\w+)/', 'user_page', 'default', 'User Page', 'user_page', '', '', '[]')
 ;
+
+INSERT INTO "system"."paths" (path, module_name, template, title, alias, folder, description, dynamic_variables) VALUES 
+	('/list/simple/', 'list_simple', 'default', 'Simple List', 'list_simple', '', '', '[]')
+;
