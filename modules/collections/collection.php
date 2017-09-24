@@ -22,7 +22,7 @@ $add_button = "<button onclick='window.location.href=\"/collections/add/\"' clas
 
 // $edit_onclick = "";
 // if(!empty($security_collection['collections_edit'])) {
-    $edit_onclick = " onclick='window.location=\"/collections/edit/?key={{key}}\"'";
+    $edit_onclick = " onclick='window.location=\"/collection/{{key}}/\"'";
 // }
 
 $delete_link = "";

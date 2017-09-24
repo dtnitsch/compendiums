@@ -1,0 +1,139 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Add List - GM Tools</title>
+
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<link href="/css/styles.css" type="text/css" rel="stylesheet" media="screen" />
+	<link href="/css/gm_tools.css" type="text/css" rel="stylesheet" media="screen" />
+	<link href="/css/error_handler.css" type="text/css" rel="stylesheet" media="screen" />
+
+</head>
+<body>
+
+	<div class="header">
+		<div class="logo">
+			<a href="/">Compendiums</a>
+		</div>
+
+		<div class="nav">
+			<a href="/lists/">Lists</a>
+			<a href="/collections/">Collections</a>
+			<a href="/compendiums/">Compendiums</a>
+		</div>
+
+		<div class="user">
+<a href="/login/">Login</a>		</div>
+
+		<div class="search">
+			<form method="get" action="/search/">
+				<input type="text" name="search" placeholder="Search"> <input type="button" value="Go" />
+			</form>
+		</div>
+		<div class="clear"></div>
+	</div>
+
+<!--Start Body Content-->
+<div class="body_content">
+
+		<div style="background: #ccd6ef; margin: 0px -15px 10px; padding: 15px; border-bottom: 1px solid #666;">
+			<div style="font-size: 140%;">Compendium</div>
+		</div>
+		<div class="clear"></div>
+
+
+
+
+
+
+        <div id="compendium_buttons" class="tabbar">
+            <button type="button" class="tablink active" onclick="open_tabs(this,'compendium_default','compendium')">Default</button>
+            <button type="button" class="tablink" onclick="open_tabs(this,'compendium_add','compendium')" style="background: lightblue;">+</button>
+        
+        </div>
+        <div id="compendium_bodies" class="tabbody" style="padding: 0px; margin: 0;">
+            <div id="compendium_default" class="tabs">
+                <!-- <div style="float:right; max-width: 200px; margin-left: 10px; border-left: 1px solid #ccc; height: 100%;">
+                    tabs
+                </div> -->
+                <table cellspacing="0" cellpadding="0" style="width: 100%;">
+                    <tr>
+                        <td style="vertical-align: top; width: 80%;">
+                            
+                        </td>
+                        <td style="max-width: 200px; width: 20%; border-left: 1px solid #ccc; vertical-align: top;">
+                            <div style="padding: 5px; margin-bottom: 10px; border-bottom: 1px solid #ccc;">
+                                <a href="#">Edit Tab Name</a>
+                            </div>
+    
+                            <div style="padding: 5px; margin-bottom: 10px; border-bottom: 1px solid #ccc;">
+                                Tab 1
+                            </div>
+                            <div style="padding: 5px; margin-bottom: 10px; border-bottom: 1px solid #ccc;">
+                                Tab 2
+                            </div>
+                            <div style="padding: 5px; margin-bottom: 10px; border-bottom: 1px solid #ccc;">
+                                Tab 3
+                            </div>
+                            <div style="padding: 5px; margin-bottom: 10px; border-bottom: 1px solid #ccc;">
+                                Tab 4
+                            </div>
+
+                            <div style="padding: 5px;">
+                                <input type="button" value="Add List">
+                                <input type="button" value="Add Collection">
+                                <input type="button" value="Add Notes">
+                            </div>
+                                    
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="compendium_add" class="tabs" style="display: none;">
+                Add
+            </div>
+    
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<!--End Body Content-->
+
+	<script src="/js/scripts.js" type="text/javascript"></script>
+	<script src="/js/gm_tools.js" type="text/javascript"></script>
+	<script src="/js/lists.js" type="text/javascript"></script>
+	<script src="/js/error_handler.js" type="text/javascript"></script>
+<script type="text/javascript">
+	function open_tabs(evt, tabname, type) {
+	if(!document.getElementById('preview') && document.getElementById('markdown')) {
+		parse_markdown();
+	}
+	var i, x, tablinks;
+	var type = type || 'list';
+	x = document.getElementById(type +'_bodies').getElementsByClassName("tabs");
+	for (i = 0; i < x.length; i++) {
+		x[i].style.display = "none";
+	}
+	tablinks = document.getElementById(type +'_buttons').getElementsByClassName("tablink");
+	for (i = 0; i < x.length; i++) {
+		tablinks[i].className = tablinks[i].className.replace(" active", "");
+	}
+	document.getElementById(tabname).style.display = "block";
+	evt.className += " active";
+}
+
+</script>
+</body>
+</html>

@@ -296,7 +296,7 @@ function fetch_list_assets(key) {
 
 	var output = '';
 	for(var i=0,len=keys.length; i<len; i++) {
-		output += '<li data-filters="'+ keys[i][1] +'">'+ keys[i][0] +'</li>';
+		output += '<li data-filters="'+ keys[i][1] +'">'+ parse_random(keys[i][0]) +'</li>';
 	}
 	return output;
 }
@@ -394,8 +394,8 @@ function random_keys(key) {
 	for(let i=0,len=arr.length; i<len; i++) {
 		shuffled_array[i] = shuffle(arr[i].slice(0));
 	}
-	console.log(assets)
-	console.log(shuffled_array)
+	// console.log(assets)
+	// console.log(shuffled_array)
 	keys = [];
 	for(var i=0; i<limit; i++) {
 		// There could be mulitple lists added together... check if there are

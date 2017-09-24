@@ -63,6 +63,10 @@ function sortlist(){
 
     remote.init = function(url,x) {
         x = x || {};
+        if(typeof window['ajax_debugger'] !== 'function') {
+            ajax_debugger = function() {};
+        }
+        
         x.id = x.id || 'sortlist_ajax';
         x.url = x.url || '/ajax.php';
         x.debug = x.debug || ajax_debugger;
