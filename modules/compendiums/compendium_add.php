@@ -19,7 +19,7 @@ post_queue($module_name,'modules/compendiums/post_files/');
 ##################################################
 add_css('modal.css');
 add_js('modal.js');
-add_js("list_functions.js",10);
+add_js("lists.js",10);
 
 ##################################################
 #   Content
@@ -27,59 +27,32 @@ add_js("list_functions.js",10);
 ?>
 <style type="text/css">
 
-
-.tag_table { border-right: 1px solid #ccc; width: 100%; }
-.tag_table td { border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; padding: 10px; }
-.tag_table td.tag_nav { background: #eee; border-left: 1px solid #ccc; width: 230px; }
+.tab_table { width: 100%; }
+.tab_table td { padding: 10px; vertical-align: top; }
+.tab_table td.tab_nav { background: #eee; border-left: 1px solid #ccc; width: 230px; }
 
 </style>
 
 
 <div class='clearfix'>
-	<h2 class='compendiums'>Add Compendium</h2>
-  
-  	<?php echo dump_messages(); ?>
-	<form id="addform" method="post" action="" onsubmit="return submit_form();">
+<?php echo dump_messages(); ?>
 
-		<label class="form_label" for="title">Compendium Name <span>*</span></label>
-		<div class="form_data">
-			<input type="text" name="title" id="title" value="">
-		</div>
-
+<div class="subheader">
+	<div class="float_right">
 		<input type="button" value="Create Compendium Tab" onclick="display_modal('modal_tabs');">
-
-		<div id="compendium_buttons" class="w3-bar w3-black mt">
-			<!--button class="w3-bar-item w3-button tablink w3-red" onclick="open_compendium_tab(this,'default')">Default</button>
-			<input type="hidden" name="sections[default]" value="Default" /-->
-		</div>
-		<div id="compendium_bodies">
-
-			<!--div id="default" class="w3-container w3-border city" style="display: block;">
-				<table cellpadding="0" cellspacing="0" class='tag_table'>
-					<tr>
-						<td>
-							Testing 2
-						</td>
-						<td class="tag_nav">
-							<button onclick="search_for_list(this,'default')">Add List</button>
-							<button onclick="search_for_collection(this,'default')">Add Collection</button>
-						</td>
-					</tr>
-				</table>
-			</div-->
-
-		</form>
 	</div>
 
-	<div class="mt">
-		<input type="submit" value="Save Compendium" onclick="read_for_submit();">
-	</div>
+	<div class="title">Compendium: Default <span class="small">(<a href="#">Edit</a>)</span></div>
 </div>
+  
+<div id="compendium_buttons" class="tabbar"></div>
+<div id="compendium_bodies" class="tabbody" style="padding: 0px; margin: 0;"></div>
 
+<div class='listcounter mt' id="listcounter_master"></div>
 
 
 <?php echo run_module("modal_tabs"); ?>
-<?php echo run_module("modal_list"); ?>
+<?php echo run_module("compendium_add_list"); ?>
 
 <?php
 ##################################################
@@ -92,18 +65,37 @@ ob_start();
 var parent_object;
 var modal_section;
 var submit_bool = false;
-
-function submit_form() {
-	return submit_bool;
+var information = {
+	"lists": {}
+	,"compendiums": {}
 }
 
-function read_for_submit() {
-	submit_bool = true;
-	$id('addform').submit();
+
+function display_compenidum_assets(id,key) {
+	assets[key] = information['lists'][key];
+	hide_compendium_content();
+	$id("content-"+ modal_section +"-"+ key).innerHTML = build_display(key).trim();
+	show("content-"+ modal_section +"-"+ key);
 }
+
+function hide_compendium_content() {
+	divs = $query("#content-"+ modal_section +" [id^='content-"+ modal_section +"-']");
+	for(i in divs) {
+		hide(divs[i].id);
+	}
+}
+
+// function submit_form() {
+// 	return submit_bool;
+// }
+
+// function read_for_submit() {
+// 	submit_bool = true;
+// 	$id('addform').submit();
+// }
 
 function display_modal(id) {
-	id = id || "simple_modal";
+	id = id || "compendium_add_list_modal";
 	modal_init(id);
 	if(typeof reset_modal == "function") { reset_modal(); }
 	$id(id).style.display = "block";
@@ -112,50 +104,62 @@ function display_modal(id) {
 function search_for_list(obj,section) {
 	parent_object = obj;
 	modal_section = section;
-	modal_init("simple_modal");
+	modal_init("compendium_add_list_modal");
 	if(typeof reset_modal == "function") {
 		reset_modal();
 	}
-	$id("simple_modal").style.display = "block";
+	$id("compendium_add_list_modal").style.display = "block";
 	$id('modal_search').focus();
 }
 modal_init("modal_tabs");
 
-function open_compendium_tab(evt, cityName) {
+function open_tabs(evt, tabname) {
   var i, x, tablinks;
-  x = document.getElementsByClassName("city");
+  // Close all tabs
+  x = document.getElementsByClassName("tabs");
   for (i = 0; i < x.length; i++) {
      x[i].style.display = "none";
   }
+  // Reset all "red" nav links
   tablinks = document.getElementsByClassName("tablink");
-  for (i = 0; i < x.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" w3-red", ""); 
+  for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", ""); 
   }
-  document.getElementById(cityName).style.display = "block";
-  evt.className += " w3-red";
+  // open clicked tab
+  document.getElementById(tabname).style.display = "block";
+  // Set nav
+  evt.className += " active";
+
+  modal_section = slug(tabname)
 }
 
 function add_compendium_buttons(info) {
 	var btn = document.createElement("button");
-	btn.className = "w3-bar-item w3-button tablink";
-	btn.onclick = function() { open_compendium_tab(this,info.name); }
+	var active = (typeof info.active != undefined && info.active ? true : false);
+	var alias = slug(info.name);
+	btn.className = "tablink";
+	if(active) {
+		btn.className += " active";
+	}
+	btn.id = "compendium_nav_"+ alias;
+	btn.onclick = function() { open_tabs(this,info.name); }
 	btn.innerHTML = info.name;
-	var alias = slug(info.name,'_');
 
 	var div = document.createElement("div");
 	div.id = info.name;
-	div.className = "w3-container w3-border city";
-	div.style.display = "none";
+	div.className = "tabs";
+	div.style.display = (active ? "" : "none");
 	div.innerHTML = `
-		<table cellpadding="0" cellspacing="0" class='tag_table'>
+		<table cellpadding="0" cellspacing="0" class='tab_table'>
 			<tr>
-				<td>
-					`+ info.name +`
-				</td>
-				<td class="tag_nav">
-					<div>
-						<button onclick="search_for_list(this,'`+ alias +`')">Add List</button>
-						<button onclick="search_for_collection(this,'`+ alias +`')">Add Collection</button>
+				<td id="content-`+ alias +`"></td>
+				<td class="tab_nav">
+					<div id="nav-`+ alias +`">
+					</div>
+					<div class="mt">
+						<input type="button" value="Add List" onclick="search_for_list(this,'`+ alias +`')">
+						<input type="button" value="Add Collection" onclick="search_for_collection(this,'`+ alias +`')">
+						<input type="button" value="Add Note">
 						<input type="hidden" name="sections[`+ alias +`]" value="`+ info.name +`" />
 					</div>
 				</td>
@@ -182,8 +186,15 @@ function add_list(info,limit,randomize,multi) {
 
 	div.innerHTML = '<input type="text" name="lists['+ modal_section +']['+ info.key +']" value="'+ info.title +'" />';
 	parent_object.parentNode.appendChild(div);
-	modal_clear('simple_modal');
+	modal_clear('compendium_add_list_modal');
 }
+
+var info = {
+	"name": "Default"
+	,"color": "blue"
+	,"active": true
+};
+add_compendium_buttons(info);
 </script>
 
 

@@ -18,7 +18,7 @@ _error_debug("MODULE: ". basename(__FILE__)); 	# Debugger
 add_css('pagination.css');
 add_js('sortlist.new.js');
 
-$add_button = "<button onclick='window.location.href=\"/collections/add/\"' class='add'>Add New Collection</button>";
+$add_button = "<input type='button' value='Add New Collection' onclick='window.location.href=\"/collections/add/\"' class='add'>";
 
 // $edit_onclick = "";
 // if(!empty($security_collection['collections_edit'])) {

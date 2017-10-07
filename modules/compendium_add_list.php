@@ -32,12 +32,12 @@ add_css('modal.css');
 ##################################################
 ?>
 <!-- The Modal -->
-<div id="simple_modal" class="modal">
+<div id="compendium_add_list_modal" class="modal">
 	<!-- Modal content -->
 	<div class="modal_outer">
 		<div class='modal_header'>
-			<span class="close" onclick="hide('simple_modal')">&times;</span>
-			Append a List
+			<span class="close" onclick="hide('compendium_add_list_modal')">&times;</span>
+			Append a List!@#
 		</div>
 
 		<div class="modal_inner">
@@ -80,21 +80,14 @@ add_css('modal.css');
 				</div>
 				<div class="clear"></div>
 
-				<input type="button" id="add_list_button" value="Add List" style='display: none;' onclick="add_new_list('simple_modal')">
-				<!-- <input type="button" id="add_multi_button" value="Add Multi-List" style='display: none;' onclick="add_new_multi_list('simple_modal')"> -->
-				<div class="float_right">
-					<!-- <span id="multi_title" style="display: none"><strong>Multi-List</strong>:</span> -->
-					<span id="mutli-titles"></span>
-				</div
+				<input type="button" id="add_list_button" value="Add to Compendium" style='display: none;' onclick="add_new_list('compendium_add_list_modal')">
 				<div class="clear"></div>
 
 			</div> <!-- Search and Lists -->
 			<div id="modal_show_preview">
 				<div id="modal_preview_box" class="mb" >Preview</div>
 				<input type="button" value="Back to Search" onclick="modal_show_search();">
-				<input type="button" value="Add to Collection" onclick="add_new_list('simple_modal')">
-				<input type="button" id="add_multi_button" value="Add Multi-List" onclick="add_new_multi_list('simple_modal')">
-				
+				<input type="button" value="Add to Compendium" onclick="add_compendium_list()">
 			</div>
 		</div> <!-- end modal inner -->
 	</div>
@@ -110,8 +103,8 @@ ob_start();
 ?>
 <script type="text/javascript">
 	var assets = {};
-	// modal_init("simple_modal");
-
+	// modal_init("compendium_add_list_modal");
+    hide("modal_show_preview");
 	function modal_show_search() {
 		hide("modal_show_preview");
 		show("modal_search");
@@ -121,7 +114,25 @@ ob_start();
 		modal_list_page(key);
 		hide("modal_search");
 		show("modal_show_preview");
-	}
+    }
+    function add_compendium_list() {
+		// console.log(returned_info);
+		// console.log(modal_section)
+		key = Object.keys(assets)[0];
+		// console.log(assets)
+
+		$id("content-"+modal_section).innerHTML += `
+			<div id="content-`+ modal_section +`-`+ key +`"></div>
+		`;
+
+		information['lists'][key] = assets[key];
+		$id("nav-"+ modal_section).innerHTML += `
+		<div onclick="display_compenidum_assets('listcounter_master','`+ key +`')" style="padding: 10px;border-bottom: 1px solid black; cursor: pointer;">
+			`+ returned_info.title +`
+		</div>
+		`;
+
+    }
 </script>
 
 <?php

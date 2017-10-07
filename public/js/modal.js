@@ -73,12 +73,11 @@ function display_modal_list_page(res) {
 	list_keys = [res.output.info.id];
 	returned_info = res.output.info;
 
-	console.log(res)
+	// console.log(res)
 	// set_original_rows();
 
-
-	$id('add_list_button').style.display = "";
-	$id('add_multi_button').style.display = "";
+	show('add_list_button');
+	if($id('add_multi_button')) { show('add_multi_button') }
 	ccc(res.output.assets);
 }
 function ccc(js) {
@@ -108,7 +107,9 @@ function add_new_multi_list() {
 	if(output != "") {
 		output += ", ";
 	}
+	show("multi_title");
 	$id('mutli-titles').innerHTML = output + returned_info['title'];
+	modal_show_search();
 }
 
 var list_keys = [];
