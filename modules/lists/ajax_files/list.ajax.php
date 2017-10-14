@@ -35,11 +35,8 @@ $q = "
 	from public.list
 	join public.list_asset_map on
 		list_asset_map.list_id = list.id
-		and list_asset_map.active
 	join system.users on users.id=public.list.user_id
-	where
-		public.list.active 
-		". $where ."
+	". (!empty($where) ? " where ". $where : "") ."
 	group by
 		list.id
 		,list.title

@@ -24,9 +24,6 @@ $info = db_fetch($q,"Getting list information");
 $info['filter_labels'] = json_decode($info['filter_labels'],true);
 $info['filter_orders'] = json_decode($info['filter_orders'],true);
 
-$tmp = db_fetch("select markdown from public.list_markdown where list_id = '". $info['id'] ."'","Getting Markdown");
-$info['markdown'] = $tmp['markdown'] ?? '';
-
 $q = "
 	select
 		public.asset.*
@@ -233,7 +230,7 @@ ob_start();
 	// build_display('<?php echo $info['key']; ?>');
 	build_all_display();
 
-	parse_markdown_html('markdown',<?php echo json_encode($info['markdown']); ?>);
+	parse_markdown_html('markdown',<?php echo json_encode($info['description']); ?>);
 </script>
 <?php
 $js = trim(ob_get_clean());

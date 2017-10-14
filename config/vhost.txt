@@ -3,10 +3,10 @@ NameVirtualHost *:443
 
 <VirtualHost *:80>
     ServerAdmin info@localhost
-    DocumentRoot "/var/www/gm_tools/public/"
-    ServerName gm_tools.local
-    ErrorLog "/private/var/log/apache2/gm_tools.local-error_log"
-    CustomLog "/private/var/log/apache2/gm_tools.local-access_log" common
+    DocumentRoot "/var/www/compendium/public/"
+    ServerName compendium.local
+    ErrorLog "/private/var/log/apache2/compendium.local-error_log"
+    CustomLog "/private/var/log/apache2/compendium.local-access_log" common
 
     RewriteEngine On
     RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} -f
@@ -17,10 +17,10 @@ NameVirtualHost *:443
 
 <VirtualHost *:80>
     ServerAdmin info@localhost
-    DocumentRoot "/var/www/gm_tools/api/"
-    ServerName api.gm_tools.local
-    ErrorLog "/private/var/log/apache2/api.gm_tools.local-error_log"
-    CustomLog "/private/var/log/apache2/api.gm_tools.local-access_log" common
+    DocumentRoot "/var/www/compendium/api/"
+    ServerName api.compendium.local
+    ErrorLog "/private/var/log/apache2/api.compendium.local-error_log"
+    CustomLog "/private/var/log/apache2/api.compendium.local-access_log" common
 
     RewriteEngine On
     RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} -f

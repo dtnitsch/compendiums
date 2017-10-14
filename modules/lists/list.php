@@ -24,7 +24,7 @@ $user_path = (substr($path,0,3) == '/u/' ? true : false);
 #   Pre-Content
 ##################################################
 add_css('pagination.css');
-add_js('sortlist.new.js');
+add_js('sortlist.js');
 
 $add_button = '<input type="button" value="Add New List" class="add" onclick="window.location.href=\'/lists/add/\'">';
 

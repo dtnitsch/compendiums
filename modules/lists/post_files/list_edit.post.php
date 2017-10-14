@@ -27,6 +27,8 @@ if(!empty($_POST) && !error_message()) {
 		}
 		asort($_POST['filter_orders']);
 
+		$markdown = trim(strip_tags($_POST['markdown']));
+
 		$q = "
 			update public.list set
 				title = '". db_prep_sql($title) ."'
@@ -35,6 +37,7 @@ if(!empty($_POST) && !error_message()) {
 				,tags = '". db_prep_sql(json_encode(array_keys(unique_tags()))) ."'
 				,filter_labels = '". db_prep_sql(json_encode($_POST['filter_labels'])) ."'
 				,filter_orders = '". db_prep_sql(json_encode($_POST['filter_orders'])) ."'
+				,description = '". db_prep_sql($markdown) ."'				
 				,modified = now()
 			where
 				id = '". db_prep_sql($pub['id']) ."'
@@ -179,17 +182,6 @@ if(!empty($_POST) && !error_message()) {
 
 			// $q = "insert into list_asset_map (list_id,asset_id,created,modified) values ". implode(',',$map_ids);
 			// db_query($q,"Inserting list asset map");
-
-
-			$markdown = trim(strip_tags($_POST['markdown']));
-			$q = "
-				update public.list_markdown set
-					markdown = '". db_prep_sql($markdown) ."'
-					,modified = now()
-				where
-					list_id = '". db_prep_sql($pub['id']) ."'
-			";
-			$res = db_query($q, "Updating markdown"); 
 
 			if(!error_message()) {
 				$redirection_path = '/lists/';

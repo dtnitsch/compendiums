@@ -43,19 +43,8 @@ if(!empty($_POST)) {
 	$info['filter_orders'] = json_decode($info['filter_orders'],true);
 
 	$q = "
-		select markdown
-		from public.list_markdown
-		where
-			active
-			and list_id = '". $info['id'] ."'
-	";
-	$tmp = db_fetch($q,'Getting Markdown');
-	$info['markdown'] = $tmp['markdown'];
-
-	$q = "
 		select
 			public.asset.*
-			,list_asset_map.tags
 			,list_asset_map.filters
 		from public.asset
 		join public.list_asset_map on 
@@ -151,7 +140,7 @@ if(!empty($_POST)) {
 			</div>
 
 			<label class="form_label" for="markdown">Markdown Description</label>
-			<textarea name="markdown" id="markdown" class="" style="width: 100%; height: 100px;"><?php echo $info['markdown'] ?? ""; ?></textarea>
+			<textarea name="markdown" id="markdown" class="" style="width: 100%; height: 100px;"><?php echo $info['description'] ?? ""; ?></textarea>
 			<div class="small">
 
 			</div>
@@ -237,6 +226,7 @@ Here's a numbered list:
 }
 
 function validate_list() {
+	preview_list("inputs","example",'filters_table');
 	return validate({'title':'List Name','inputs':'Inputs'});
 }
 function show_simple_example() {

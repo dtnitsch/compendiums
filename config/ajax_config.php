@@ -4,9 +4,9 @@
 #########################################################
 $GLOBALS = array();
 
-$GLOBALS["project_info"]["name"] = "GM Tools";
-$GLOBALS["project_info"]["alias"] = "gm_tools";
-$GLOBALS["project_info"]["dns"] = "gm_tools.local";
+$GLOBALS["project_info"]["name"] = "Compendium";
+$GLOBALS["project_info"]["alias"] = "compendium";
+$GLOBALS["project_info"]["dns"] = "compendium.local";
 $GLOBALS["project_info"]["company_name"] = "DTN";
 $GLOBALS["project_info"]["default_email"] = "fdlkfalds@falflds.com";
 
@@ -64,7 +64,7 @@ $GLOBALS["db_options"]["main_connections"] = array(
 		'hostname'	=> 'localhost',
 		'username' 	=> 'daniel',
 		'password' 	=> 'daniel',
-		'database' 	=> 'gm_tools',
+		'database' 	=> 'compendiums',
 		'type'		=> 'postgresql'
 	)
 );

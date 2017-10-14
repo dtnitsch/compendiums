@@ -42,7 +42,7 @@ if($GLOBALS["debug_options"]["enabled"]) {
 ##################################################
 if(!empty($GLOBALS["db_options"])) {
 	library("databases/all_in_one.php");
-	// db_connect_all();
+	db_connect_all();
 }
 
 

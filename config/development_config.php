@@ -4,9 +4,9 @@
 #########################################################
 $GLOBALS = array();
 
-$GLOBALS["project_info"]["name"] = "GM Tools";
-$GLOBALS["project_info"]["alias"] = "gm_tools";
-$GLOBALS["project_info"]["dns"] = "gm_tools.local";
+$GLOBALS["project_info"]["name"] = "Compendium";
+$GLOBALS["project_info"]["alias"] = "compendium";
+$GLOBALS["project_info"]["dns"] = "compendium.local";
 $GLOBALS["project_info"]["company_name"] = "DTN";
 $GLOBALS["project_info"]["default_email"] = "fdlkfalds@falflds.com";
 
@@ -50,7 +50,7 @@ $GLOBALS["cache_options"]["enabled"] = 0;
 #########################################################
 #	Audit Options
 #########################################################
-$GLOBALS["audit_options"]["enabled"] = 1;
+$GLOBALS["audit_options"]["enabled"] = 0;
 
 #########################################################
 #	Session Options
@@ -80,14 +80,16 @@ $GLOBALS["multi_language_support"]["enabled"] = 0;
 #########################################################
 #	Database Options
 #########################################################
-// include($GLOBALS["app_path"] ."library/databases/all_in_one.php");
 $GLOBALS["db_options"]["main_connections"] = array(
 	"default" => array(
 		'hostname'	=> 'localhost',
 		'username' 	=> 'daniel',
 		'password' 	=> 'daniel',
-		'database' 	=> 'gm_tools',
+		'database' 	=> 'compendiums',
 		'type'		=> 'postgresql'
 	)
 );
 
+#########################################################
+#	Load Info Globals
+#########################################################

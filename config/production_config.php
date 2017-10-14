@@ -4,9 +4,9 @@
 #########################################################
 $GLOBALS = array();
 
-$GLOBALS["project_info"]["name"] = "GM Tools";
-$GLOBALS["project_info"]["alias"] = "gm_tools";
-$GLOBALS["project_info"]["dns"] = "gm_tools.local";
+$GLOBALS["project_info"]["name"] = "Compendium";
+$GLOBALS["project_info"]["alias"] = "compendium";
+$GLOBALS["project_info"]["dns"] = "compendium.local";
 $GLOBALS["project_info"]["company_name"] = "DTN";
 $GLOBALS["project_info"]["default_email"] = "fdlkfalds@falflds.com";
 
@@ -39,9 +39,9 @@ $GLOBALS["debug_options"]["debug_email"] = "fdlkfalds@falflds.com";
 #########################################################
 #	Logging Options
 #########################################################
-$GLOBALS["logging_options"]["enabled"] = 1;
+$GLOBALS["logging_options"]["enabled"] = 0;
 $GLOBALS["logging_options"]["database_queries"] = 0;
-$GLOBALS["logging_options"]["page_hits"] = 1;
+$GLOBALS["logging_options"]["page_hits"] = 0;
 
 #########################################################
 #	Caching Options

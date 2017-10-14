@@ -1,9 +1,9 @@
 <?php
 
 $routes = array(
-	'get' => array(
+	'GET' => array(
 		'static' => array(
-		// 	'/questions/' => 'get_questions'
+			// '/lists/' => 'get_lists'
 		// 	,'/skill_and_drill/' => 'get_skill_and_drill'
 		// 	,'/crossword/' => 'get_crosswords'
 		// 	,'/word_search/' => 'get_word_search'
@@ -17,8 +17,7 @@ $routes = array(
 		// 	,'/scores/save/' => 'put_scores'
 		)
 		,'dynamic' => array(
-			'/lists/raw/:values' => 'get_raw_list_csv'
-			,'/lists/:values' => 'get_list_csv'
+			'/list/:values' => 'get_list'
 		)
 	)
 	// ,'post' => array (

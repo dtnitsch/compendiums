@@ -15,7 +15,7 @@ include_once("functions/functions.php");
 
 // $privateKey = 'Qqlcn5Y66DqMB6k2EYsusCbggq/L7AprQYIi+anxcLI';
 
-$request_method = (!empty($_SERVER['REQUEST_METHOD']) ? strtolower($_SERVER['REQUEST_METHOD']) : '');
+$request_method = (!empty($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : '');
 if(empty($request_method)) {
 	error("Reqest Method is empty");
 }
@@ -25,7 +25,7 @@ $path = get_url();
 $url = $_SERVER['SCRIPT_URL'];
 
 $data = '';
-if ($request_method == 'get') {
+if ($request_method == 'GET') {
 	$data = [$path];
 } else {
 	$data = $_REQUEST;
@@ -94,7 +94,7 @@ if(!$path_exists) {
 	die("Path didn't exist");
 }
 
-header('Content-type: text/xml');
+header('Content-type: text/json');
 echo $output;
 
 // if(!empty($GLOBALS["debug_options"]["enabled"])) { echo show_debug(); }

@@ -42,7 +42,7 @@ add_js("lists.js");
 </div>
 
 <a href="#messages"></a>
-<div id="messages"></div>
+<div id="messages"><?=(dump_messages())?></div>
 
 <div id="inputs_box">
 
@@ -186,6 +186,7 @@ Here's a numbered list:
 }
 
 function validate_list() {
+	preview_list("inputs","example",'filters_table');
 	return validate({'title':'List Name','inputs':'Inputs'});
 }
 function show_simple_example() {
