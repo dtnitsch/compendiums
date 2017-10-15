@@ -15,6 +15,8 @@ _error_debug("MODULE: ". basename(__FILE__)); 	# Debugger
 $pieces = explode('/',$GLOBALS['project_info']['path_data']['path']);
 $key = trim($pieces[2]);
 
+library("api.php");
+
 ##################################################
 #   DB Queries
 ##################################################
@@ -27,9 +29,6 @@ $info['filter_orders'] = json_decode($info['filter_orders'],true);
 $q = "
 	select
 		public.asset.*
---		,list_asset_map.tags
---		,list_asset_map.tags
---		,list_asset_map.percentage
 		,list_asset_map.filters
 	from public.asset
 	join public.list_asset_map on 
@@ -43,10 +42,7 @@ $res = db_query($q,"Getting list assets");
 ##################################################
 #   Pre-Content
 ##################################################
-// add_css('pagination.css');
-// add_js('sortlist.new.js');
 add_js("lists.js",10);
-library("slug.php");
 add_js("markdown.min.js");
 
 $assets[$info['id']] = [];
@@ -109,7 +105,7 @@ $raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lis
 			</label>
 
 			<label for="randomize_<?php echo $info['key']; ?>">
-				<input checked type="checkbox" name="options" id="randomize_<?php echo $info['key']; ?>" value="randomize"> Randomize
+				<input type="checkbox" name="options" id="randomize_<?php echo $info['key']; ?>" value="randomize"> Randomize
 			</label>
 
 			<div id="filters_dynamic" class="mtb">
@@ -203,6 +199,8 @@ ob_start();
 	var is_table = <?php echo ($info['tables'] == 't' ? 'true' : 'false'); ?>;
 	var list_keys = [<?php echo implode(',',array_keys($assets)); ?>];
 
+	var x = '<?=call_api_function("get_list",$key)?>';
+
 	var assets = {};
 <?php
 	foreach($assets as $k => $v) {
@@ -226,6 +224,8 @@ ob_start();
 
 	}
 ?>
+
+	
 
 	// build_display('<?php echo $info['key']; ?>');
 	build_all_display();

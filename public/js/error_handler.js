@@ -42,6 +42,7 @@ function number_with_commas(x) {
 
 var context_cnt = 0;
 function ajax_debugger(debug,payload_size) {
+	if(typeof debug == 'undefined') { return; }
 	if(typeof payload_size == 'undefined') { payload_size = '0'; }
     var output = '';
     //output += "<div class='error_debug_box'>";

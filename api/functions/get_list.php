@@ -90,7 +90,7 @@ function build_get_list_assets($values) {
         if(!empty($row['filters'])) {
             $assets[$values]['filter_count'] += 1;
         }
-        $assets[$values]['assets'][] = [$row['title'],$row['filters']];
+        $assets[$values]['assets'][] = [$row['title'],json_decode($row['filters'])];
     }
 
     $output['lists'] = $assets;

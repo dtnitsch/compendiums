@@ -94,6 +94,16 @@ if(!$path_exists) {
 	die("Path didn't exist");
 }
 
+// $request_headers = apache_request_headers();
+// $http_origin = $request_headers['Origin'] ?? "";
+// $allowed_http_origins = [
+// 	"http://". $GLOBALS["project_info"]["dns"]
+// 	,"http://api.". $GLOBALS["project_info"]["dns"]
+// ];
+// if (in_array($http_origin, $allowed_http_origins)){  
+//     @header("Access-Control-Allow-Origin: " . $http_origin);
+// }
+// header("Access-Control-Allow-Origin: *");
 header('Content-type: text/json');
 echo $output;
 

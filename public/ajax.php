@@ -1,6 +1,8 @@
 <?php
 date_default_timezone_set("America/New_York");
 
+header('Access-Control-Allow-Origin: '.$_SERVER['HTTP_ORIGIN']);
+
 include("../config/ajax_config.php");
 include("../library/library.php");
 

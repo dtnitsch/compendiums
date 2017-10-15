@@ -8,6 +8,14 @@ NameVirtualHost *:443
     ErrorLog "/private/var/log/apache2/compendium.local-error_log"
     CustomLog "/private/var/log/apache2/compendium.local-access_log" common
 
+    <IfModule mod_headers.c>
+        SetEnvIf Origin "^http(s)?://(.+\.)?(compendium\.local)$" origin_is=$0 
+        Header always set Access-Control-Allow-Origin %{origin_is}e env=origin_is
+        Header set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
+        Header always set Access-Control-Max-Age "1000"
+        Header always set Access-Control-Allow-Headers "x-requested-with, Content-Type, origin, authorization, accept, client-security-token"
+    </IfModule>
+
     RewriteEngine On
     RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} -f
     RewriteRule . - [L]
@@ -21,6 +29,14 @@ NameVirtualHost *:443
     ServerName api.compendium.local
     ErrorLog "/private/var/log/apache2/api.compendium.local-error_log"
     CustomLog "/private/var/log/apache2/api.compendium.local-access_log" common
+
+    <IfModule mod_headers.c>
+        SetEnvIf Origin "^http(s)?://(.+\.)?(compendium\.local)$" origin_is=$0 
+        Header always set Access-Control-Allow-Origin %{origin_is}e env=origin_is
+        Header set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
+        Header always set Access-Control-Max-Age "1000"
+        Header always set Access-Control-Allow-Headers "x-requested-with, Content-Type, origin, authorization, accept, client-security-token"
+    </IfModule>
 
     RewriteEngine On
     RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} -f

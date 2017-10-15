@@ -124,6 +124,18 @@ if(is_file($GLOBALS["root_path"] ."templates/". $template .".template.php")) {
 
 $html = ob_get_clean();
 
+// $request_headers        = apache_request_headers();
+// $http_origin            = $request_headers['Origin'];
+// $allowed_http_origins   = [
+// 	"http://". $GLOBALS["project_info"]["dns"]
+// 	,"http://api.". $GLOBALS["project_info"]["dns"]
+// ];
+// if (in_array($http_origin, $allowed_http_origins)){  
+// 	die("!!!");
+//     @header("Access-Control-Allow-Origin: " . $http_origin);
+// }
+// header("Access-Control-Allow-Origin: *");
+
 echo $html;
 
 

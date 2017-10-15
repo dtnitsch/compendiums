@@ -20,7 +20,12 @@ $routes = array(
 			'/list/:values' => 'get_list'
 		)
 	)
-	// ,'post' => array (
+	,'POST' => array(
+		,'dynamic' => array(
+		'/list/:values' => 'get_list'
+		)
+	)
+// ,'post' => array (
 	// 	'static' => array(
 	// 		'/users/' => 'add_user'
 	// 	)
