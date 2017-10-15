@@ -53,6 +53,7 @@ function build_get_list_assets($values) {
         ,"title" => $info['title']
         ,"alias" => $info['alias']
         ,"username" => $info['username']
+        ,"description" => $info['description']
         ,"created" => $info['created']
         ,"modified" => $info['modified']
         ,"lists" => []
@@ -71,7 +72,6 @@ function build_get_list_assets($values) {
     ";
     $res = db_query($q,"Getting list assets");
 
-
     $assets[$values] = [];
     while($row = db_fetch_row($res)) {
         if(empty($assets[$values]['list_title'])) {
@@ -81,6 +81,7 @@ function build_get_list_assets($values) {
                 ,'randomize' => 1
                 ,'display_limit' => 20
                 ,'filter_count' => 0
+                ,'filters' => json_decode($info['filter_labels'])
                 ,'list_key' => $values
                 ,'tables' => (strtolower($info['tables']) == 't' ? 1 : 0)
                 ,'assets' => []

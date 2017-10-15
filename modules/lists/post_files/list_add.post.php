@@ -75,7 +75,7 @@ if(!empty($_POST) && !error_message()) {
 						if(trim($k) == "" || trim($v) == "") {
 							continue;
 						}
-						$filter_labels[$k] = convert_to_alias($v);
+						$filter_labels[$k] = convert_to_slug($v);
 					}
 				}
 				$filter_labels = json_encode($filter_labels);
