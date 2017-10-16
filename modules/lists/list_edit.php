@@ -59,7 +59,11 @@ if(!empty($_POST)) {
 	$filters = [];
 	while($row = db_fetch_row($assets)) {
 		$tmp = json_decode($row['filters'],true);
-		$asset_body .= $row['title'] .";". implode(',',$tmp) ."\n";
+		$filters = [];
+		foreach($tmp as $v) {
+			$filters[] = $info['filter_labels'][$v];
+		}
+		$asset_body .= $row['title'] .";". implode(',',$filters) ."\n";
 	}
 }
 

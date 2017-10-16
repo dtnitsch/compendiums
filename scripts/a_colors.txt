@@ -1,56 +1,56 @@
-Absolute Zero
-Acid Green
-Aero
-Aero Blue
-African Violet
-Air Force Blue (RAF)
-Air Force Blue (USAF)
-Air Superiority Blue
-Alabama Crimson
-Alabaster
-Alice Blue
-Alien Armpit
-Alizarin Crimson
-Alloy Orange
-Almond
-Amaranth
-Amaranth Deep Purple
-Amaranth Pink
-Amaranth Purple
-Amaranth Red
-Amazon Store
-Amazonite
-Amber
-Amber (SAE/ECE)
-American Rose
-Amethyst
-Android Green
-Anti-Flash White
-Antique Brass
-Antique Bronze
-Antique Fuchsia
-Antique Ruby
-Antique White
-Ao (English)
-Apple Green
-Apricot
-Aqua
-Aquamarine
-Arctic Lime
-Army Green
-Arsenic
-Artichoke
-Arylide Yellow
-Ash Gray
-Asparagus
-Atomic Tangerine
-Auburn
-Aureolin
-AuroMetalSaurus
-Avocado
-Awesome
-Aztec Gold
-Azure
-Azure (Web Color)
-Azure Mist
-Azureish White
+Absolute Zero;Two
+Acid Green;Two
+Aero;One
+Aero Blue;Two
+African Violet;Two
+Air Force Blue (RAF);Three
+Air Force Blue (USAF);Three
+Air Superiority Blue;Three
+Alabama Crimson;Two
+Alabaster;One
+Alice Blue;Two
+Alien Armpit;Other
+Alizarin Crimson;Other
+Alloy Orange;Other
+Almond;Other
+Amaranth;Other
+Amaranth Deep Purple;Other
+Amaranth Pink;Other
+Amaranth Purple;Other
+Amaranth Red;Other
+Amazon Store;Other
+Amazonite;Other
+Amber;Other
+Amber (SAE/ECE);Other
+American Rose;Other
+Amethyst;Other
+Android Green;Other
+Anti-Flash White;Other
+Antique Brass;Other
+Antique Bronze;Other
+Antique Fuchsia;Other
+Antique Ruby;Other
+Antique White;Other
+Ao (English);Other
+Apple Green;Other
+Apricot;Other
+Aqua;Other
+Aquamarine;Other
+Arctic Lime;Other
+Army Green;Other
+Arsenic;Other
+Artichoke;Other
+Arylide Yellow;Other
+Ash Gray;Other
+Asparagus;Other
+Atomic Tangerine;Other
+Auburn;Other
+Aureolin;Other
+AuroMetalSaurus;Other
+Avocado;Other
+Awesome;Other
+Aztec Gold;Other
+Azure;Other
+Azure (Web Color);Other
+Azure Mist;Other
+Azureish White;Other

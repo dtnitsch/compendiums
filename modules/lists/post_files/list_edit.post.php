@@ -11,11 +11,18 @@ if(!empty($_POST) && !error_message()) {
 	if(!error_message()) {
 
 		$title = trim($_POST['title']);
-		$alias = convert_to_alias($title);
+		$alias = convert_to_slug($title);
 		$key = get_url_param("key");
 		$is_table = (strstr($_POST['inputs'],"|") !== false ? 't' : 'f');
-
+		
 		$pub = db_fetch("select id from public.list where key = '". db_prep_sql($key) ."'","Getting id");
+
+		########################################################################################## 
+		# DO NOW...
+		#	1. Build exact inputs as edit page and compare title + inputs for diffs (updates vs new)
+		#	2. Allow updates ONLY to descriptions (markdowns)
+		#	3. Update this whole things to create VERSION (insert functions)
+		##########################################################################################
 
 		$labels = [];
 		$orders = [];
