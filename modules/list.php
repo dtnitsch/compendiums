@@ -15,12 +15,13 @@ _error_debug("MODULE: ". basename(__FILE__)); 	# Debugger
 $pieces = explode('/',$GLOBALS['project_info']['path_data']['path']);
 $key = trim($pieces[2]);
 
-library("api.php");
-$info = json_decode(call_api_function("get_list",$key),1);
 
 ##################################################
 #   DB Queries
 ##################################################
+library("api.php");
+$info = json_decode(call_api_function("get_list",$key),1);
+
 // $q = "select * from public.list where key='". db_prep_sql($key) ."'";
 // $info = db_fetch($q,"Getting list information");
 
@@ -102,38 +103,10 @@ ob_start();
 
 	var current_asset = assets['lists'][list_keys[0]];
 
-	build_filters(current_asset);
-	$id('listcounter').innerHTML = build_display(current_asset);
-	// build_all_display();
-
+	show_build_display('listcounter');
+	
 	parse_markdown_html('markdown',assets['description']);
 
-	function build_filters(info) {
-		// 1. Set Limit
-		set_limit_display("limit_"+ info['list_key'],info['display_limit']);
-		// 2. Randomize by default?
-		set_randomize("randomize_"+ info['list_key'],info['randomize']);
-		// 3. build filter list
-		set_filters_list(info['list_key'],info['filters']);
-	}
-	function set_limit_display(id,limit) {
-		$id(id).value = limit;
-	}
-	function set_randomize(id,checked) {
-		$id(id).checked = (checked ? true : false);
-	}
-	function set_filters_list(id,arr) {
-		var output = '<div class="mb" id="filters_'+ id +'">';
-		var cnt = 0;
-		for(i in arr) {
-			output += '<label for="filter_'+ cnt +'">';
-			output += '<input type="checkbox" id="filter_'+ cnt +'" name="filters['+ i +']" onclick="filter_list(\''+ id +'\',\'listcounter\')" value="'+ i +'"> '+ arr[i];
-			output += '</label> &nbsp;'; 
-			cnt += 1;
-		}
-		output += '</div>';
-		$id("filters_dynamic").innerHTML = output;
-	}
 
 </script>
 <?php

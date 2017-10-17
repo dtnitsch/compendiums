@@ -19,6 +19,10 @@ $key = trim($pieces[2]);
 ##################################################
 #   DB Queries
 ##################################################
+
+library("api.php");
+$info = json_decode(call_api_function("get_collection",$key),1);
+
 $q = "select * from public.collection where key='". db_prep_sql($key) ."'";
 $info = db_fetch($q,"Getting collection information");
 
@@ -56,29 +60,6 @@ $q = "
 ";
 
 $assets_res = db_query($q,"Getting collection assets");
-
-// $assets = array();
-// while($row = db_fetch_row($assets_res)) {
-// 	$id = $row['list_id'] ."-". $row['collection_list_map_id'];
-// 	if($row['connected']) {
-// 		$id = 'multi_'. $row['connected'];
-// 	}
-// 	if(empty($assets[$id])) {
-// 		$assets[$id] = [
-// 			"list_title" => $row['list_title']
-// 			,"list_label" => $row['label']
-// 			,"randomize" => ($row['randomize'] == "t" ? 1 : 0)
-// 			,"display_limit" => $row['display_limit']
-// 			,"list_id" => $row['list_id']
-// 			,"tables" => $row['tables']
-// 			,"connected" => $row['connected']
-// 			,"assets" => []
-// 			,"tags" => []
-// 		];
-// 	}
-// 	$assets[$id]['assets'][$row['list_id']][] = $row['asset'];
-// 	$assets[$id]['tags'][$row['list_id']][] = $row['tags'];
-// }
 
 $assets[] = [];
 while($row = db_fetch_row($assets_res)) {

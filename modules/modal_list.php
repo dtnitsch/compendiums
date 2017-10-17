@@ -45,7 +45,7 @@ add_css('modal.css');
 				<div id="modal_search">
 				<div>
 					Search
-					<input type="text" id="modal_search" placeholder="Search Lists" onkeyup="modal_search(this.value)">
+					<input type="text" id="modal_search_input" placeholder="Search Lists" onkeyup="modal_search(this.value)">
 					<div style="position:relative; top: 0px; left: 0px;" id="modal_search_results"></div>
 				</div>
 				<div class="clear"></div>
@@ -81,20 +81,12 @@ add_css('modal.css');
 				<div class="clear"></div>
 
 				<input type="button" id="add_list_button" value="Add List" style='display: none;' onclick="add_new_list('simple_modal')">
-				<!-- <input type="button" id="add_multi_button" value="Add Multi-List" style='display: none;' onclick="add_new_multi_list('simple_modal')"> -->
-				<div class="float_right">
-					<!-- <span id="multi_title" style="display: none"><strong>Multi-List</strong>:</span> -->
-					<span id="mutli-titles"></span>
-				</div
-				<div class="clear"></div>
 
 			</div> <!-- Search and Lists -->
 			<div id="modal_show_preview">
 				<div id="modal_preview_box" class="mb" >Preview</div>
 				<input type="button" value="Back to Search" onclick="modal_show_search();">
-				<input type="button" value="Add to Collection" onclick="add_new_list('simple_modal')">
-				<input type="button" id="add_multi_button" value="Add Multi-List" onclick="add_new_multi_list('simple_modal')">
-				
+				<input type="button" value="Add to Collection" onclick="add_list('simple_modal')">
 			</div>
 		</div> <!-- end modal inner -->
 	</div>
@@ -111,6 +103,8 @@ ob_start();
 <script type="text/javascript">
 	var assets = {};
 	// modal_init("simple_modal");
+
+	modal_init("simple_modal");
 
 	function modal_show_search() {
 		hide("modal_show_preview");

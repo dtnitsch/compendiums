@@ -61,12 +61,11 @@ function build_list_assets(arr) {
 function filter_asset_list(arr) {
 	var list = []
 
-    
     var limit = parseInt($id('limit_'+ arr.list_key) ? $id('limit_'+ arr.list_key).value : arr.display_limit);
     var randomize = ($id('randomize_'+ arr.list_key) ? $id('randomize_'+ arr.list_key).checked : arr.randomize);
     var filters = get_filters('filters_'+ arr.list_key);
     var list = build_filtered_list(arr,filters);
-    
+
     // 4. randomize if needed 
     if(randomize) {
         list = shuffle(list)
@@ -95,12 +94,16 @@ function build_filtered_list(arr,checked) {
 		return arr.assets.slice(arr.tables);
 	}
 
-    var list = [];
+	var list = [];
+	var existing = [];
 
 	for(var i=arr.tables,len=arr.assets.length; i<len; i++) {
 		for(filter in arr.assets[i][1]) {
             if(checked.indexOf(arr.assets[i][1][filter]) != -1) {
-                list[list.length] = arr.assets[i];
+				if(typeof existing[arr.assets[i]] == "undefined") {
+					list[list.length] = arr.assets[i];
+					existing[arr.assets[i]] = 1;
+				}
             }
         }
     }
@@ -147,8 +150,8 @@ function parse_random(s) {
 }
 
 
-function filter_list(key,id) {
-	$id(id).innerHTML = build_display(assets.lists[key]);
+function filter_list(arr,id) {
+	$id(id).innerHTML = build_display(arr);
 }
 
 // ---------------------------------------------------------
@@ -173,4 +176,42 @@ function parse_markdown_html(id,html) {
 	}
 	var markdown = document.getElementById(id || 'markdown');
 	markdown.innerHTML = micromarkdown.parse(html);
+}
+
+// ---------------------------------------------------------
+// Page Functions
+// ---------------------------------------------------------
+function show_build_display(id,bf) {
+	var bf = (typeof bf == "undefined" ? true : false);
+	if(bf) {
+		build_filters(current_asset);
+	}
+	$id(id).innerHTML = build_display(current_asset);
+}
+
+function build_filters(info) {
+	// 1. Set Limit
+	set_limit_display("limit_"+ info['list_key'],info['display_limit']);
+	// 2. Randomize by default?
+	set_randomize("randomize_"+ info['list_key'],info['randomize']);
+	// 3. build filter list
+	set_filters_list(info['list_key'],info['filters']);
+}
+function set_limit_display(id,limit) {
+	$id(id).value = limit;
+}
+function set_randomize(id,checked) {
+	$id(id).checked = (checked ? true : false);
+}
+function set_filters_list(id,arr) {
+	var output = '<div class="mb" id="filters_'+ id +'">';
+	var cnt = 0;
+	for(i in arr) {
+		output += '<label for="filter_'+ cnt +'">';
+		output += '<input type="checkbox" id="filter_'+ cnt +'" name="filters['+ i +']" onclick="filter_list(current_asset,\'listcounter\')" value="'+ i +'"> '+ arr[i];
+		output += '</label> &nbsp;'; 
+		cnt += 1;
+	}
+	output += '</div>';
+	$id("filters_dynamic").innerHTML = output;
 }

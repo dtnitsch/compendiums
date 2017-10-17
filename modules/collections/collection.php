@@ -16,7 +16,7 @@ _error_debug("MODULE: ". basename(__FILE__)); 	# Debugger
 #   Pre-Content
 ##################################################
 add_css('pagination.css');
-add_js('sortlist.new.js');
+add_js('sortlist.js');
 
 $add_button = "<input type='button' value='Add New Collection' onclick='window.location.href=\"/collections/add/\"' class='add'>";
 

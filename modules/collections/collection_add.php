@@ -23,7 +23,7 @@ post_queue($module_name,'modules/collections/post_files/');
 $info = (!empty($_POST) ? $_POST : array());
 
 // add_js('sortlist.new.js');
-add_js("lists.js",10);
+add_js("compendium.js",10);
 add_js("markdown.min.js");
 
 ##################################################
@@ -55,8 +55,9 @@ add_js("markdown.min.js");
 							<th></th>
 							<th>Label</th>
 							<th>List Key</th>
-							<th>Randomize</th>
-							<th>Display Limit</th>
+							<th style='width: 1px; padding-right: 10px;'>Randomize</th>
+							<th style='width: 1px; padding-right: 10px;'>Limit</th>
+							<th style='width: 1px;'>Options</th>
 						</tr>
 					</thead>
 					<tbody id="list_body">
@@ -102,6 +103,7 @@ add_js("markdown.min.js");
 
 
 <?php echo run_module("modal_list"); ?>
+<?php echo run_module("list_simple"); ?>
 
 <?php
 ##################################################
@@ -112,67 +114,72 @@ ob_start();
 <script type="text/javascript">
 
 var list_count = 0;
-function add_list(info,limit,randomize,multi) {
-	var list_body = $id('list_body');
-	var output = '';
-	var tr, i, len;
-	var checked = (randomize ? " checked" : "");
-	var title = '';
-	var key = '';
-	var is_multi = 0;
+var list_simple_template = "";
+var current_asset = [];
+var add_to_list = false;
+
+function search_for_list(list_num) {
+	add_to_list = list_num || false;
+	reset_modal();
+	$id("simple_modal").style.display = "block";
+	$id('modal_search').focus();
+}
+
+function add_list(id) {
+
+	if(add_to_list) {
+		chain_list(id,add_to_list);
+		return;
+	}
+
+	var limit = parseInt($id('limit_'+ current_asset.list_key) ? $id('limit_'+ current_asset.list_key).value : current_asset.display_limit);
+    var randomize = ($id('randomize_'+ current_asset.list_key) ? $id('randomize_'+ current_asset.list_key).checked : current_asset.randomize);
+	var checked = (randomize ? ' checked' : '');
 
 	list_count += 1;
 	tr = document.createElement("tr");
-
-	if(typeof info.title == "undefined" && info.length) {
-		is_multi = 1;
-		for(i = 0,len=info.length; i<len; i++) {
-			title += info[i].returned_info.title +",";
-			key += info[i].returned_info.key +",";
-		}
-		title = title.substring(0,title.length - 1);
-		key = key.substring(0,key.length - 1);
-	} else {
-		title = info.title;
-		key = info.key;
-	}
-
+	tr.id = "list_count_"+ list_count;
 
 	output = `
 		<td>`+ list_count +`</td>
 		<td>
-			<input type="input" id="label`+ list_count +`" name="list_labels[`+ list_count +`]" placeholder="List Label" value="`+ title +`">
+			<input type="input" id="label`+ list_count +`" name="list_labels[`+ list_count +`]" placeholder="List Label" value="`+ current_asset.list_title +`" style="width: 90%;">
 		</td>
 		<td>
-			<input type="input" id="key`+ list_count +`" name="list_keys[`+ list_count +`]" placeholder="List Key" value="`+ key +`">
+			<input type="input" id="key`+ list_count +`" name="list_keys[`+ list_count +`]" placeholder="List Key" value="`+ current_asset.list_key +`" style="width: 90%;">
 		</td>
 		<td>
 			<label for="randomize`+ list_count +`">
 				<input`+ checked +` type="checkbox" name="randomize[`+ list_count +`]" id="randomize`+ list_count +`" value="1"> Randomize
 			</label>
-			<input type="hidden" name="is_multi" value="`+ is_multi +`" />
 		</td>
 		<td>
-			<input type="input" name="display_limit[`+ list_count +`]" value="`+ limit +`" style="width: 40px;">
+			<input type="input" name="display_limit[`+ list_count +`]" value="`+ limit +`" style="width: 32px;">
+		</td>
+		<td>
+			<input type="button" value=" + " onclick="search_for_list(`+ list_count +`)">
+			<input type="button" value=" - " onclick="remove_list_row(`+ list_count +`)">
 		</td>
 	`;
 	tr.innerHTML = output;
-	lists.appendChild(tr);
+	$id('lists').appendChild(tr);
+
+	modal_clear(id);
 }
 
-// var modal_id = 0;
-// var multi = 0;
-function search_for_list() {
-	// multi = multi || 0;
-	// console.log("Multi: "+ multi)
-	// modal_id = id;
-	if(typeof reset_modal == "function") {
-		reset_modal();
-	}
-	$id("simple_modal").style.display = "block";
-	$id('modal_search').focus();
+function add_list_row(num) {
+	console.log("add_list_row(num): "+ num)
 }
-modal_init("simple_modal");
+function remove_list_row(num) {
+	$id('list_count_'+ num).outerHTML = "";
+}
+
+function chain_list(id,num) {
+	$id('label'+ num).value += ", "+ current_asset.list_title;
+	$id('key'+ num).value += ", "+ current_asset.list_key;
+	modal_clear(id);
+}
+
 
 function show_markdown_preview() {
 	parse_markdown();

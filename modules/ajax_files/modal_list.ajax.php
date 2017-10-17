@@ -8,7 +8,9 @@ $q = "
 	    key
 	    ,title
 	from public.list
-	where (
+	where
+		list.active
+		and (
 		title ilike '%". $val ."%'
 		or key ilike '%". $val ."%'
 	)

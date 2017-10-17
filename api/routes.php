@@ -18,13 +18,14 @@ $routes = array(
 		)
 		,'dynamic' => array(
 			'/list/:values' => 'get_list'
+			'/collection/:values' => 'get_collection'
 		)
 	)
-	,'POST' => array(
-		,'dynamic' => array(
-		'/list/:values' => 'get_list'
-		)
-	)
+	// ,'POST' => array(
+	// 	,'dynamic' => array(
+	// 	'/list/:values' => 'get_list'
+	// 	)
+	// )
 // ,'post' => array (
 	// 	'static' => array(
 	// 		'/users/' => 'add_user'

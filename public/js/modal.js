@@ -15,13 +15,18 @@ function display_modal(id) {
 	$id(id).style.display = "block";
 }
 
-
 function modal_clear(id) {
 	id = id || "modal_tabs";
 	$id('modal_search').value = "";
 	$id('modal_search_results').innerHTML = "";
 	$id(id).style.display = "none";
 }
+
+
+
+
+
+
 
 var search_cache = {}
 var search_data = ""
@@ -57,6 +62,9 @@ function parse_modal_search(data,cached) {
 }
 
 
+
+
+
 function modal_list_page(val) {
 	if(val.trim() == "") {
 		return;
@@ -68,60 +76,41 @@ function modal_list_page(val) {
 		,success: display_modal_list_page
 	});
 }
-function display_modal_list_page(res) {
-	$id('modal_preview_box').innerHTML = res.output.html;
-	list_keys = [res.output.info.id];
-	returned_info = res.output.info;
 
-	// console.log(res)
-	// set_original_rows();
+function display_modal_list_page(res) {
+
+	if(list_simple_template == "") {
+		list_simple_template = $id('list_simple_details').innerHTML;
+		$id('list_simple_details').innerHTML = "";
+	}
+	current_asset = res.output;
+	var template = list_simple_template;
+	template = template.replace(/{{title}}/g,res.output.list_title);
+	template = template.replace(/{{key}}/g,res.output.list_key);
+	$id('modal_preview_box').innerHTML = template;
 
 	show('add_list_button');
 	if($id('add_multi_button')) { show('add_multi_button') }
-	ccc(res.output.assets);
-}
-function ccc(js) {
-	assets = {};
-	eval(js)
-	build_all_display();
-}
-
-function add_new_list(id) {
-	var limit = $query("[id^=limit_]")[0].value;
-	var checked = $query("[id^=randomize_]")[0].checked;
-	if(returned_info_multi.length) {
-		add_list(returned_info_multi,limit,checked);	
-	} else {
-		add_list(returned_info,limit,checked);
-	}
 	
-	modal_clear(id);
+	show_build_display('listcounter');
 }
 
-function add_new_multi_list() {
-	var limit = $id("limit").value;
-	var checked = $id("randomize").checked;
-	returned_info_multi[returned_info_multi.length] = {returned_info,limit,checked};
+// function add_new_list(id) {
+//     var limit = parseInt($id('limit_'+ current_asset.list_key) ? $id('limit_'+ current_asset.list_key).value : current_asset.display_limit);
+//     var randomize = ($id('randomize_'+ current_asset.list_key) ? $id('randomize_'+ current_asset.list_key).checked : current_asset.randomize);
+// 	add_list(returned_info,limit,randomize);
 
-	var output = $id('mutli-titles').innerHTML;
-	if(output != "") {
-		output += ", ";
-	}
-	show("multi_title");
-	$id('mutli-titles').innerHTML = output + returned_info['title'];
-	modal_show_search();
-}
+// 	modal_clear(id);
+// }
+
 
 var list_keys = [];
 var original_rows = {};
-var returned_info = {}
-var returned_info_multi = []
 
 
 function reset_modal() {
 	list_keys = [];
 	original_rows = {};
-	returned_info = {}
-	returned_info_multi = []
-	$id('mutli-titles').innerHTML = '';
+	$id('modal_preview_box').innerHTML = '';
+	modal_show_search();
 }

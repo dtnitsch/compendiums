@@ -122,6 +122,8 @@ insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
 	,('621ea1449472caca9ed301610dca5a84', 'modules/ajax_files/', 'site_wide_notes.ajax.php', '{}')
 	,('1a3873edb1f3643c2c60ff495780bb9a', 'modules/ajax_files/', 'export_to_csv.ajax.php', '{}')
 ;
+	
+
 
 
 
@@ -538,5 +540,9 @@ insert into "system"."paths_ajax" (uid, folder, file, dynamic_variables) values
 
 	,('06a0fc087756944595785e90f79ecad4', 'modules/lists/ajax_files/', 'list.ajax.php', '{"db_schema":"public","db_table":"lists"}')
 	,('bc31fc693c24f4aa0bf13dcf0fbfb1e8', 'modules/compendiums/ajax_files/', 'compendium.ajax.php', '{"db_schema":"public","db_table":"compendiums"}')
-	,('bca4b7dad46a1d984ec7975274671955', 'modules/ajax_files/', 'module_list.ajax.php', '{}')
+	,('bca4b7dad46a1d984ec7975274671955', 'modules/ajax_files/', 'modal_list.ajax.php', '{}')
+	,('db6d9b451b818ccc9a449383f2f0c450', 'modules/collections/ajax_files/', 'collection.ajax.php', '{"db_schema":"public","db_table":"collections"}')
+
+	,('ff15890b1815ec8d9eaf91ad22a5286e', 'modules/ajax_files/', 'list.ajax.php', '{}')
 ;
+
