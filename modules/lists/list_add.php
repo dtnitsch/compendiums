@@ -63,9 +63,8 @@ add_js("lists.js");
 				<textarea name="inputs" id="inputs" style="width: 100%; height: 150px;"></textarea>
 				<div class="small">
 					* ";" Semicolon seperator for filters<br>
-					* "|" Pipe between values for "Tables"
-
-
+					* "|" Pipe between values for "Tables"<br>
+					* "[#d#]" Randomized dice rolls.  Example:  [d6], [1d6], [2d33], or [100d100]
 				</div>
 			</div>
 		</div>

@@ -10,17 +10,17 @@ $order = ($col != '' ? ' order by '. $col .' '. $ord : '');
 $limit = ' limit '. $_POST['display_count'];
 if(strtolower($_POST['type']) == 'pagination') { $limit = ''; }
 
-$where = '';
+$where = ['public.list.active'];
 if(!empty($_POST['filters'])) {
 	foreach($_POST['filters'] as $k => $v) {
 		$v = trim($v);
 		if($v == '') { continue; }
-		$where .= " and public.list.". $k ." ilike '%". $v ."%' ";
+		$where[] = " public.list.". $k ." ilike '%". $v ."%' ";
 	}
 }
 if(!empty($_POST['u'])) {
 	start_session();
-	$where .= " and public.list.user_id='". $_SESSION['user']['id'] ."' ";
+	$where[] = " public.list.user_id='". $_SESSION['user']['id'] ."' ";
 }
 
 $q = "
@@ -36,7 +36,7 @@ $q = "
 	join public.list_asset_map on
 		list_asset_map.list_id = list.id
 	join system.users on users.id=public.list.user_id
-	". (!empty($where) ? " where ". $where : "") ."
+	". (!empty($where) ? " where ". implode(" and ",$where) : "") ."
 	group by
 		list.id
 		,list.title

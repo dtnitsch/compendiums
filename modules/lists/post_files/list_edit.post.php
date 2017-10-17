@@ -2,6 +2,7 @@
 if(!empty($_POST) && !error_message()) {
 	library('uuid.php');
 	library("slug.php");
+	library("assets.php");
 
 	validate([
 		'title'=>'List Name'
@@ -10,13 +11,8 @@ if(!empty($_POST) && !error_message()) {
 
 	if(!error_message()) {
 
-		$title = trim($_POST['title']);
-		$alias = convert_to_slug($title);
-		$key = get_url_param("key");
-		$is_table = (strstr($_POST['inputs'],"|") !== false ? 't' : 'f');
-		
-		$pub = db_fetch("select id from public.list where key = '". db_prep_sql($key) ."'","Getting id");
-
+		$id = get_url_param("key");
+				
 		########################################################################################## 
 		# DO NOW...
 		#	1. Build exact inputs as edit page and compare title + inputs for diffs (updates vs new)
@@ -24,199 +20,143 @@ if(!empty($_POST) && !error_message()) {
 		#	3. Update this whole things to create VERSION (insert functions)
 		##########################################################################################
 
-		$labels = [];
-		$orders = [];
-		foreach($_POST['filter_labels'] as $k => $v) {
-			if(trim($v) == "") {
-				unset($_POST['filter_labels'][$k]);
-				unset($_POST['filter_orders'][$k]);
-			}
-		}
-		asort($_POST['filter_orders']);
-
-		$markdown = trim(strip_tags($_POST['markdown']));
-
+		$info = db_fetch("select * from public.list where key='". $id ."'",'Getting List');
+		$info['filter_labels'] = json_decode($info['filter_labels'],true);
+	
 		$q = "
-			update public.list set
-				title = '". db_prep_sql($title) ."'
-				,alias = '". db_prep_sql($alias) ."'
-				,tables = '". $is_table ."'
-				,tags = '". db_prep_sql(json_encode(array_keys(unique_tags()))) ."'
-				,filter_labels = '". db_prep_sql(json_encode($_POST['filter_labels'])) ."'
-				,filter_orders = '". db_prep_sql(json_encode($_POST['filter_orders'])) ."'
-				,description = '". db_prep_sql($markdown) ."'				
-				,modified = now()
-			where
-				id = '". db_prep_sql($pub['id']) ."'
+			select
+				public.asset.*
+				,list_asset_map.filters
+			from public.asset
+			join public.list_asset_map on 
+				list_asset_map.asset_id = asset.id
+				and list_asset_map.list_id = '". $info['id'] ."'
+			order by
+				asset.id
 		";
+		$assets = db_query($q,"Getting assets");
+	
+		$asset_body = "";
+		while($row = db_fetch_row($assets)) {
+			$tmp = json_decode($row['filters'],true);
+			$filters = [];
+			foreach($tmp as $v) {
+				$filters[] = $info['filter_labels'][$v];
+			}
+			$asset_body .= $row['title'] .";". implode(',',$filters) ."\n";
+		}
 
-		$res = db_query($q, "Updating List"); 
+		if(empty($_POST['markdown'])) {
+			$_POST['markdown'] = "";
+		}
+		$markdown = trim(strip_tags($_POST['markdown']));
+		if($markdown != $info['description']) {
+			$q = "
+				update public.list set
+					description = '". db_prep_sql($markdown) ."'				
+					,modified = now()
+				where
+					id = '". $info['id'] ."'
+			";
+			$res = db_query($q, "Updating List"); 
+		}
 
 		if(!error_message()) {
-			$list_id = $pub['id'];
+			$continue = false;
 
-			$pieces = explode("\n",$_POST['inputs']);
-			$assets = array();
-			$percentages = "";
-			$map_ids = [];
-			$alias_list = [];
-			foreach($pieces as $v) {
-				$v = trim($v);
-				if($v == "") {
-					continue;
-				}
-				
-				$inner_pieces = explode(";",$v);
-				$asset = trim($inner_pieces[0]);
-				# Filters
-				$filter_labels = [];
-				if(!empty($inner_pieces[1])) {
-					$tmp = explode(",",$inner_pieces[1]);
-					foreach($tmp as $k => $v) {
-						if(trim($k) == "" || trim($v) == "") {
-							continue;
-						}
-						$filter_labels[$k] = convert_to_alias($v);
-					}
-				}
-				$filter_labels = json_encode($filter_labels);
-
-				$alias = convert_to_alias($asset);
-				$alias = db_prep_sql($alias);
-				$alias_list[$alias] = [
-					"asset" => $asset
-					,"perc" => $perc
-					,"filter_labels" => $filter_labels
-				];
+			$title = trim($_POST['title']);
+			$inputs = preg_replace('/(\\r|\\n)/', "", $_POST['inputs']);
+			$asset_body = preg_replace('/(\\r|\\n)/', "", $asset_body);
+	
+			if($title != $info['title']) {
+				$continue = true;
 			}
-			$q = "select id,alias from public.asset where alias in ('". implode("','",array_keys($alias_list)) ."')";
-			$res = db_query($q,"Checking existing assets");
-			$existing = [];
-			while($row = db_fetch_row($res)) {
-				$existing[$row['alias']] = $row['id'];
-				$alias_list[$row['alias']]['id'] = $row['id'];
-			}
+			if($inputs != $asset_body) {
+				$continue = true;
+			}		
 
-			$q = '';
-			foreach($alias_list as $k => $v) {
-				if(empty($v['id'])) {
-					$q .= "
-						(
-							'". db_prep_sql($v['asset']) ."'
-							,'". db_prep_sql(convert_to_alias($v['asset'])) ."'
-							,now()
-							,now()
-					),";
-				}
-			}
-
-			if(!empty($q)) {
+			if($continue) {
+					
+				$alias = convert_to_slug($title);
+				$key = create_key();
+				$is_table = (strstr($_POST['inputs'],"|") !== false ? 't' : 'f');
+		
+				$parent_id = ($info['parent_id'] == 0 ? $info['id'] : $info['parent_id']);
 				$q = "
-					insert into public.asset (
-						title
+					select (count(id) + 1) as v
+					from public.list
+					where
+						parent_id='". $parent_id ."'
+				";
+				$version = db_fetch($q, "Inserting List Name");
+
+				$q = "
+					update public.list set
+						active='f'
+					where
+						parent_id='". $parent_id ."'
+						and active='t'
+				";
+				db_query($q, "Deactivating all similar parent_id's");
+
+				$q = "
+					insert into public.list (
+						user_id
+						,key
+						,parent_id
+						,version
+						,title
 						,alias
+						,tables
+						,tags
+						,filter_labels
+						,filter_orders
+						,description
 						,created
 						,modified
-					) values ". substr($q,0,-1) ."
-					RETURNING id,title,alias
+					) values (
+						'". db_prep_sql(!empty($_SESSION['user']['id']) ? $_SESSION['user']['id'] : 1) ."'
+						,'". $key ."'
+						,'". $parent_id ."'
+						,'". $version['v'] ."'
+						,'". db_prep_sql($title) ."'
+						,'". db_prep_sql($alias) ."'
+						,'". $is_table ."'
+						,'{}'
+						,'". db_prep_sql(json_encode($_POST['filter_labels'])) ."'
+						,'". db_prep_sql(json_encode($_POST['filter_order'])) ."'
+						,'". db_prep_sql($markdown) ."'
+						,now()
+						,now()
+					) returning id
 				";
-				$res = db_query($q,"Inserting/Selecting Asset: ". $title);
-				while($row = db_fetch_row($res)) {
-					$alias_list[$row['alias']]['id'] = $row['id'];
+				$res = db_fetch($q, "Inserting List Name");
+				if(empty($res['id'])) {
+					error_message("List insert failed");
 				}
-			}
-			$id_to_alias = [];
-			foreach($alias_list as $k => $v) {
-				$id_to_alias[$v['id']] = [$k];
-				$map_ids[$v['id']] = "(
-					". $list_id ."
-					,". $v['id'] ."
-					,". db_prep_sql($v['perc']) ."
-					,'". db_prep_sql($v['filter_labels']) ."'::json
-					,now()
-					,now()
-				)";				
-			}
-
-			// $q = "
-			// 	insert into list_asset_map (
-			// 		list_id
-			// 		,asset_id
-			// 		,percentage
-			// 		,filters
-			// 		,created
-			// 		,modified
-			// 	) values ". implode(',',$map_ids);
-			// $res = db_query($q,"Inserting list asset map");
-			// if (db_is_error($res)) {
-			// 	error_message("AN error occured trying to insert the new asset.");
-			// }
-
-			$q = "
-				select public.list_asset_map.asset_id as id
-				from public.list_asset_map
-				where list_asset_map.list_id = '". $list_id ."'
-				order by asset_id
-			";
-			$res = db_query($q,"Getting list assets");
-			$asset_ids = [];
-			while($row = db_fetch_row($res)) {
-				$asset_ids[] = $row['id'];
-			}
-
-			library('add_remove_diff.php');
-			list($remove,$add) = add_remove_diff(array_keys($id_to_alias),$asset_ids);
-
-			if(!empty($remove)) {
-				$q = "
-					delete from public.list_asset_map
-					where
-						list_asset_map.list_id = '". $list_id ."'
-						and asset_id in (". implode(',',$remove) .")
-				";
-				db_query($q,"Removing Assets from list");				
-			}
-
-			if(!empty($add)) {
-				// $map_ids = [];
-				foreach($add as $v) {
-					$filter = db_prep_sql($alias_list[$id_to_alias[$v][0]]['filter_labels']);
-					$list_asset_map[] = "(". $list_id .",". $v .",'". $filter ."',now(),now())";
-				}
-				$q = "insert into list_asset_map (list_id,asset_id,filters,created,modified) values ". implode(',',$list_asset_map);
-				db_query($q,"Inserting Assets for list");
-			}
-
-			// $q = "insert into list_asset_map (list_id,asset_id,created,modified) values ". implode(',',$map_ids);
-			// db_query($q,"Inserting list asset map");
+		
+				if(!error_message()) {
+					$list_id = $res['id'];
+		
+					// Split assets and filters
+					$alias_list = clean_assets($_POST['inputs']);
+					// Get a list of existing of IDs and assets
+					list($alias_list,$existing) = get_existing_assets($alias_list);
+					// Add any new assets if any exist
+					$alias_list = add_new_assets($alias_list,$existing);
+					// Insert into asset map
+					insert_asset_map($list_id, $alias_list);
+		
+				} 
+			} # End continue
 
 			if(!error_message()) {
 				$redirection_path = '/lists/';
-				set_post_message("You have successfully updated a record");
+				set_post_message("You have successfully created a new record");
 				set_safe_redirect($redirection_path);
 			}
 
-			// error_message("An error has occurred while trying to create a new record");
+
 		}
 	}
-}
-
-
-function unique_tags() {
-	$tags = [];
-	$pieces = explode("\n",trim($_POST['inputs']));
-	$percentages = 0;
-	$output = [];
-	for($i=0,$len=count($pieces); $i<$len; $i++) {
-		$inner_pieces = explode(";",$pieces[$i]);
-		if(!empty($inner_pieces[1])) {
-			$tags = explode(',',trim($inner_pieces[1]));
-			for($j=0,$lenj=count($tags); $j<$lenj; $j++) {
-				$output[convert_to_alias($tags[$j])] = 1;
-			}
-		} else {
-			continue;
-		}
-	}
-	return $output;
 }

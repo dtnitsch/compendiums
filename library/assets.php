@@ -96,7 +96,7 @@ function add_new_assets($alias_list,$existing) {
 			RETURNING id,title,alias
 		";
 	// die();
-		$res = db_query($q,"Inserting/Selecting Asset: ". $title);
+		$res = db_query($q,"Inserting/Selecting Asset");
 		while($row = db_fetch_row($res)) {
 			$alias_list[$row['alias']]['id'] = $row['id'];
 		}

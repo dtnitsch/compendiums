@@ -83,7 +83,7 @@ if(!empty($_POST)) {
 </div>
 
 <a href="#messages"></a>
-<div id="messages"></div>
+<div id="messages"><?=(dump_messages())?></div>
 
 <div id="inputs_box">
 

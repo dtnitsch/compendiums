@@ -1,7 +1,6 @@
 <?php
 if(!empty($_POST) && !error_message()) {
 	library('uuid.php');
-	// library('validation.php');
 	library("slug.php");
 	library("assets.php");
 	
@@ -24,6 +23,7 @@ if(!empty($_POST) && !error_message()) {
 			insert into public.list (
 				user_id
 				,key
+				,parent_id
 				,title
 				,alias
 				,tables
@@ -36,6 +36,7 @@ if(!empty($_POST) && !error_message()) {
 			) values (
 				'". db_prep_sql(!empty($_SESSION['user']['id']) ? $_SESSION['user']['id'] : 1) ."'
 				,'". $key ."'
+				,currval('list_id_seq')
 				,'". db_prep_sql($title) ."'
 				,'". db_prep_sql($alias) ."'
 				,'". $is_table ."'

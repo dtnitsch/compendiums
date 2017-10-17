@@ -56,7 +56,7 @@ $raw_url = $_SERVER['REQUEST_SCHEME'] ."://api.". $_SERVER['SERVER_NAME'] .'/lis
 
 		<form id="form_filters" method="" action="" onsubmit="return false;">
 			<label for="limit_<?php echo $info['key']; ?>">
-				Limit Display: <input type="input" name="limit" id="limit_<?php echo $info['key']; ?>" value="4" class='xs'> 
+				Limit Display: <input type="input" name="limit" id="limit_<?php echo $info['key']; ?>" value="20" class='xs'> 
 			</label>
 
 			<label for="randomize_<?php echo $info['key']; ?>">
