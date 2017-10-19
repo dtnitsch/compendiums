@@ -83,7 +83,7 @@ if(!empty($_POST) && !error_message()) {
 					$q .= "(
 						'". db_prep_sql($collection_id) ."'
 						,'". db_prep_sql($key_index_map[$key]) ."'
-						,'". (int)(count($keys > 1 ? 1 : 0)) ."'
+						,'". (!empty($keys[1]) > 1 ? 't' : 'f') ."'
 						,'". (int)$connected ."'
 						,'". db_prep_sql(trim($_POST['list_labels'][$index])) ."'
 						,'". (int)(!empty($_POST['randomize'][$index]) ? 1 : 0) ."'
@@ -109,9 +109,9 @@ if(!empty($_POST) && !error_message()) {
 			}
 		
 
-			// $redirection_path = '/collections/add/?id='. $new_id;
-			// set_post_message("You have successfully created a new record");
-			// set_safe_redirect($redirection_path);
+			$redirection_path = '/collections/';
+			set_post_message("You have successfully created a new record");
+			set_safe_redirect($redirection_path);
 
 			// error_message("An error has occurred while trying to create a new record");
 		} // End collection_id

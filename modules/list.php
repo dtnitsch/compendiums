@@ -106,8 +106,6 @@ ob_start();
 	show_build_display('listcounter');
 	
 	parse_markdown_html('markdown',assets['description']);
-
-
 </script>
 <?php
 $js = trim(ob_get_clean());

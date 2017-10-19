@@ -79,6 +79,7 @@ function build_get_list_assets($values) {
                 'list_title' => $info['title']
                 // ,'list_label' => $info['label']
                 ,'randomize' => 1
+                ,'is_multi' => 0
                 ,'display_limit' => 20
                 ,'filter_count' => 0
                 ,'filters' => json_decode($info['filter_labels'])

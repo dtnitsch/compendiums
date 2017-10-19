@@ -1,31 +1,46 @@
-function build_all_display(id) {
+function build_all_display(id,options) {
 	var output = '';
+	var options = options || {};
+	used_multis = {};
 	for(key in assets['lists']) {
-		output += build_display(assets['lists'][key]);
+		output += build_display(assets['lists'][key],options);
 	}
 	$id(id).innerHTML = output.trim();
 }
 
 function build_display(info,options) {
 	var output = '<div>';
-	// if(typeof options != "undefined" && typeof options.show_labels != "undefined") {
-	// 	let filters = '';
-	// 	filters += (filters ? ', ' : '') + "Display Limit: "+ asset_display(key,'display_limit');
-	// 	filters += (filters ? ', ' : '') + "Randomize: "+ (asset_display(key,'randomize') ? 'Yes' : 'No');
-	// 	filters = '<div class="float_right small">'+ filters +'</div>';
-	// 	output = `<div class="mt" style="border: 1px solid #ccc; background: #fff; padding: 3px 5px; cursor: pointer;" onclick="show_hide('collection_`+ key +`')">`+ filters + assets[key]['list_label'] +`</div><div id="collection_`+ key +`">`;
-	// }
+	
+	if(info.is_multi) {
+		// already used this multi part?  Skip it
+		if(typeof used_multis['used_'+ info.connected] != "undefined") {
+			return "";
+		}
+		// make sure this multi actually exists
+		if(typeof assets['is_multi'][info.connected] == "undefined") {
+			return "";
+		}
+		// set used multi to not repeat it
+		used_multis['used_'+ info.connected] = 1;
 
-	if(info.tables) {
-		output += '<table cellspacing="0" cellpadding="0" class="tbl mb">';
+		output += '<div class="mt"><strong>'+ info['list_label'] +'</strong></div>';
+		output += '<ol class="list_ordered" id="list_body_'+ info['list_key'] +'">';
+        output += build_multi_assets(assets['is_multi'][info.connected]);
+        output += '</ol>';
+
+	} else if(info.tables) {
+		output += '<table cellspacing="0" cellpadding="0" class="tbl mt">';
         output += '<thead><tr><th>';
         output += info.assets[0][0].split('|').join('</th><th>')
         output += '</th></tr></thead>';
         output += '<tbody id="list_body_'+ info.list_key +'">';
-        output += build_table_assets(info)
+        output += build_table_assets(info);
         output += '</tbody></table>';
 
     } else {
+		// if(typeof options.show_header != "undefined" && options.show_header) {
+			output += '<div class="mt"><strong>'+ info['list_title'] +'</strong></div>';
+		// }
 		output += '<ol class="list_ordered" id="list_body_'+ info['list_key'] +'">';
         output += build_list_assets(info)
         output += '</ol>';
@@ -56,6 +71,29 @@ function build_list_assets(arr) {
 		output += '<li data-filters="'+ list[i][1] +'">'+ parse_random(list[i][0]) +'</li>';
 	}
 	return output;
+}
+
+function build_multi_assets(lists) {
+	var shuffled_lists = [];
+	var output = '';
+	var display = '';
+	var display_limit = 0;
+	for(i in lists) {
+		list = lists[i];
+		shuffled_lists[shuffled_lists.length] = filter_asset_list(assets['lists'][list]);
+		display_limit = assets['lists'][list]['display_limit'];
+	}
+	for(var i=0,len=display_limit; i<len; i++) {
+		display = [];
+		for(list in shuffled_lists) {
+			pos = i % shuffled_lists[list].length;
+			// console.log("shuffled_lists[list]["+i+"]: ", shuffled_lists[list])
+			display[display.length] = parse_random(shuffled_lists[list][pos][0]);
+		}
+		output += '<li>'+ display.join(" ") +'</li>';
+	}
+	
+	return output;	
 }
 
 function filter_asset_list(arr) {
