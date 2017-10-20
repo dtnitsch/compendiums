@@ -18,7 +18,7 @@ $routes = array(
 		)
 		,'dynamic' => array(
 			'/list/:values' => 'get_list'
-			'/collection/:values' => 'get_collection'
+			,'/collection/:values' => 'get_collection'
 		)
 	)
 	// ,'POST' => array(
