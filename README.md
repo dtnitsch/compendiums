@@ -32,12 +32,11 @@
 	- Filters saved from list
 	- Lock next to randomized lists to stop from randomizing
 	- Individual randomize
-	
-	* - ?? Triggers ?? - If option from list is of tag X, randomize from list Y?
-	
+		
 - Compendium
 	- Unlimited Markdown Boxes (add list / collection / MD box)
 	- showhide all input boxes after first ajax call.  No 2nd ajax calls.
+	-
 
 - Users
 	- "My Lists"
